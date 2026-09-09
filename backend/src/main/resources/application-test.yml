@@ -1,0 +1,59 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  application:
+    name: event-ticket-platform
+  datasource:
+    url: jdbc:postgresql://localhost:5433/event_ticket_test
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-app-password}
+    protocol: smtp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+  cache:
+    type: simple
+
+server:
+  port: 8081
+
+jwt:
+  secret: ${JWT_SECRET:test-secret-key-at-least-32-characters-long}
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000
+
+async:
+  core-pool-size: 5
+  max-pool-size: 10
+  queue-capacity: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

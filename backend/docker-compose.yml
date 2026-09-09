@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: event-ticket-postgres-test
+    environment:
+      POSTGRES_DB: event_ticket_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - event-ticket-network
+
+  postgres-prod:
+    image: postgres:16-alpine
+    container_name: event-ticket-postgres-prod
+    environment:
+      POSTGRES_DB: event_ticket_prod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - event-ticket-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event-ticket-app
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-prod:5432/event_ticket_prod
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-prod
+    networks:
+      - event-ticket-network
+
+volumes:
+  postgres_test_data:
+  postgres_prod_data:
+
+networks:
+  event-ticket-network:
+    driver: bridge

@@ -1,0 +1,10 @@
+CREATE TABLE fee_policies (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    organizer_commission_rate DECIMAL(5,4) NOT NULL DEFAULT 0,
+    customer_fee_rate DECIMAL(5,4) NOT NULL DEFAULT 0,
+    customer_flat_fee BIGINT NOT NULL DEFAULT 0,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
