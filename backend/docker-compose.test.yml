@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: event-ticket-postgres-test
+    environment:
+      POSTGRES_DB: event_ticket_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - event-ticket-network
+
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event-ticket-app-test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-test:5432/event_ticket_test
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: mSZzfEFQlQu5uqQrQFE6GRT9xzPzfJa3/rv5/prak1I=
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-test
+    networks:
+      - event-ticket-network
+
+volumes:
+  postgres_test_data:
+
+networks:
+  event-ticket-network:
+    driver: bridge
