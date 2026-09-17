@@ -1,0 +1,24 @@
+package com.trungpd.eventticketplatform.events.dto.response;
+
+import com.trungpd.eventticketplatform.events.entity.EventStatus;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.Instant;
+
+@Data
+@Builder
+public class EventResponse {
+
+    private Long id;
+    private String title;
+    private String description;
+    private String location;
+    private Instant startTime;
+    private Instant endTime;
+    private String coverImageUrl;
+    private EventStatus status;
+    private Long organizerId;
+    private Long feePolicyId;
+
+}
