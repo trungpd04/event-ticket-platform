@@ -14,5 +14,9 @@ public class UpdateEventRequest {
     private Instant endTime;
     private String coverImageUrl;
     private Long feePolicyId;
+    private Long categoryId;
+    private Long provinceId;
+    private Instant ticketSaleStartTime;
+    private Instant ticketSaleEndTime;
 
 }

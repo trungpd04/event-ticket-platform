@@ -20,5 +20,9 @@ public class EventResponse {
     private EventStatus status;
     private Long organizerId;
     private Long feePolicyId;
+    private CategoryResponse category;
+    private ProvinceResponse province;
+    private Instant ticketSaleStartTime;
+    private Instant ticketSaleEndTime;
 
 }

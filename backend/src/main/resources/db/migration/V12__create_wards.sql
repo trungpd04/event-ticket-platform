@@ -1,0 +1,11 @@
+CREATE TABLE wards (
+    id BIGSERIAL PRIMARY KEY,
+    ward_code VARCHAR(6) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    province_id BIGINT NOT NULL REFERENCES provinces(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_wards_province_id ON wards(province_id);
+

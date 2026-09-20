@@ -39,6 +39,18 @@ public class Event extends BaseEntity {
     @Column(name = "cover_image_url", length = 500)
     private String coverImageUrl;
 
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Column(name = "province_id")
+    private Long provinceId;
+
+    @Column(name = "ticket_sale_start_time")
+    private Instant ticketSaleStartTime;
+
+    @Column(name = "ticket_sale_end_time")
+    private Instant ticketSaleEndTime;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private EventStatus status;

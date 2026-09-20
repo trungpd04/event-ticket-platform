@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/events", "/api/v1/events/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/provinces", "/api/v1/provinces/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

@@ -14,8 +14,12 @@ import org.mapstruct.BeanMapping;
 @Mapper(componentModel = "spring")
 public interface EventMapper {
 
+    @Mapping(target = "category.id", source = "categoryId")
+    @Mapping(target = "province.id", source = "provinceId")
     EventResponse toResponse(Event event);
 
+    @Mapping(target = "category.id", source = "categoryId")
+    @Mapping(target = "province.id", source = "provinceId")
     EventDetailResponse toDetailResponse(Event event);
 
     @Mapping(target = "id", ignore = true)

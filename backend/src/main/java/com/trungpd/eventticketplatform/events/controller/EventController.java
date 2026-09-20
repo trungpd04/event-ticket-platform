@@ -7,6 +7,7 @@ import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
+import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import com.trungpd.eventticketplatform.events.service.EventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,15 +44,19 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> searchEvents(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String title,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant toDate,
             @RequestParam(defaultValue = "PUBLISHED") EventStatus status,
+            @RequestParam(required = false) TimeFilter timeFilter,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long provinceId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        PagedResponse<EventResponse> response = eventService.searchEvents(keyword, location, fromDate, toDate, status, pageable);
+        PagedResponse<EventResponse> response = eventService.searchEvents(
+                title, location, fromDate, toDate, status, timeFilter, categoryId, provinceId, pageable);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

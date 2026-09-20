@@ -28,4 +28,16 @@ public class CreateEventRequest {
     @NotNull(message = "{error.validation.fee-policy-required}")
     private Long feePolicyId;
 
+    @NotNull(message = "{error.validation.category-required}")
+    private Long categoryId;
+
+    @NotNull(message = "{error.validation.province-required}")
+    private Long provinceId;
+
+    @NotNull(message = "{error.validation.ticket-sale-start-required}")
+    private Instant ticketSaleStartTime;
+
+    @NotNull(message = "{error.validation.ticket-sale-end-required}")
+    private Instant ticketSaleEndTime;
+
 }
