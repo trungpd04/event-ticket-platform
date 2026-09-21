@@ -197,6 +197,11 @@ public class EventService {
         validateHasTicketTypes(id);
         ticketService.preAllocateTickets(id);
 
+        FeePolicy feePolicy = feePolicyService.findActiveById(event.getFeePolicyId());
+        event.setOrganizerCommissionRateSnapshot(feePolicy.getOrganizerCommissionRate());
+        event.setCustomerFeeRateSnapshot(feePolicy.getCustomerFeeRate());
+        event.setCustomerFlatFeeSnapshot(feePolicy.getCustomerFlatFee());
+
         event.setStatus(EventStatus.PUBLISHED);
         Event updated = eventRepository.save(event);
         return enrichEventResponse(eventMapper.toResponse(updated));

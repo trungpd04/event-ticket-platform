@@ -16,10 +16,16 @@ public interface EventMapper {
 
     @Mapping(target = "category.id", source = "categoryId")
     @Mapping(target = "province.id", source = "provinceId")
+    @Mapping(target = "feePolicySnapshot.organizerCommissionRate", source = "organizerCommissionRateSnapshot")
+    @Mapping(target = "feePolicySnapshot.customerFeeRate", source = "customerFeeRateSnapshot")
+    @Mapping(target = "feePolicySnapshot.customerFlatFee", source = "customerFlatFeeSnapshot")
     EventResponse toResponse(Event event);
 
     @Mapping(target = "category.id", source = "categoryId")
     @Mapping(target = "province.id", source = "provinceId")
+    @Mapping(target = "feePolicySnapshot.organizerCommissionRate", source = "organizerCommissionRateSnapshot")
+    @Mapping(target = "feePolicySnapshot.customerFeeRate", source = "customerFeeRateSnapshot")
+    @Mapping(target = "feePolicySnapshot.customerFlatFee", source = "customerFlatFeeSnapshot")
     EventDetailResponse toDetailResponse(Event event);
 
     @Mapping(target = "id", ignore = true)

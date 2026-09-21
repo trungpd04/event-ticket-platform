@@ -26,6 +26,7 @@ public class EventDetailResponse {
     private ProvinceResponse province;
     private Instant ticketSaleStartTime;
     private Instant ticketSaleEndTime;
+    private FeePolicySnapshotResponse feePolicySnapshot;
     private List<TicketTypeResponse> ticketTypes;
     private List<PromotionResponse> activePromotions;
 

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -50,6 +51,15 @@ public class Event extends BaseEntity {
 
     @Column(name = "ticket_sale_end_time")
     private Instant ticketSaleEndTime;
+
+    @Column(name = "organizer_commission_rate_snapshot", precision = 5, scale = 4)
+    private BigDecimal organizerCommissionRateSnapshot;
+
+    @Column(name = "customer_fee_rate_snapshot", precision = 5, scale = 4)
+    private BigDecimal customerFeeRateSnapshot;
+
+    @Column(name = "customer_flat_fee_snapshot")
+    private Long customerFlatFeeSnapshot;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
