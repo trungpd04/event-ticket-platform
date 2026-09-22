@@ -25,9 +25,6 @@ public class CreateEventRequest {
 
     private String coverImageUrl;
 
-    @NotNull(message = "{error.validation.fee-policy-required}")
-    private Long feePolicyId;
-
     @NotNull(message = "{error.validation.category-required}")
     private Long categoryId;
 

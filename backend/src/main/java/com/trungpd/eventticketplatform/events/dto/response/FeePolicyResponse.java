@@ -15,5 +15,6 @@ public class FeePolicyResponse {
     private BigDecimal customerFeeRate;
     private Long customerFlatFee;
     private Boolean isActive;
+    private Boolean isDefault;
 
 }

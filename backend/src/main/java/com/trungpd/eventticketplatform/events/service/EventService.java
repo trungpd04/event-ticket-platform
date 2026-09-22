@@ -5,6 +5,7 @@ import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.common.mapper.PaginationMapper;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
+import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
@@ -71,13 +72,13 @@ public class EventService {
                 request.getStartTime()
         );
 
-        FeePolicy feePolicy = feePolicyService.findActiveById(request.getFeePolicyId());
+        FeePolicy defaultFeePolicy = feePolicyService.findDefaultActivePolicy();
         categoryService.findActiveById(request.getCategoryId());
         provinceService.findById(request.getProvinceId());
 
         Event event = eventMapper.toEntity(request);
         event.setOrganizerId(user.getId());
-        event.setFeePolicyId(feePolicy.getId());
+        event.setFeePolicyId(defaultFeePolicy.getId());
         event.setStatus(EventStatus.PENDING);
 
         Event saved = eventRepository.save(event);
@@ -160,10 +161,6 @@ public class EventService {
 
         eventMapper.updateEntityFromRequest(request, event);
 
-        if (request.getFeePolicyId() != null) {
-            FeePolicy feePolicy = feePolicyService.findActiveById(request.getFeePolicyId());
-            event.setFeePolicyId(feePolicy.getId());
-        }
         if (request.getCategoryId() != null) {
             categoryService.findActiveById(request.getCategoryId());
         }
@@ -183,6 +180,22 @@ public class EventService {
         validateEventOwnership(event, user.getId());
         validateEventEditable(event);
         validateHasTicketTypes(id);
+    }
+
+    @CacheEvict(value = "events", key = "#id")
+    @Transactional
+    public EventResponse updateEventFeePolicy(Long id, UpdateEventFeePolicyRequest request) {
+        Event event = findEventById(id);
+
+        if (event.getStatus() != EventStatus.PENDING) {
+            throw new BusinessException("error.event.not-editable");
+        }
+
+        FeePolicy feePolicy = feePolicyService.findActiveById(request.getFeePolicyId());
+        event.setFeePolicyId(feePolicy.getId());
+
+        Event updated = eventRepository.save(event);
+        return enrichEventResponse(eventMapper.toResponse(updated));
     }
 
     @CacheEvict(value = "events", key = "#id")

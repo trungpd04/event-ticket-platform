@@ -32,4 +32,7 @@ public class FeePolicy extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @Column(name = "is_default", nullable = false)
+    private Boolean isDefault;
+
 }

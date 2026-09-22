@@ -1,15 +1,19 @@
 package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
+import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.service.EventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminEventController {
 
     private final EventService eventService;
+
+    @PutMapping("/{id}/fee-policy")
+    public ResponseEntity<ApiResponse<EventResponse>> updateEventFeePolicy(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateEventFeePolicyRequest request) {
+        EventResponse response = eventService.updateEventFeePolicy(id, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 
     @PostMapping("/{id}/publish")
     public ResponseEntity<ApiResponse<EventResponse>> publishEvent(@PathVariable Long id) {

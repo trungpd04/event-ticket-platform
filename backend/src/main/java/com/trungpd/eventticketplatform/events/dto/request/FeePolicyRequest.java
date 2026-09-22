@@ -24,4 +24,7 @@ public class FeePolicyRequest {
     @NotNull(message = "{error.validation.is-active-required}")
     private Boolean isActive;
 
+    @NotNull(message = "{error.validation.is-default-required}")
+    private Boolean isDefault;
+
 }

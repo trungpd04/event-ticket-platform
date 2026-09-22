@@ -14,4 +14,8 @@ public interface FeePolicyRepository extends JpaRepository<FeePolicy, Long> {
 
     Optional<FeePolicy> findByIdAndIsActiveTrue(Long id);
 
+    Optional<FeePolicy> findByIsDefaultTrue();
+
+    Optional<FeePolicy> findByIsDefaultTrueAndIsActiveTrue();
+
 }

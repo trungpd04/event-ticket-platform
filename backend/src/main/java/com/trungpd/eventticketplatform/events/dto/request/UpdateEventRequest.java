@@ -13,7 +13,6 @@ public class UpdateEventRequest {
     private Instant startTime;
     private Instant endTime;
     private String coverImageUrl;
-    private Long feePolicyId;
     private Long categoryId;
     private Long provinceId;
     private Instant ticketSaleStartTime;
