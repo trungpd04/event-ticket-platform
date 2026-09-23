@@ -5,6 +5,8 @@ import com.trungpd.eventticketplatform.identity.entity.UserStatus;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class UserResponse {
@@ -13,7 +15,7 @@ public class UserResponse {
     private String email;
     private String fullName;
     private String phone;
-    private Role role;
+    private Set<Role> roles;
     private UserStatus status;
 
 }

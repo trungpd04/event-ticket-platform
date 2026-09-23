@@ -18,6 +18,7 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     User toEntity(RegisterRequest request);
 
     UserResponse toResponse(User user);
@@ -27,7 +28,7 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
-    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(UpdateProfileRequest request, @MappingTarget User user);

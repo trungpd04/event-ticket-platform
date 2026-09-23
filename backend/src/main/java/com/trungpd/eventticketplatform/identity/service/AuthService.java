@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -35,13 +38,10 @@ public class AuthService {
             throw new BusinessException("error.user.email-exists");
         }
 
-        if (request.getRole() == Role.ADMIN || request.getRole() == Role.CHECKER) {
-            throw new BusinessException("error.user.invalid-role");
-        }
-
         User user = userMapper.toEntity(request);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
+        user.setRoles(Set.of(Role.CUSTOMER, Role.ORGANIZER));
 
         User savedUser = userRepository.save(user);
         return userMapper.toResponse(savedUser);
@@ -75,7 +75,7 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException("error.auth.invalid-token"));
 
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), extractRoleNames(user));
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
@@ -111,7 +111,7 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), extractRoleNames(user));
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 
         return AuthResponse.builder()
@@ -120,6 +120,12 @@ public class AuthService {
                 .tokenType("Bearer")
                 .expiresIn(jwtUtil.getAccessTokenExpiration())
                 .build();
+    }
+
+    private Set<String> extractRoleNames(User user) {
+        return user.getRoles().stream()
+                .map(Role::name)
+                .collect(Collectors.toSet());
     }
 
 }

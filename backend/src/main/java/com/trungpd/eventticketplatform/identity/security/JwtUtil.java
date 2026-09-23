@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -26,15 +29,15 @@ public class JwtUtil {
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public String generateAccessToken(String email, String role) {
-        return buildToken(email, role, accessTokenExpiration);
+    public String generateAccessToken(String email, Collection<String> roles) {
+        return buildToken(email, roles, accessTokenExpiration);
     }
 
     public String generateRefreshToken(String email) {
-        return buildToken(email, null, refreshTokenExpiration);
+        return buildToken(email, Collections.emptyList(), refreshTokenExpiration);
     }
 
-    private String buildToken(String email, String role, long expiration) {
+    private String buildToken(String email, Collection<String> roles, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
@@ -42,11 +45,8 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(now)
                 .expiration(expiryDate)
+                .claim("roles", roles)
                 .signWith(secretKey);
-
-        if (role != null) {
-            builder.claim("role", role);
-        }
 
         return builder.compact();
     }
@@ -63,8 +63,9 @@ public class JwtUtil {
         return extractClaims(token).getSubject();
     }
 
-    public String extractRole(String token) {
-        return extractClaims(token).get("role", String.class);
+    @SuppressWarnings("unchecked")
+    public List<String> extractRoles(String token) {
+        return extractClaims(token).get("roles", List.class);
     }
 
     public boolean isTokenValid(String token) {

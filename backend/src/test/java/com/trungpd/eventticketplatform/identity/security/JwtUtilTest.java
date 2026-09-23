@@ -3,6 +3,9 @@ package com.trungpd.eventticketplatform.identity.security;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JwtUtilTest {
@@ -16,12 +19,12 @@ class JwtUtilTest {
 
     @Test
     void shouldGenerateAndValidateAccessToken() {
-        String token = jwtUtil.generateAccessToken("test@example.com", "CUSTOMER");
+        String token = jwtUtil.generateAccessToken("test@example.com", Set.of("CUSTOMER", "ORGANIZER"));
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
         assertThat(jwtUtil.extractEmail(token)).isEqualTo("test@example.com");
-        assertThat(jwtUtil.extractRole(token)).isEqualTo("CUSTOMER");
+        assertThat(jwtUtil.extractRoles(token)).containsExactlyInAnyOrder("CUSTOMER", "ORGANIZER");
     }
 
     @Test
@@ -31,7 +34,7 @@ class JwtUtilTest {
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
         assertThat(jwtUtil.extractEmail(token)).isEqualTo("test@example.com");
-        assertThat(jwtUtil.extractRole(token)).isNull();
+        assertThat(jwtUtil.extractRoles(token)).isEmpty();
     }
 
     @Test

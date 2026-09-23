@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Set;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -52,7 +54,7 @@ public class AdminSeeder implements CommandLineRunner {
         admin.setEmail(adminEmail);
         admin.setPasswordHash(passwordEncoder.encode(adminPassword));
         admin.setFullName(adminFullName);
-        admin.setRole(Role.ADMIN);
+        admin.setRoles(Set.of(Role.ADMIN));
         admin.setStatus(UserStatus.ACTIVE);
 
         userRepository.save(admin);

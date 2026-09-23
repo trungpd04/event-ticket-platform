@@ -1,9 +1,7 @@
 package com.trungpd.eventticketplatform.identity.dto.request;
 
-import com.trungpd.eventticketplatform.identity.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -22,8 +20,5 @@ public class RegisterRequest {
     private String fullName;
 
     private String phone;
-
-    @NotNull(message = "{error.validation.role-required}")
-    private Role role;
 
 }
