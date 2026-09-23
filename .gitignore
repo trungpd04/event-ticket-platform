@@ -1,0 +1,15 @@
+# OpenCode
+AGENTS.md
+
+# IntelliJ
+.idea/
+
+# Node
+node_modules/
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
