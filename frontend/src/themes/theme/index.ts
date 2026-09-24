@@ -8,6 +8,7 @@ import Theme5 from './theme5';
 import Theme6 from './theme6';
 import Theme7 from './theme7';
 import Theme8 from './theme8';
+import EventTheme from './theme-event';
 import { ThemeMode } from 'config';
 
 // types
@@ -34,6 +35,8 @@ const Theme = (presetColor: PresetColor, mode: ThemeMode): PaletteThemeProps => 
       return Theme7(mode);
     case 'theme8':
       return Theme8(mode);
+    case 'event':
+      return EventTheme(mode);
     default:
       return Default(mode);
   }

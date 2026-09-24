@@ -1,80 +1,83 @@
-import { useState, SyntheticEvent } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { preload } from 'swr';
 
 // material-ui
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import CardMedia from '@mui/material/CardMedia';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // third-party
-import * as Yup from 'yup';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // project-imports
-import AnimateButton from 'components/@extended/AnimateButton';
+import AuthCheckbox from 'components/auth/AuthCheckbox';
+import AuthDivider from 'components/auth/AuthDivider';
+import AuthInput from 'components/auth/AuthInput';
+import AuthSocialButton from 'components/auth/AuthSocialButton';
+import AuthToggle from 'components/auth/AuthToggle';
+import EventButton from 'components/event/EventButton';
 import IconButton from 'components/@extended/IconButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
-import { fetcher } from 'utils/axios';
 
 // assets
-import { Eye, EyeSlash } from 'iconsax-reactjs';
+import { Eye, EyeSlash, Lock, Sms } from 'iconsax-reactjs';
+import imgApple from 'assets/images/auth/apple.svg';
+import imgFacebook from 'assets/images/auth/facebook.svg';
+import imgGoogle from 'assets/images/auth/google.svg';
 
-// ============================|| JWT - LOGIN ||============================ //
+// ============================|| AUTH - LOGIN ||============================ //
 
-export default function AuthLogin({ forgot }: { forgot?: string }) {
-  const [checked, setChecked] = useState(false);
-
-  const { isLoggedIn, login } = useAuth();
+export default function AuthLogin() {
+  const { login } = useAuth();
   const scriptedRef = useScriptRef();
 
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: SyntheticEvent) => {
-    event.preventDefault();
-  };
+  const [remember, setRemember] = useState(false);
 
   return (
     <>
+      <Stack spacing={1.5} alignItems="center" textAlign="center">
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "'Lobster', cursive, sans-serif",
+            fontSize: '2.25rem',
+            color: '#FFFFFF'
+          }}
+        >
+          Event
+        </Typography>
+        <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
+          Please enter your email to login
+        </Typography>
+      </Stack>
+
+      <AuthToggle />
+
       <Formik
-        initialValues={{
-          email: 'info@phoenixcoded.co',
-          password: '123456',
-          submit: null
-        }}
+        initialValues={{ email: '', password: '', submit: null }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string()
-            .required('Password is required')
-            .test('no-leading-trailing-whitespace', 'Password can not start or end with spaces', (value) => value === value.trim())
-            .max(10, 'Password must be less than 10 characters')
+          password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const trimmedEmail = values.email.trim();
-            await login(trimmedEmail, values.password);
+            await login(values.email.trim(), values.password);
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
-              preload('api/menu/dashboard', fetcher); // load menu on login success
             }
           } catch (err: any) {
-            console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              setErrors({ submit: err.message || 'Login failed' });
               setSubmitting(false);
             }
           }
@@ -84,79 +87,66 @@ export default function AuthLogin({ forgot }: { forgot?: string }) {
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
-                  <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address"
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                  />
-                </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
-                  </FormHelperText>
-                )}
+                <AuthInput
+                  id="email-login"
+                  name="email"
+                  type="email"
+                  label="Email"
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Sms size={24} color="#999" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="-password-login"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    endAdornment={
+                <AuthInput
+                  id="password-login"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  label="Password"
+                  value={values.password}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.password && errors.password)}
+                  helperText={touched.password && errors.password}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock size={24} color="#999" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
-                        >
-                          {showPassword ? <Eye /> : <EyeSlash />}
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" color="secondary">
+                          {showPassword ? <Eye size={24} color="#999" /> : <EyeSlash size={24} color="#999" />}
                         </IconButton>
                       </InputAdornment>
-                    }
-                    placeholder="Enter password"
-                  />
-                </Stack>
-                {touched.password && errors.password && (
-                  <FormHelperText error id="standard-weight-helper-text-password-login">
-                    {errors.password}
-                  </FormHelperText>
-                )}
+                    )
+                  }}
+                />
               </Grid>
-
-              <Grid sx={{ mt: -1 }} size={12}>
-                <Stack direction="row" sx={{ gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+              <Grid size={12}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) => setChecked(event.target.checked)}
-                        name="checked"
-                        color="primary"
-                        size="small"
-                      />
-                    }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    control={<AuthCheckbox checked={remember} onChange={(e) => setRemember(e.target.checked)} />}
+                    label={<Typography sx={{ color: '#FFFFFF', fontSize: '0.875rem' }}>Remember me</Typography>}
                   />
-
-                  <Link variant="h6" component={RouterLink} to={isLoggedIn && forgot ? forgot : '/forgot-password'} color="text.primary">
+                  <Typography
+                    component={RouterLink}
+                    to="/forgot-password"
+                    variant="body2"
+                    sx={{ color: '#999', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+                  >
                     Forgot Password?
-                  </Link>
+                  </Typography>
                 </Stack>
               </Grid>
               {errors.submit && (
@@ -165,16 +155,36 @@ export default function AuthLogin({ forgot }: { forgot?: string }) {
                 </Grid>
               )}
               <Grid size={12}>
-                <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
-                  </Button>
-                </AnimateButton>
+                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                  Log in
+                </EventButton>
+              </Grid>
+              <Grid size={12} sx={{ textAlign: 'center' }}>
+                <Typography variant="body2" sx={{ color: '#999' }}>
+                  New to Event?{' '}
+                  <Typography
+                    component={RouterLink}
+                    to="/register"
+                    variant="body2"
+                    sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
+                  >
+                    Create account
+                  </Typography>
+                </Typography>
               </Grid>
             </Grid>
           </form>
         )}
       </Formik>
+
+      <Box sx={{ width: '100%' }}>
+        <AuthDivider />
+        <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
+          <AuthSocialButton icon={<CardMedia component="img" src={imgApple} alt="Apple" sx={{ width: 24, height: 24 }} />} />
+          <AuthSocialButton icon={<CardMedia component="img" src={imgGoogle} alt="Google" sx={{ width: 24, height: 24 }} />} />
+          <AuthSocialButton icon={<CardMedia component="img" src={imgFacebook} alt="Facebook" sx={{ width: 24, height: 24 }} />} />
+        </Stack>
+      </Box>
     </>
   );
 }

@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 
 // third-party
-import { Chance } from 'chance';
 import { jwtDecode } from 'jwt-decode';
 
 // reducer - state management
@@ -10,13 +9,11 @@ import authReducer from 'contexts/auth-reducer/auth';
 
 // project-imports
 import Loader from 'components/Loader';
-import axios from 'utils/axios';
+import axios, { redirectWithBasePath } from 'utils/axios';
 
 // types
 import { AuthProps, JWTContextType } from 'types/auth';
 import { KeyedObject } from 'types/root';
-
-const chance = new Chance();
 
 // constant
 const initialState: AuthProps = {
@@ -25,24 +22,30 @@ const initialState: AuthProps = {
   user: null
 };
 
+const ACCESS_TOKEN_KEY = 'serviceToken';
+const REFRESH_TOKEN_KEY = 'refreshToken';
+
 const verifyToken: (st: string) => boolean = (serviceToken) => {
   if (!serviceToken) {
     return false;
   }
   const decoded: KeyedObject = jwtDecode(serviceToken);
-  /**
-   * Property 'exp' does not exist on type '<T = unknown>(token: string, options?: JwtDecodeOptions | undefined) => T'.
-   */
   return decoded.exp > Date.now() / 1000;
 };
 
-const setSession = (serviceToken?: string | null) => {
-  if (serviceToken) {
-    localStorage.setItem('serviceToken', serviceToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+const setSession = (accessToken?: string | null, refreshToken?: string | null) => {
+  if (accessToken) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
-    localStorage.removeItem('serviceToken');
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
     delete axios.defaults.headers.common.Authorization;
+  }
+
+  if (refreshToken) {
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  } else if (accessToken === null) {
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
   }
 };
 
@@ -56,11 +59,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   useEffect(() => {
     const init = async () => {
       try {
-        const serviceToken = window.localStorage.getItem('serviceToken');
-        if (serviceToken && verifyToken(serviceToken)) {
-          setSession(serviceToken);
-          const response = await axios.get('/api/account/me');
-          const { user } = response.data;
+        const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
+        if (accessToken && verifyToken(accessToken)) {
+          setSession(accessToken);
+          const response = await axios.get('/api/v1/users/me');
+          const user = response.data;
           dispatch({
             type: LOGIN,
             payload: {
@@ -69,15 +72,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
             }
           });
         } else {
-          dispatch({
-            type: LOGOUT
-          });
+          dispatch({ type: LOGOUT });
         }
       } catch (err) {
         console.error(err);
-        dispatch({
-          type: LOGOUT
-        });
+        dispatch({ type: LOGOUT });
       }
     };
 
@@ -85,9 +84,13 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/account/login', { email, password });
-    const { serviceToken, user } = response.data;
-    setSession(serviceToken);
+    const response = await axios.post('/api/v1/auth/login', { email, password });
+    const { accessToken, refreshToken } = response.data;
+    setSession(accessToken, refreshToken);
+
+    const userResponse = await axios.get('/api/v1/users/me');
+    const user = userResponse.data;
+
     dispatch({
       type: LOGIN,
       payload: {
@@ -95,43 +98,43 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         user
       }
     });
+
+    if (user.roles?.includes('ADMIN')) {
+      redirectWithBasePath('/sample-page');
+    } else {
+      redirectWithBasePath('/');
+    }
   };
 
-  const register = async (email: string, password: string, firstName: string, lastName: string) => {
-    // todo: this flow need to be recode as it not verified
-    const id = chance.bb_pin();
-    const response = await axios.post('/api/account/register', {
-      id,
+  const register = async (email: string, password: string, fullName: string, phone?: string) => {
+    await axios.post('/api/v1/auth/register', {
       email,
       password,
-      firstName,
-      lastName
+      fullName,
+      phone
     });
-    let users = response.data;
+  };
 
-    if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-      const localUsers = window.localStorage.getItem('users');
-      users = [
-        ...JSON.parse(localUsers!),
-        {
-          id,
-          email,
-          password,
-          name: `${firstName} ${lastName}`
-        }
-      ];
-    }
+  const forgotPassword = async (email: string) => {
+    await axios.post('/api/v1/auth/forgot-password', { email });
+  };
 
-    window.localStorage.setItem('users', JSON.stringify(users));
+  const verifyOtp = async (email: string, code: string, type: string) => {
+    await axios.post('/api/v1/auth/verify-otp', { email, code, type });
+  };
+
+  const resetPassword = async (email: string, code: string, newPassword: string) => {
+    await axios.post('/api/v1/auth/reset-password', { email, code, newPassword });
   };
 
   const logout = () => {
-    setSession(null);
+    setSession(null, null);
     dispatch({ type: LOGOUT });
+    redirectWithBasePath('/');
   };
 
-  const resetPassword = async (email: string) => {
-    console.log('email - ', email);
+  const hasRole = (role: string) => {
+    return state.user?.roles?.includes(role) ?? false;
   };
 
   const updateProfile = () => {};
@@ -140,7 +143,23 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     return <Loader />;
   }
 
-  return <JWTContext value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext>;
+  return (
+    <JWTContext
+      value={{
+        ...state,
+        login,
+        logout,
+        register,
+        forgotPassword,
+        verifyOtp,
+        resetPassword,
+        hasRole,
+        updateProfile
+      }}
+    >
+      {children}
+    </JWTContext>
+  );
 };
 
 export default JWTContext;

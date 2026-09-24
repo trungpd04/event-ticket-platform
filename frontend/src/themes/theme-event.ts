@@ -1,15 +1,15 @@
 import { createTheme } from '@mui/material/styles';
 
 // ==============================|| EVENT THEME ||============================== //
-// Public site theme tokens extracted from the Figma Event designs.
+// Public site theme tokens extracted from the Figma Event style guide.
 
 export const eventTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#6C5DD3',
-      light: '#867BF3',
-      dark: '#5549B8',
+      main: '#C14FE6',
+      light: '#D580F2',
+      dark: '#A62FCA',
       contrastText: '#FFFFFF'
     },
     secondary: {
@@ -23,13 +23,17 @@ export const eventTheme = createTheme({
       paper: '#FFFFFF'
     },
     text: {
-      primary: '#11142D',
+      primary: '#242424',
       secondary: '#808191'
     },
-    divider: '#E4E4E4'
+    divider: '#E4E4E4',
+    error: { main: '#F44336' },
+    success: { main: '#4CAF50' },
+    warning: { main: '#FF9800' },
+    info: { main: '#2196F3' }
   },
   typography: {
-    fontFamily: `"Inter", "Public Sans", sans-serif`,
+    fontFamily: `"Inter", sans-serif`,
     h1: {
       fontWeight: 700,
       fontSize: '3rem',
@@ -57,7 +61,7 @@ export const eventTheme = createTheme({
     }
   },
   shape: {
-    borderRadius: 12
+    borderRadius: 16
   }
 });
 

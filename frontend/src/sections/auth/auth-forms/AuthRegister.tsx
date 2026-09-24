@@ -1,18 +1,15 @@
-import { useEffect, useState, SyntheticEvent } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
+import Box from '@mui/material/Box';
+import CardMedia from '@mui/material/CardMedia';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // third-party
 import { Formik } from 'formik';
@@ -20,69 +17,67 @@ import * as Yup from 'yup';
 
 // project-imports
 import { openSnackbar } from 'api/snackbar';
+import AuthCheckbox from 'components/auth/AuthCheckbox';
+import AuthDivider from 'components/auth/AuthDivider';
+import AuthInput from 'components/auth/AuthInput';
+import AuthSocialButton from 'components/auth/AuthSocialButton';
+import AuthToggle from 'components/auth/AuthToggle';
+import EventButton from 'components/event/EventButton';
 import IconButton from 'components/@extended/IconButton';
-import AnimateButton from 'components/@extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // types
-import { StringColorProps } from 'types/password';
 import { SnackbarProps } from 'types/snackbar';
 
 // assets
-import { Eye, EyeSlash } from 'iconsax-reactjs';
+import { Eye, EyeSlash, Lock, Sms, User } from 'iconsax-reactjs';
+import imgApple from 'assets/images/auth/apple.svg';
+import imgFacebook from 'assets/images/auth/facebook.svg';
+import imgGoogle from 'assets/images/auth/google.svg';
 
-// ============================|| JWT - REGISTER ||============================ //
+// ============================|| AUTH - REGISTER ||============================ //
 
 export default function AuthRegister() {
   const { register } = useAuth();
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
 
-  const [level, setLevel] = useState<StringColorProps>();
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: SyntheticEvent) => {
-    event.preventDefault();
-  };
-
-  const changePassword = (value: string) => {
-    const temp = strengthIndicator(value);
-    setLevel(strengthColor(temp));
-  };
-
-  useEffect(() => {
-    changePassword('');
-  }, []);
+  const [agree, setAgree] = useState(false);
 
   return (
     <>
+      <Stack spacing={1.5} alignItems="center" textAlign="center">
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "'Lobster', cursive, sans-serif",
+            fontSize: '2.25rem',
+            color: '#FFFFFF'
+          }}
+        >
+          Event
+        </Typography>
+        <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
+          Create your account to get started
+        </Typography>
+      </Stack>
+
+      <AuthToggle />
+
       <Formik
-        initialValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
-          company: '',
-          password: '',
-          submit: null
-        }}
+        initialValues={{ firstName: '', lastName: '', email: '', password: '', submit: null }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('First Name is required'),
-          lastname: Yup.string().max(255).required('Last Name is required'),
+          firstName: Yup.string().max(255).required('First Name is required'),
+          lastName: Yup.string().max(255).required('Last Name is required'),
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string()
-            .required('Password is required')
-            .test('no-leading-trailing-whitespace', 'Password can not start or end with spaces', (value) => value === value.trim())
-            .max(10, 'Password must be less than 10 characters')
+          password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const trimmedEmail = values.email.trim();
-            await register(trimmedEmail, values.password, values.firstname, values.lastname);
+            const fullName = `${values.firstName} ${values.lastName}`.trim();
+            await register(values.email.trim(), values.password, fullName);
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
@@ -90,20 +85,14 @@ export default function AuthRegister() {
                 open: true,
                 message: 'Your registration has been successfully completed.',
                 variant: 'alert',
-                alert: {
-                  color: 'success'
-                }
+                alert: { color: 'success' }
               } as SnackbarProps);
-
-              setTimeout(() => {
-                navigate('/login', { replace: true });
-              }, 1500);
+              setTimeout(() => navigate('/login', { replace: true }), 1500);
             }
           } catch (err: any) {
-            console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              setErrors({ submit: err.message || 'Registration failed' });
               setSubmitting(false);
             }
           }
@@ -113,148 +102,106 @@ export default function AuthRegister() {
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
-                  <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="John"
-                    fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
-                  />
-                </Stack>
-                {touched.firstname && errors.firstname && (
-                  <FormHelperText error id="helper-text-firstname-signup">
-                    {errors.firstname}
-                  </FormHelperText>
-                )}
+                <AuthInput
+                  id="firstname-signup"
+                  name="firstName"
+                  label="First Name"
+                  value={values.firstName}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.firstName && errors.firstName)}
+                  helperText={touched.firstName && errors.firstName}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <User size={24} color="#999" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                  />
-                </Stack>
-                {touched.lastname && errors.lastname && (
-                  <FormHelperText error id="helper-text-lastname-signup">
-                    {errors.lastname}
-                  </FormHelperText>
-                )}
+                <AuthInput
+                  id="lastname-signup"
+                  name="lastName"
+                  label="Last Name"
+                  value={values.lastName}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.lastName && errors.lastName)}
+                  helperText={touched.lastName && errors.lastName}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <User size={24} color="#999" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="company-signup">Company</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="company"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Demo Inc."
-                  />
-                </Stack>
-                {touched.company && errors.company && (
-                  <FormHelperText error id="helper-text-company-signup">
-                    {errors.company}
-                  </FormHelperText>
-                )}
+                <AuthInput
+                  id="email-signup"
+                  name="email"
+                  type="email"
+                  label="Email"
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Sms size={24} color="#999" />
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="demo@company.com"
-                  />
-                </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="helper-text-email-signup">
-                    {errors.email}
-                  </FormHelperText>
-                )}
-              </Grid>
-              <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="password-signup">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="password-signup"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={(e) => {
-                      handleChange(e);
-                      changePassword(e.target.value);
-                    }}
-                    endAdornment={
+                <AuthInput
+                  id="password-signup"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  label="Password"
+                  value={values.password}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.password && errors.password)}
+                  helperText={touched.password && errors.password}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock size={24} color="#999" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
-                        >
-                          {showPassword ? <Eye /> : <EyeSlash />}
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" color="secondary">
+                          {showPassword ? <Eye size={24} color="#999" /> : <EyeSlash size={24} color="#999" />}
                         </IconButton>
                       </InputAdornment>
-                    }
-                    placeholder="******"
-                  />
-                </Stack>
-                {touched.password && errors.password && (
-                  <FormHelperText error id="helper-text-password-signup">
-                    {errors.password}
-                  </FormHelperText>
-                )}
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                  <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-                    <Grid>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid>
-                      <Typography variant="subtitle1" sx={{ fontSize: '0.75rem' }}>
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </FormControl>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
+                <FormControlLabel
+                  control={<AuthCheckbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
+                  label={
+                    <Typography sx={{ color: '#FFFFFF', fontSize: '0.875rem' }}>
+                      I agree to the{' '}
+                      <Typography component={RouterLink} to="#" sx={{ color: 'primary.main', textDecoration: 'none' }}>
+                        Terms of Service
+                      </Typography>{' '}
+                      and{' '}
+                      <Typography component={RouterLink} to="#" sx={{ color: 'primary.main', textDecoration: 'none' }}>
+                        Privacy Policy
+                      </Typography>
+                    </Typography>
+                  }
+                />
               </Grid>
               {errors.submit && (
                 <Grid size={12}>
@@ -262,16 +209,36 @@ export default function AuthRegister() {
                 </Grid>
               )}
               <Grid size={12}>
-                <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Create Account
-                  </Button>
-                </AnimateButton>
+                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                  Create account
+                </EventButton>
+              </Grid>
+              <Grid size={12} sx={{ textAlign: 'center' }}>
+                <Typography variant="body2" sx={{ color: '#999' }}>
+                  Already have an account?{' '}
+                  <Typography
+                    component={RouterLink}
+                    to="/login"
+                    variant="body2"
+                    sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
+                  >
+                    Log in
+                  </Typography>
+                </Typography>
               </Grid>
             </Grid>
           </form>
         )}
       </Formik>
+
+      <Box sx={{ width: '100%' }}>
+        <AuthDivider />
+        <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
+          <AuthSocialButton icon={<CardMedia component="img" src={imgApple} alt="Apple" sx={{ width: 24, height: 24 }} />} />
+          <AuthSocialButton icon={<CardMedia component="img" src={imgGoogle} alt="Google" sx={{ width: 24, height: 24 }} />} />
+          <AuthSocialButton icon={<CardMedia component="img" src={imgFacebook} alt="Facebook" sx={{ width: 24, height: 24 }} />} />
+        </Stack>
+      </Box>
     </>
   );
 }

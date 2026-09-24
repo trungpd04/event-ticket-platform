@@ -1,11 +1,11 @@
-import { forwardRef } from 'react';
+import { forwardRef, ElementType } from 'react';
 
 // material-ui
 import Button, { ButtonProps } from '@mui/material/Button';
 
 // ==============================|| EVENT BUTTON ||============================== //
 
-const EventButton = forwardRef<HTMLButtonElement, ButtonProps>(({ children, sx, ...others }, ref) => (
+const EventButton = forwardRef<HTMLButtonElement, ButtonProps<ElementType>>(({ children, sx, ...others }, ref) => (
   <Button
     ref={ref}
     disableElevation

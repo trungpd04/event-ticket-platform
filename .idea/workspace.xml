@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="add git ignore">
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="add cors api config, add global theme, auth fe feature">
+      <change afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/apple.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthCheckbox.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthDivider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthInput.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthSocialButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthToggle.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/themes/theme/theme-event.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/identity/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/identity/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/nginx.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/images/auth/facebook.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/facebook.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/images/auth/google.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/google.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/event/EventButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/event/EventButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/code-verification.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/code-verification.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/forgot-password.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/forgot-password.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/reset-password.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/reset-password.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/AuthWrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/AuthWrapper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/themes/theme-event.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/theme-event.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/themes/theme/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/theme/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/themes/typography.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/typography.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/types/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +88,8 @@
     "prettierjs.PrettierConfiguration.Package": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\prettier",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
-    "show.migrate.to.gradle.popup": "false"
+    "show.migrate.to.gradle.popup": "false",
+    "ts.external.directory.path": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\typescript\\lib"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -80,8 +113,21 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add git ignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="add git ignore" />
+    <MESSAGE value="base implementation" />
+    <MESSAGE value="add cors api config, add global theme, auth fe feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="add cors api config, add global theme, auth fe feature" />
   </component>
 </project>

@@ -1,94 +1,159 @@
+import { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
+
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // third-party
 import { Formik } from 'formik';
-import OtpInput from 'react-otp-input';
 import * as Yup from 'yup';
 
 // project-imports
-import AnimateButton from 'components/@extended/AnimateButton';
+import { openSnackbar } from 'api/snackbar';
+import AuthInput from 'components/auth/AuthInput';
+import EventButton from 'components/event/EventButton';
+import useAuth from 'hooks/useAuth';
+import useScriptRef from 'hooks/useScriptRef';
 
-// ============================|| STATIC - CODE VERIFICATION ||============================ //
+// ============================|| AUTH - CODE VERIFICATION ||============================ //
 
 export default function AuthCodeVerification() {
-  const theme = useTheme();
+  const scriptedRef = useScriptRef();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email') || '';
+  const { verifyOtp } = useAuth();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [canResend, setCanResend] = useState(false);
+  const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    if (timer === 0) {
+      setCanResend(true);
+      return;
+    }
+    const t = setTimeout(() => setTimer((prev) => prev - 1), 1000);
+    return () => clearTimeout(t);
+  }, [timer]);
+
+  const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1****$3');
 
   return (
-    <Formik
-      initialValues={{ otp: '' }}
-      validationSchema={Yup.object({
-        otp: Yup.string().length(4, 'OTP must be exactly 4 digits').required('OTP is required')
-      })}
-      onSubmit={(values, { resetForm }) => {
-        resetForm();
-        // reset focus after submission
-        const activeElement = document.activeElement as HTMLElement | null;
-        if (activeElement) activeElement.blur();
-      }}
-    >
-      {({ errors, handleSubmit, touched, values, setFieldValue }) => (
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid size={12}>
-              <Box
-                sx={(theme) => ({
-                  '& input:focus-visible': {
-                    outline: 'none !important',
-                    borderColor: `${theme.palette.primary.main} !important`,
-                    boxShadow: `${theme.customShadows.primary} !important`
-                  }
-                })}
-              >
-                <OtpInput
-                  value={values.otp}
-                  onChange={(otp) => setFieldValue('otp', otp)}
-                  inputType="tel"
-                  shouldAutoFocus
-                  renderInput={(props) => <input {...props} />}
-                  numInputs={4}
-                  containerStyle={{ justifyContent: 'space-between', margin: -8 }}
-                  inputStyle={{
-                    width: '100%',
-                    margin: '8px',
-                    padding: '10px',
-                    border: '1px solid',
-                    outline: 'none',
-                    borderRadius: 4,
-                    borderColor: touched.otp && errors.otp ? theme.palette.error.main : theme.palette.divider
-                  }}
+    <>
+      <Stack spacing={1.5} alignItems="center" textAlign="center">
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "'Lobster', cursive, sans-serif",
+            fontSize: '2.25rem',
+            color: '#FFFFFF'
+          }}
+        >
+          Event
+        </Typography>
+        <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
+          We sent an OTP to <strong style={{ color: '#FFFFFF' }}>{maskedEmail || 'your email'}</strong>
+        </Typography>
+      </Stack>
+
+      <Formik
+        initialValues={{ code: '', submit: null }}
+        validationSchema={Yup.object().shape({
+          code: Yup.string().length(6, 'OTP must be 6 digits').required('OTP is required')
+        })}
+        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          try {
+            await verifyOtp(email, values.code, 'FORGOT_PASSWORD');
+            if (scriptedRef.current) {
+              setStatus({ success: true });
+              setSubmitting(false);
+              openSnackbar({
+                open: true,
+                message: 'Verification successful. Set your new password.',
+                variant: 'alert',
+                alert: { color: 'success' }
+              } as any);
+              setTimeout(() => {
+                navigate(`/reset-password?email=${encodeURIComponent(email)}&code=${encodeURIComponent(values.code)}`, { replace: true });
+              }, 800);
+            }
+          } catch (err: any) {
+            if (scriptedRef.current) {
+              setStatus({ success: false });
+              setErrors({ submit: err.message || 'Invalid OTP' });
+              setSubmitting(false);
+            }
+          }
+        }}
+      >
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+          <form noValidate onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid size={12}>
+                <AuthInput
+                  inputRef={inputRef}
+                  id="otp-code"
+                  name="code"
+                  type="text"
+                  inputProps={{ maxLength: 6, inputMode: 'numeric' }}
+                  label="Verification code"
+                  value={values.code}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.code && errors.code)}
+                  helperText={touched.code && errors.code}
                 />
-                {touched.otp && errors.otp && (
-                  <FormHelperText error id="standard-weight-helper-text-otp">
-                    {errors.otp}
-                  </FormHelperText>
-                )}
-              </Box>
-            </Grid>
-            <Grid size={12}>
-              <AnimateButton>
-                <Button disableElevation fullWidth size="large" type="submit" variant="contained">
+              </Grid>
+              {errors.submit && (
+                <Grid size={12}>
+                  <FormHelperText error>{errors.submit}</FormHelperText>
+                </Grid>
+              )}
+              <Grid size={12}>
+                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
                   Continue
-                </Button>
-              </AnimateButton>
-            </Grid>
-            <Grid size={12}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <Typography>Did not receive the email? Check your spam filter, or</Typography>
-                <Typography variant="body1" sx={{ minWidth: 87, textDecoration: 'none', cursor: 'pointer' }} color="primary">
-                  Resend code
+                </EventButton>
+              </Grid>
+              <Grid size={12} sx={{ textAlign: 'center' }}>
+                <Typography variant="body2" sx={{ color: '#999' }}>
+                  Didn&apos;t receive?{' '}
+                  {canResend ? (
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      sx={{ color: 'primary.main', cursor: 'pointer', fontWeight: 500 }}
+                      onClick={() => {
+                        setTimer(60);
+                        setCanResend(false);
+                      }}
+                    >
+                      Resend
+                    </Typography>
+                  ) : (
+                    <Typography component="span" variant="body2" sx={{ color: '#666' }}>
+                      Resend in {timer}s
+                    </Typography>
+                  )}
                 </Typography>
-              </Stack>
+              </Grid>
+              <Grid size={12} sx={{ textAlign: 'center' }}>
+                <Typography
+                  component={RouterLink}
+                  to="/login"
+                  variant="body2"
+                  sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  Back to Login
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      )}
-    </Formik>
+          </form>
+        )}
+      </Formik>
+    </>
   );
 }

@@ -1,17 +1,12 @@
-import { useEffect, useState, SyntheticEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 
 // material-ui
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // third-party
 import { Formik } from 'formik';
@@ -19,85 +14,73 @@ import * as Yup from 'yup';
 
 // project-imports
 import { openSnackbar } from 'api/snackbar';
-import AnimateButton from 'components/@extended/AnimateButton';
+import AuthInput from 'components/auth/AuthInput';
+import EventButton from 'components/event/EventButton';
 import IconButton from 'components/@extended/IconButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// types
-import { StringColorProps } from 'types/password';
-import { SnackbarProps } from 'types/snackbar';
 
 // assets
-import { Eye, EyeSlash } from 'iconsax-reactjs';
+import { Eye, EyeSlash, Lock } from 'iconsax-reactjs';
 
-// ============================|| FIREBASE - RESET PASSWORD ||============================ //
+// ============================|| AUTH - RESET PASSWORD ||============================ //
 
 export default function AuthResetPassword() {
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { resetPassword } = useAuth();
 
-  const { isLoggedIn } = useAuth();
-
-  const [level, setLevel] = useState<StringColorProps>();
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleMouseDownPassword = (event: SyntheticEvent) => {
-    event.preventDefault();
-  };
-
-  const changePassword = (value: string) => {
-    const temp = strengthIndicator(value);
-    setLevel(strengthColor(temp));
-  };
-
-  useEffect(() => {
-    changePassword('');
-  }, []);
+  const email = searchParams.get('email') || '';
+  const code = searchParams.get('code') || '';
 
   return (
     <>
+      <Stack spacing={1.5} alignItems="center" textAlign="center">
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "'Lobster', cursive, sans-serif",
+            fontSize: '2.25rem',
+            color: '#FFFFFF'
+          }}
+        >
+          Event
+        </Typography>
+        <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
+          Set a new password for your account
+        </Typography>
+      </Stack>
+
       <Formik
-        initialValues={{
-          password: '',
-          confirmPassword: '',
-          submit: null
-        }}
+        initialValues={{ newPassword: '', confirmPassword: '', submit: null }}
         validationSchema={Yup.object().shape({
-          password: Yup.string().max(255).required('Password is required'),
+          newPassword: Yup.string().required('New password is required').min(8, 'Password must be at least 8 characters'),
           confirmPassword: Yup.string()
-            .required('Confirm Password is required')
-            .test('confirmPassword', 'Both Password must be match!', (confirmPassword, yup) => yup.parent.password === confirmPassword)
+            .required('Please confirm your password')
+            .oneOf([Yup.ref('newPassword')], 'Passwords must match')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            // password reset
+            await resetPassword(email, code, values.newPassword);
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
-
               openSnackbar({
                 open: true,
-                message: 'Successfuly reset password.',
+                message: 'Password reset successfully.',
                 variant: 'alert',
-                alert: {
-                  color: 'success'
-                }
-              } as SnackbarProps);
-
-              setTimeout(() => {
-                navigate(isLoggedIn ? '/auth/login' : '/login', { replace: true });
-              }, 1500);
+                alert: { color: 'success' }
+              } as any);
+              setTimeout(() => navigate('/login', { replace: true }), 1200);
             }
           } catch (err: any) {
-            console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              setErrors({ submit: err.message || 'Password reset failed' });
               setSubmitting(false);
             }
           }
@@ -107,87 +90,78 @@ export default function AuthResetPassword() {
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="password-reset">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="password-reset"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={(e) => {
-                      handleChange(e);
-                      changePassword(e.target.value);
-                    }}
-                    endAdornment={
+                <AuthInput
+                  id="new-password"
+                  name="newPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  label="New password"
+                  value={values.newPassword}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.newPassword && errors.newPassword)}
+                  helperText={touched.newPassword && errors.newPassword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock size={24} color="#999" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
-                        >
-                          {showPassword ? <Eye /> : <EyeSlash />}
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" color="secondary">
+                          {showPassword ? <Eye size={24} color="#999" /> : <EyeSlash size={24} color="#999" />}
                         </IconButton>
                       </InputAdornment>
-                    }
-                    placeholder="Enter password"
-                  />
-                </Stack>
-                {touched.password && errors.password && (
-                  <FormHelperText error id="helper-text-password-reset">
-                    {errors.password}
-                  </FormHelperText>
-                )}
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                  <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-                    <Grid>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid>
-                      <Typography variant="subtitle1" sx={{ fontSize: '0.75rem' }}>
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </FormControl>
+                    )
+                  }}
+                />
               </Grid>
               <Grid size={12}>
-                <Stack sx={{ gap: 1 }}>
-                  <InputLabel htmlFor="confirm-password-reset">Confirm Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-                    id="confirm-password-reset"
-                    type="password"
-                    value={values.confirmPassword}
-                    name="confirmPassword"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter confirm password"
-                  />
-                </Stack>
-                {touched.confirmPassword && errors.confirmPassword && (
-                  <FormHelperText error id="helper-text-confirm-password-reset">
-                    {errors.confirmPassword}
-                  </FormHelperText>
-                )}
+                <AuthInput
+                  id="confirm-password"
+                  name="confirmPassword"
+                  type={showConfirm ? 'text' : 'password'}
+                  label="Confirm password"
+                  value={values.confirmPassword}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                  helperText={touched.confirmPassword && errors.confirmPassword}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock size={24} color="#999" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowConfirm(!showConfirm)} edge="end" color="secondary">
+                          {showConfirm ? <Eye size={24} color="#999" /> : <EyeSlash size={24} color="#999" />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
-
               {errors.submit && (
                 <Grid size={12}>
                   <FormHelperText error>{errors.submit}</FormHelperText>
                 </Grid>
               )}
               <Grid size={12}>
-                <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Reset Password
-                  </Button>
-                </AnimateButton>
+                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                  Reset password
+                </EventButton>
+              </Grid>
+              <Grid size={12} sx={{ textAlign: 'center' }}>
+                <Typography
+                  component={RouterLink}
+                  to="/login"
+                  variant="body2"
+                  sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  Back to Login
+                </Typography>
               </Grid>
             </Grid>
           </form>

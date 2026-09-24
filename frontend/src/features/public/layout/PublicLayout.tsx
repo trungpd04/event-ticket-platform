@@ -6,8 +6,8 @@ import { ThemeProvider } from '@mui/material/styles';
 
 // project-imports
 import eventTheme from 'themes/theme-event';
-import PublicHeader from './PublicHeader';
-import PublicFooter from './PublicFooter';
+import PublicHeader from '../components/PublicHeader';
+import PublicFooter from '../components/PublicFooter';
 
 // ==============================|| PUBLIC LAYOUT ||============================== //
 

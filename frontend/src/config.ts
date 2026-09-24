@@ -44,8 +44,8 @@ const config: DefaultConfigProps = {
   menuCaption: true,
   miniDrawer: false,
   container: true,
-  mode: ThemeMode.LIGHT,
-  presetColor: 'default',
+  mode: ThemeMode.DARK,
+  presetColor: 'event',
   themeDirection: ThemeDirection.LTR,
   themeContrast: false
 };
