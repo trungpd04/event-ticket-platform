@@ -1,0 +1,16 @@
+{
+  "app.name": "Event Ticket Platform",
+  "header.home": "Trang chủ",
+  "header.events": "Sự kiện",
+  "header.login": "Đăng nhập",
+  "header.register": "Đăng ký",
+  "header.logout": "Đăng xuất",
+  "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
+  "search.what": "Tìm kiếm sự kiện",
+  "search.where": "Địa điểm",
+  "search.when": "Thờ gian",
+  "search.button": "Tìm kiếm",
+  "home.hero.title": "Khám phá sự kiện tuyệt vờ",
+  "home.hero.subtitle": "Mua vé dễ dàng, trải nghiệm khó quên.",
+  "home.cta": "Xem tất cả sự kiện"
+}
