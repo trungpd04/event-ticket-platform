@@ -1,6 +1,7 @@
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -13,38 +14,58 @@ import OtpInput from 'react-otp-input';
 import * as Yup from 'yup';
 
 // project-imports
-import AnimateButton from 'components/@extended/AnimateButton';
+import { openSnackbar } from 'api/snackbar';
+import EventButton from 'components/event/EventButton';
+import useAuth from 'hooks/useAuth';
 
-// ============================|| STATIC - CODE VERIFICATION ||============================ //
+// types
+import { SnackbarProps } from 'types/snackbar';
+
+// ============================|| JWT - CODE VERIFICATION ||============================ //
 
 export default function AuthCodeVerification() {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { verifyOtp } = useAuth();
+
+  const email = searchParams.get('email') || '';
 
   return (
     <Formik
       initialValues={{ otp: '' }}
       validationSchema={Yup.object({
-        otp: Yup.string().length(4, 'OTP must be exactly 4 digits').required('OTP is required')
+        otp: Yup.string().length(6, 'OTP must be exactly 6 digits').required('OTP is required')
       })}
-      onSubmit={(values, { resetForm }) => {
-        resetForm();
-        // reset focus after submission
-        const activeElement = document.activeElement as HTMLElement | null;
-        if (activeElement) activeElement.blur();
+      onSubmit={async (values, { setSubmitting, setErrors }) => {
+        try {
+          await verifyOtp(email, values.otp, 'FORGOT_PASSWORD');
+          openSnackbar({
+            open: true,
+            message: 'OTP verified successfully.',
+            variant: 'alert',
+            alert: { color: 'success' }
+          } as SnackbarProps);
+          navigate(`/reset-password?email=${encodeURIComponent(email)}&code=${values.otp}`, { replace: true });
+        } catch (err: any) {
+          setErrors({ otp: err.message || 'Invalid OTP' });
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
-      {({ errors, handleSubmit, touched, values, setFieldValue }) => (
+      {({ errors, handleSubmit, touched, values, setFieldValue, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid size={12}>
               <Box
-                sx={(theme) => ({
+                sx={{
                   '& input:focus-visible': {
                     outline: 'none !important',
                     borderColor: `${theme.palette.primary.main} !important`,
-                    boxShadow: `${theme.customShadows.primary} !important`
+                    boxShadow: `0 0 0 2px ${theme.palette.primary.light} !important`
                   }
-                })}
+                }}
               >
                 <OtpInput
                   value={values.otp}
@@ -52,7 +73,7 @@ export default function AuthCodeVerification() {
                   inputType="tel"
                   shouldAutoFocus
                   renderInput={(props) => <input {...props} />}
-                  numInputs={4}
+                  numInputs={6}
                   containerStyle={{ justifyContent: 'space-between', margin: -8 }}
                   inputStyle={{
                     width: '100%',
@@ -60,7 +81,7 @@ export default function AuthCodeVerification() {
                     padding: '10px',
                     border: '1px solid',
                     outline: 'none',
-                    borderRadius: 4,
+                    borderRadius: 8,
                     borderColor: touched.otp && errors.otp ? theme.palette.error.main : theme.palette.divider
                   }}
                 />
@@ -72,18 +93,13 @@ export default function AuthCodeVerification() {
               </Box>
             </Grid>
             <Grid size={12}>
-              <AnimateButton>
-                <Button disableElevation fullWidth size="large" type="submit" variant="contained">
-                  Continue
-                </Button>
-              </AnimateButton>
+              <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary">
+                Continue
+              </EventButton>
             </Grid>
             <Grid size={12}>
               <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <Typography>Did not receive the email? Check your spam filter, or</Typography>
-                <Typography variant="body1" sx={{ minWidth: 87, textDecoration: 'none', cursor: 'pointer' }} color="primary">
-                  Resend code
-                </Typography>
+                <Typography variant="body2">Did not receive the email? Check your spam filter.</Typography>
               </Stack>
             </Grid>
           </Grid>
@@ -92,3 +108,4 @@ export default function AuthCodeVerification() {
     </Formik>
   );
 }
+

@@ -1,11 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 
 // material-ui
-import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -15,20 +13,20 @@ import * as Yup from 'yup';
 
 // project-imports
 import { openSnackbar } from 'api/snackbar';
-import AnimateButton from 'components/@extended/AnimateButton';
+import EventButton from 'components/event/EventButton';
+import EventInput from 'components/event/EventInput';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 
 // types
 import { SnackbarProps } from 'types/snackbar';
 
-// ============================|| FIREBASE - FORGOT PASSWORD ||============================ //
+// ============================|| JWT - FORGOT PASSWORD ||============================ //
 
 export default function AuthForgotPassword() {
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
-
-  const { isLoggedIn, resetPassword } = useAuth();
+  const { forgotPassword } = useAuth();
 
   return (
     <>
@@ -42,38 +40,25 @@ export default function AuthForgotPassword() {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            await resetPassword(values.email).then(
-              () => {
-                setStatus({ success: true });
-                setSubmitting(false);
-                openSnackbar({
-                  open: true,
-                  message: 'Check mail for reset password link',
-                  variant: 'alert',
-                  alert: {
-                    color: 'success'
-                  }
-                } as SnackbarProps);
-                setTimeout(() => {
-                  navigate(isLoggedIn ? '/auth/check-mail' : '/check-mail', { replace: true });
-                }, 1500);
-
-                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                // github issue: https://github.com/formium/formik/issues/2430
-              },
-              (err: any) => {
-                setStatus({ success: false });
-                setErrors({ submit: err.message });
-                setSubmitting(false);
-              }
-            );
+            await forgotPassword(values.email);
+            if (scriptedRef.current) {
+              setStatus({ success: true });
+              setSubmitting(false);
+              openSnackbar({
+                open: true,
+                message: 'OTP has been sent to your email.',
+                variant: 'alert',
+                alert: { color: 'success' }
+              } as SnackbarProps);
+              setTimeout(() => {
+                navigate(`/code-verification?email=${encodeURIComponent(values.email)}`, { replace: true });
+              }, 1000);
+            }
           } catch (err: any) {
             console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              setErrors({ submit: err.message || 'Failed to send OTP' });
               setSubmitting(false);
             }
           }
@@ -85,9 +70,7 @@ export default function AuthForgotPassword() {
               <Grid size={12}>
                 <Stack sx={{ gap: 1 }}>
                   <InputLabel htmlFor="email-forgot">Email Address</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                  <EventInput
                     id="email-forgot"
                     type="email"
                     value={values.email}
@@ -95,6 +78,7 @@ export default function AuthForgotPassword() {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder="Enter email address"
+                    error={Boolean(touched.email && errors.email)}
                   />
                 </Stack>
                 {touched.email && errors.email && (
@@ -109,14 +93,12 @@ export default function AuthForgotPassword() {
                 </Grid>
               )}
               <Grid sx={{ mb: -2 }} size={12}>
-                <Typography variant="caption">Do not forgot to check SPAM box.</Typography>
+                <Typography variant="caption">Do not forget to check the SPAM box.</Typography>
               </Grid>
               <Grid size={12}>
-                <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Send Password Reset Email
-                  </Button>
-                </AnimateButton>
+                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary">
+                  Send OTP
+                </EventButton>
               </Grid>
             </Grid>
           </form>

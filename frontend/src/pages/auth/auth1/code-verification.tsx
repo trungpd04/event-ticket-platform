@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+
 // material-ui
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -10,27 +12,21 @@ import AuthCodeVerification from 'sections/auth/auth-forms/AuthCodeVerification'
 // ================================|| CODE VERIFICATION ||================================ //
 
 export default function CodeVerification() {
-  let email = window.localStorage.getItem('email');
-  let finalArr: string[] = [];
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email') || '';
+  const masked = maskEmail(email);
 
-  if (email) {
-    let emailSplit = email.split('');
-    let len = emailSplit.indexOf('@');
-    emailSplit.forEach((item, pos) => {
-      pos >= 1 && pos <= len - 2 ? finalArr.push('*') : finalArr.push(emailSplit[pos]);
-    });
-  }
   return (
     <AuthWrapper>
       <Grid container spacing={3}>
         <Grid size={12}>
           <Stack sx={{ gap: 1 }}>
             <Typography variant="h3">Enter Verification Code</Typography>
-            <Typography color="secondary">We send you on mail.</Typography>
+            <Typography color="text.secondary">We sent a 6-digit code to your email.</Typography>
           </Stack>
         </Grid>
         <Grid size={12}>
-          <Typography>We`ve send you code on {email && finalArr.length > 0 ? finalArr.join('') : '****@company.com'}</Typography>
+          <Typography>We&apos;ve sent the code to {email ? masked : '****@company.com'}</Typography>
         </Grid>
         <Grid size={12}>
           <AuthCodeVerification />
@@ -38,4 +34,13 @@ export default function CodeVerification() {
       </Grid>
     </AuthWrapper>
   );
+}
+
+function maskEmail(email: string): string {
+  if (!email) return '****@company.com';
+  const parts = email.split('@');
+  if (parts.length !== 2) return email;
+  const [local, domain] = parts;
+  const maskedLocal = local.length > 2 ? `${local[0]}${'*'.repeat(local.length - 2)}${local[local.length - 1]}` : local;
+  return `${maskedLocal}@${domain}`;
 }

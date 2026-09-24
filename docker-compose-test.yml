@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: event-ticket-postgres-test
+    environment:
+      POSTGRES_DB: event_ticket_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - event-ticket-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d event_ticket_test" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: event-ticket-backend-test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-test:5432/event_ticket_test
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: ${JWT_SECRET:-mSZzfEFQlQu5uqQrQFE6GRT9xzPzfJa3/rv5/prak1I=}
+      MAIL_USERNAME: ${MAIL_USERNAME:-your-email@gmail.com}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    networks:
+      - event-ticket-network
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_API_URL: ${VITE_APP_API_URL:-http://localhost:8081}
+    container_name: event-ticket-frontend-test
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend-test
+    networks:
+      - event-ticket-network
+
+volumes:
+  postgres_test_data:
+
+networks:
+  event-ticket-network:
+    driver: bridge
