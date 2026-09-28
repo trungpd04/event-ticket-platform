@@ -21,16 +21,16 @@ public class Province extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "short_name")
+    @Column(name = "short_name", nullable = false)
     private String shortName;
 
-    @Column(name = "code", length = 10)
+    @Column(name = "code", nullable = false, length = 5)
     private String code;
 
-    @Column(name = "place_type")
+    @Column(name = "place_type", nullable = false)
     private String placeType;
 
-    @Column(name = "country", length = 10)
-    private String country;
+    @Column(name = "country_code", nullable = false, unique = true, length = 10)
+    private String countryCode;
 
 }

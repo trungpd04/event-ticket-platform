@@ -2,39 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="add cors api config, add global theme, auth fe feature">
-      <change afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/apple.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthCheckbox.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthDivider.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthInput.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthSocialButton.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthToggle.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/themes/theme/theme-event.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/identity/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/identity/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/nginx.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/images/auth/facebook.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/facebook.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/images/auth/google.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/images/auth/google.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/event/EventButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/event/EventButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/ProvinceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/ProvinceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Province.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Province.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Ward.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Ward.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/WardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/WardRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/ProvinceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/ProvinceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/WardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/WardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/code-verification.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/code-verification.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/forgot-password.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/forgot-password.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/register.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/reset-password.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/auth/auth1/reset-password.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/AuthWrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/AuthWrapper.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/themes/theme-event.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/theme-event.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/themes/theme/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/theme/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/themes/typography.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/typography.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/types/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/route-guard/AuthGuard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/route-guard/AuthGuard.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,28 +47,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "dev",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/University/DOANTOTNGHIEP/event-ticket-platform",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "prettierjs.PrettierConfiguration.Package": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\prettier",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
-    "show.migrate.to.gradle.popup": "false",
-    "ts.external.directory.path": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\typescript\\lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/University/DOANTOTNGHIEP/event-ticket-platform&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\prettier&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\typescript\\lib&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

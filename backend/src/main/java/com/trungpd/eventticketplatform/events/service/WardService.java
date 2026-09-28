@@ -18,9 +18,9 @@ public class WardService {
     private final LocationMapper locationMapper;
 
     @Transactional(readOnly = true)
-    public List<WardResponse> getWardsByProvince(Long provinceId) {
-        provinceService.findById(provinceId);
-        return wardRepository.findByProvinceIdOrderByNameAsc(provinceId).stream()
+    public List<WardResponse> getWardsByProvince(String provinceCode) {
+        provinceService.findByProvinceCode(provinceCode);
+        return wardRepository.findByProvinceCodeOrderByNameAsc(provinceCode).stream()
                 .map(locationMapper::toWardResponse)
                 .toList();
     }

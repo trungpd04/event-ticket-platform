@@ -31,4 +31,10 @@ public class ProvinceService {
                 .orElseThrow(() -> new NotFoundException("error.province.not-found"));
     }
 
+    @Transactional(readOnly = true)
+    public Province findByProvinceCode(String provinceCode) {
+        return provinceRepository.findByProvinceCode(provinceCode)
+                .orElseThrow(() -> new NotFoundException("error.province.not-found"));
+    }
+
 }

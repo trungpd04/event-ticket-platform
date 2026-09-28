@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface WardRepository extends JpaRepository<Ward, Long> {
 
-    List<Ward> findByProvinceIdOrderByNameAsc(Long provinceId);
+    List<Ward> findByProvinceCodeOrderByNameAsc(String provinceCode);
 
 }

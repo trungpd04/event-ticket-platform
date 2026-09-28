@@ -30,10 +30,10 @@ public class ProvinceController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @GetMapping("/{provinceId}/wards")
+    @GetMapping("/{provinceCode}/wards")
     public ResponseEntity<ApiResponse<List<WardResponse>>> getWardsByProvince(
-            @PathVariable Long provinceId) {
-        List<WardResponse> response = wardService.getWardsByProvince(provinceId);
+            @PathVariable String provinceCode) {
+        List<WardResponse> response = wardService.getWardsByProvince(provinceCode);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
