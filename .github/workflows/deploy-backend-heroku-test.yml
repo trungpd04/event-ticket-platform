@@ -44,8 +44,8 @@ jobs:
           appdir: "backend"
           usedocker: false
         env:
-          # Có thể là JDBC URL hoặc postgres:// URL của Heroku Postgres
-          HD_DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
+          # Dùng cho database bên ngoài (JDBC URL). Nếu dùng Heroku Postgres, để trống.
+          HD_SPRING_DATASOURCE_URL: ${{ secrets.HEROKU_SPRING_DATASOURCE_URL }}
           HD_JWT_SECRET: ${{ secrets.HEROKU_JWT_SECRET }}
           HD_MAIL_USERNAME: ${{ secrets.HEROKU_MAIL_USERNAME }}
           HD_MAIL_PASSWORD: ${{ secrets.HEROKU_MAIL_PASSWORD }}

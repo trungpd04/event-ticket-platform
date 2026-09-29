@@ -15,8 +15,16 @@ public class HerokuDatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
+        String springDatasourceUrl = System.getenv("SPRING_DATASOURCE_URL");
         String jdbcUrl = System.getenv("JDBC_DATABASE_URL");
         String databaseUrl = System.getenv("DATABASE_URL");
+
+        if (StringUtils.hasText(springDatasourceUrl)) {
+            return DataSourceBuilder.create()
+                    .url(springDatasourceUrl)
+                    .driverClassName("org.postgresql.Driver")
+                    .build();
+        }
 
         if (StringUtils.hasText(jdbcUrl)) {
             return DataSourceBuilder.create()
@@ -26,7 +34,7 @@ public class HerokuDatabaseConfig {
         }
 
         if (!StringUtils.hasText(databaseUrl)) {
-            throw new IllegalStateException("DATABASE_URL environment variable is required for Heroku profile");
+            throw new IllegalStateException("DATABASE_URL or SPRING_DATASOURCE_URL environment variable is required for Heroku profile");
         }
 
         if (databaseUrl.startsWith("jdbc:")) {
