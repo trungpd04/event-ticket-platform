@@ -1,0 +1,57 @@
+name: Deploy Frontend to Appwrite
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack and setup Yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@4.9.1 --activate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Create production env file
+        run: |
+          echo "VITE_APP_API_URL=${{ secrets.APPWRITE_VITE_APP_API_URL }}" > .env
+          echo "VITE_APP_BASE_NAME=${{ secrets.APPWRITE_VITE_APP_BASE_NAME }}" >> .env
+
+      - name: Build frontend
+        run: yarn build
+
+      - name: Install Appwrite CLI
+        run: npm install -g appwrite-cli
+
+      - name: Deploy to Appwrite
+        run: |
+          appwrite client \
+            --endpoint "${{ secrets.APPWRITE_ENDPOINT }}" \
+            --project "${{ secrets.APPWRITE_PROJECT_ID }}" \
+            --key "${{ secrets.APPWRITE_API_KEY }}"
+          appwrite sites create-deployment \
+            --site-id "${{ secrets.APPWRITE_SITE_ID }}" \
+            --code ./dist \
+            --activate
