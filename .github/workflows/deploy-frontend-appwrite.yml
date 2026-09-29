@@ -40,8 +40,13 @@ jobs:
 
       - name: Deploy to Appwrite
         run: |
+          echo "Deploying to: ${{ secrets.APPWRITE_ENDPOINT }}/v1/sites/${{ secrets.APPWRITE_SITE_ID }}/deployments"
           curl -X POST "${{ secrets.APPWRITE_ENDPOINT }}/v1/sites/${{ secrets.APPWRITE_SITE_ID }}/deployments" \
             -H "X-Appwrite-Project: ${{ secrets.APPWRITE_PROJECT_ID }}" \
             -H "X-Appwrite-Key: ${{ secrets.APPWRITE_API_KEY }}" \
             -F "code=@source.zip" \
-            -F "activate=true"
+            -F "activate=true" \
+            -w "\nHTTP Status: %{http_code}\n" \
+            -o response.txt
+          echo "Response body:"
+          cat response.txt
