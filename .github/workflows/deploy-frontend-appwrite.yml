@@ -3,7 +3,7 @@ name: Deploy Frontend to Appwrite
 on:
   push:
     branches:
-      - main
+      - test
     paths:
       - 'frontend/**'
   workflow_dispatch:
