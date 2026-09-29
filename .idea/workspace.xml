@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="add cors api config, add global theme, auth fe feature">
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="refactor ward and province, add organizer creating event">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/ProvinceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/ProvinceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Province.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Province.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Ward.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Ward.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/WardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/WardRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/ProvinceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/ProvinceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/WardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/WardService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/layout/PublicLayout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/route-guard/AuthGuard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/route-guard/AuthGuard.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +96,7 @@
     <MESSAGE value="add git ignore" />
     <MESSAGE value="base implementation" />
     <MESSAGE value="add cors api config, add global theme, auth fe feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="add cors api config, add global theme, auth fe feature" />
+    <MESSAGE value="refactor ward and province, add organizer creating event" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor ward and province, add organizer creating event" />
   </component>
 </project>
