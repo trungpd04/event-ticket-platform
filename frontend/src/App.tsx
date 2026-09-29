@@ -12,7 +12,7 @@ import Snackbar from 'components/@extended/Snackbar';
 // auth-provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 
-// ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== ////
+// ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //////
 
 export default function App() {
   return (
