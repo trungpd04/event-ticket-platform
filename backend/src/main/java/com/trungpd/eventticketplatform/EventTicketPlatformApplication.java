@@ -12,5 +12,5 @@ public class EventTicketPlatformApplication {
     public static void main(String[] args) {
         SpringApplication.run(EventTicketPlatformApplication.class, args);
     }
-    //
+    ////
 }
