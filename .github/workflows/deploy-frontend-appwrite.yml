@@ -26,26 +26,22 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Create production env file
         run: |
           echo "VITE_APP_API_URL=${{ secrets.APPWRITE_VITE_APP_API_URL }}" > .env
           echo "VITE_APP_BASE_NAME=${{ secrets.APPWRITE_VITE_APP_BASE_NAME }}" >> .env
 
-      - name: Build frontend
-        run: npm run build
-
-      - name: Package dist
+      - name: Package source code
         run: |
-          cd dist
-          zip -r ../dist.zip .
+          zip -r source.zip . \
+            -x "node_modules/*" \
+            -x "dist/*" \
+            -x ".git/*"
 
       - name: Deploy to Appwrite
         run: |
           curl -X POST "${{ secrets.APPWRITE_ENDPOINT }}/v1/sites/${{ secrets.APPWRITE_SITE_ID }}/deployments" \
             -H "X-Appwrite-Project: ${{ secrets.APPWRITE_PROJECT_ID }}" \
             -H "X-Appwrite-Key: ${{ secrets.APPWRITE_API_KEY }}" \
-            -F "code=@dist.zip" \
+            -F "code=@source.zip" \
             -F "activate=true"
