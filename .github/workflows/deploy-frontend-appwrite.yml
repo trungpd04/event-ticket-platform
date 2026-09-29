@@ -3,7 +3,7 @@ name: Deploy Frontend to Appwrite
 on:
   push:
     branches:
-      - test
+      - main
     paths:
       - 'frontend/**'
   workflow_dispatch:
@@ -37,16 +37,15 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Install Appwrite CLI
-        run: npm install -g appwrite-cli
+      - name: Package dist
+        run: |
+          cd dist
+          zip -r ../dist.zip .
 
       - name: Deploy to Appwrite
         run: |
-          appwrite client \
-            --endpoint "${{ secrets.APPWRITE_ENDPOINT }}" \
-            --project "${{ secrets.APPWRITE_PROJECT_ID }}" \
-            --key "${{ secrets.APPWRITE_API_KEY }}"
-          appwrite sites create-deployment \
-            --site-id "${{ secrets.APPWRITE_SITE_ID }}" \
-            --code ./dist \
-            --activate
+          curl -X POST "${{ secrets.APPWRITE_ENDPOINT }}/v1/sites/${{ secrets.APPWRITE_SITE_ID }}/deployments" \
+            -H "X-Appwrite-Project: ${{ secrets.APPWRITE_PROJECT_ID }}" \
+            -H "X-Appwrite-Key: ${{ secrets.APPWRITE_API_KEY }}" \
+            -F "code=@dist.zip" \
+            -F "activate=true"
