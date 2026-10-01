@@ -5,6 +5,7 @@
   "header.login": "Đăng nhập",
   "header.register": "Đăng ký",
   "header.logout": "Đăng xuất",
+  "header.addEvent": "Tạo sự kiện",
   "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
   "search.what": "Tìm kiếm sự kiện",
   "search.where": "Địa điểm",
