@@ -22,6 +22,7 @@ public class EventResponse {
     private Long feePolicyId;
     private CategoryResponse category;
     private ProvinceResponse province;
+    private WardResponse ward;
     private Instant ticketSaleStartTime;
     private Instant ticketSaleEndTime;
     private FeePolicySnapshotResponse feePolicySnapshot;

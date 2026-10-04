@@ -46,6 +46,9 @@ public class Event extends BaseEntity {
     @Column(name = "province_id")
     private Long provinceId;
 
+    @Column(name = "ward_id")
+    private Long wardId;
+
     @Column(name = "ticket_sale_start_time")
     private Instant ticketSaleStartTime;
 

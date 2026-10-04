@@ -15,6 +15,7 @@ public class UpdateEventRequest {
     private String coverImageUrl;
     private Long categoryId;
     private Long provinceId;
+    private Long wardId;
     private Instant ticketSaleStartTime;
     private Instant ticketSaleEndTime;
 

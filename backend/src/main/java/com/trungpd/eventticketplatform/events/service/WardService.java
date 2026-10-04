@@ -1,6 +1,8 @@
 package com.trungpd.eventticketplatform.events.service;
 
+import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.events.dto.response.WardResponse;
+import com.trungpd.eventticketplatform.events.entity.Ward;
 import com.trungpd.eventticketplatform.events.mapper.LocationMapper;
 import com.trungpd.eventticketplatform.events.repository.WardRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,12 @@ public class WardService {
         return wardRepository.findByProvinceCodeOrderByNameAsc(provinceCode).stream()
                 .map(locationMapper::toWardResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Ward findById(Long id) {
+        return wardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("error.ward.not-found"));
     }
 
 }
