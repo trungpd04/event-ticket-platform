@@ -5,6 +5,9 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import EventButton from 'components/event/EventButton';
 import { CreateEventPayload, TicketType } from 'types/organizer';
@@ -21,6 +24,8 @@ interface StepTicketsProps {
 }
 
 export default function StepTickets({ values, ticketTypes, setTicketTypes, handleChange, handleBlur }: StepTicketsProps) {
+  const intl = useIntl();
+
   const addTicketType = () => {
     setTicketTypes([
       ...ticketTypes,
@@ -42,7 +47,7 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
         <TextField
           fullWidth
           name="startTime"
-          label="Event start time"
+          label={intl.formatMessage({ id: 'createEvent.eventStartTime' })}
           type="datetime-local"
           value={values.startTime}
           onChange={handleChange}
@@ -54,7 +59,7 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
         <TextField
           fullWidth
           name="endTime"
-          label="Event end time"
+          label={intl.formatMessage({ id: 'createEvent.eventEndTime' })}
           type="datetime-local"
           value={values.endTime}
           onChange={handleChange}
@@ -66,7 +71,7 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
         <TextField
           fullWidth
           name="ticketSaleStartTime"
-          label="Ticket sale start"
+          label={intl.formatMessage({ id: 'createEvent.ticketSaleStart' })}
           type="datetime-local"
           value={values.ticketSaleStartTime}
           onChange={handleChange}
@@ -78,7 +83,7 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
         <TextField
           fullWidth
           name="ticketSaleEndTime"
-          label="Ticket sale end"
+          label={intl.formatMessage({ id: 'createEvent.ticketSaleEnd' })}
           type="datetime-local"
           value={values.ticketSaleEndTime}
           onChange={handleChange}
@@ -89,9 +94,9 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
 
       <Grid size={12}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h5">Ticket types</Typography>
+          <Typography variant="h5">{intl.formatMessage({ id: 'createEvent.ticketTypes' })}</Typography>
           <EventButton variant="outlined" color="primary" onClick={addTicketType}>
-            + Add ticket type
+            {intl.formatMessage({ id: 'createEvent.addTicketType' })}
           </EventButton>
         </Stack>
       </Grid>
@@ -100,34 +105,34 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
         <Grid size={12} key={ticket.id}>
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="center">
             <TextField
-              label="Name"
+              label={intl.formatMessage({ id: 'createEvent.ticketName' })}
               value={ticket.name}
               onChange={(e) => updateTicket(ticket.id, 'name', e.target.value)}
               sx={{ flex: 2 }}
             />
             <TextField
-              label="Price (VND)"
+              label={intl.formatMessage({ id: 'createEvent.ticketPrice' })}
               type="number"
               value={ticket.price}
               onChange={(e) => updateTicket(ticket.id, 'price', Number(e.target.value))}
               sx={{ flex: 1 }}
             />
             <TextField
-              label="Quantity"
+              label={intl.formatMessage({ id: 'createEvent.ticketQuantity' })}
               type="number"
               value={ticket.quantity}
               onChange={(e) => updateTicket(ticket.id, 'quantity', Number(e.target.value))}
               sx={{ flex: 1 }}
             />
             <TextField
-              label="Min"
+              label={intl.formatMessage({ id: 'createEvent.ticketMin' })}
               type="number"
               value={ticket.minPerOrder}
               onChange={(e) => updateTicket(ticket.id, 'minPerOrder', Number(e.target.value))}
               sx={{ flex: 1 }}
             />
             <TextField
-              label="Max"
+              label={intl.formatMessage({ id: 'createEvent.ticketMax' })}
               type="number"
               value={ticket.maxPerOrder}
               onChange={(e) => updateTicket(ticket.id, 'maxPerOrder', Number(e.target.value))}

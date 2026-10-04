@@ -15,6 +15,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import AuthCheckbox from 'components/auth/AuthCheckbox';
 import AuthDivider from 'components/auth/AuthDivider';
@@ -35,6 +38,7 @@ import imgGoogle from 'assets/images/auth/google.svg';
 // ============================|| AUTH - LOGIN ||============================ //
 
 export default function AuthLogin() {
+  const intl = useIntl();
   const { login } = useAuth();
   const scriptedRef = useScriptRef();
 
@@ -52,10 +56,10 @@ export default function AuthLogin() {
             color: '#FFFFFF'
           }}
         >
-          Event
+          {intl.formatMessage({ id: 'auth.brand' })}
         </Typography>
         <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
-          Please enter your email to login
+          {intl.formatMessage({ id: 'auth.login.subtitle' })}
         </Typography>
       </Stack>
 
@@ -64,8 +68,13 @@ export default function AuthLogin() {
       <Formik
         initialValues={{ email: '', password: '', submit: null }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters')
+          email: Yup.string()
+            .email(intl.formatMessage({ id: 'validation.email' }))
+            .max(255)
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.login.email' }) })),
+          password: Yup.string()
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.login.password' }) }))
+            .min(8, intl.formatMessage({ id: 'validation.passwordMin' }, { min: 8 }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -77,7 +86,7 @@ export default function AuthLogin() {
           } catch (err: any) {
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message || 'Login failed' });
+              setErrors({ submit: err.message || intl.formatMessage({ id: 'auth.login.failed' }) });
               setSubmitting(false);
             }
           }
@@ -91,7 +100,7 @@ export default function AuthLogin() {
                   id="email-login"
                   name="email"
                   type="email"
-                  label="Email"
+                  label={intl.formatMessage({ id: 'auth.login.email' })}
                   value={values.email}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -111,7 +120,7 @@ export default function AuthLogin() {
                   id="password-login"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  label="Password"
+                  label={intl.formatMessage({ id: 'auth.login.password' })}
                   value={values.password}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -137,7 +146,11 @@ export default function AuthLogin() {
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <FormControlLabel
                     control={<AuthCheckbox checked={remember} onChange={(e) => setRemember(e.target.checked)} />}
-                    label={<Typography sx={{ color: '#FFFFFF', fontSize: '0.875rem' }}>Remember me</Typography>}
+                    label={
+                      <Typography sx={{ color: '#FFFFFF', fontSize: '0.875rem' }}>
+                        {intl.formatMessage({ id: 'auth.login.rememberMe' })}
+                      </Typography>
+                    }
                   />
                   <Typography
                     component={RouterLink}
@@ -145,7 +158,7 @@ export default function AuthLogin() {
                     variant="body2"
                     sx={{ color: '#999', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
                   >
-                    Forgot Password?
+                    {intl.formatMessage({ id: 'auth.login.forgotPassword' })}
                   </Typography>
                 </Stack>
               </Grid>
@@ -156,19 +169,19 @@ export default function AuthLogin() {
               )}
               <Grid size={12}>
                 <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
-                  Log in
+                  {intl.formatMessage({ id: 'auth.login.button' })}
                 </EventButton>
               </Grid>
               <Grid size={12} sx={{ textAlign: 'center' }}>
                 <Typography variant="body2" sx={{ color: '#999' }}>
-                  New to Event?{' '}
+                  {intl.formatMessage({ id: 'auth.login.noAccount' })}{' '}
                   <Typography
                     component={RouterLink}
                     to="/register"
                     variant="body2"
                     sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
                   >
-                    Create account
+                    {intl.formatMessage({ id: 'auth.login.createAccount' })}
                   </Typography>
                 </Typography>
               </Grid>

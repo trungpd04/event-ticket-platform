@@ -15,6 +15,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { openSnackbar } from 'api/snackbar';
 import AuthCheckbox from 'components/auth/AuthCheckbox';
@@ -39,6 +42,7 @@ import imgGoogle from 'assets/images/auth/google.svg';
 // ============================|| AUTH - REGISTER ||============================ //
 
 export default function AuthRegister() {
+  const intl = useIntl();
   const { register } = useAuth();
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
@@ -57,10 +61,10 @@ export default function AuthRegister() {
             color: '#FFFFFF'
           }}
         >
-          Event
+          {intl.formatMessage({ id: 'auth.brand' })}
         </Typography>
         <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
-          Create your account to get started
+          {intl.formatMessage({ id: 'auth.register.subtitle' })}
         </Typography>
       </Stack>
 
@@ -69,10 +73,19 @@ export default function AuthRegister() {
       <Formik
         initialValues={{ firstName: '', lastName: '', email: '', password: '', submit: null }}
         validationSchema={Yup.object().shape({
-          firstName: Yup.string().max(255).required('First Name is required'),
-          lastName: Yup.string().max(255).required('Last Name is required'),
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters')
+          firstName: Yup.string()
+            .max(255)
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.register.firstName' }) })),
+          lastName: Yup.string()
+            .max(255)
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.register.lastName' }) })),
+          email: Yup.string()
+            .email(intl.formatMessage({ id: 'validation.email' }))
+            .max(255)
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.register.email' }) })),
+          password: Yup.string()
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.register.password' }) }))
+            .min(8, intl.formatMessage({ id: 'validation.passwordMin' }, { min: 8 }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -83,7 +96,7 @@ export default function AuthRegister() {
               setSubmitting(false);
               openSnackbar({
                 open: true,
-                message: 'Your registration has been successfully completed.',
+                message: intl.formatMessage({ id: 'auth.register.success' }),
                 variant: 'alert',
                 alert: { color: 'success' }
               } as SnackbarProps);
@@ -92,7 +105,7 @@ export default function AuthRegister() {
           } catch (err: any) {
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message || 'Registration failed' });
+              setErrors({ submit: err.message || intl.formatMessage({ id: 'auth.register.failed' }) });
               setSubmitting(false);
             }
           }
@@ -105,7 +118,7 @@ export default function AuthRegister() {
                 <AuthInput
                   id="firstname-signup"
                   name="firstName"
-                  label="First Name"
+                  label={intl.formatMessage({ id: 'auth.register.firstName' })}
                   value={values.firstName}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -124,7 +137,7 @@ export default function AuthRegister() {
                 <AuthInput
                   id="lastname-signup"
                   name="lastName"
-                  label="Last Name"
+                  label={intl.formatMessage({ id: 'auth.register.lastName' })}
                   value={values.lastName}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -144,7 +157,7 @@ export default function AuthRegister() {
                   id="email-signup"
                   name="email"
                   type="email"
-                  label="Email"
+                  label={intl.formatMessage({ id: 'auth.register.email' })}
                   value={values.email}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -164,7 +177,7 @@ export default function AuthRegister() {
                   id="password-signup"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  label="Password"
+                  label={intl.formatMessage({ id: 'auth.register.password' })}
                   value={values.password}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -191,13 +204,13 @@ export default function AuthRegister() {
                   control={<AuthCheckbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
                   label={
                     <Typography sx={{ color: '#FFFFFF', fontSize: '0.875rem' }}>
-                      I agree to the{' '}
+                      {intl.formatMessage({ id: 'auth.register.agree' })}{' '}
                       <Typography component={RouterLink} to="#" sx={{ color: 'primary.main', textDecoration: 'none' }}>
-                        Terms of Service
+                        {intl.formatMessage({ id: 'auth.register.terms' })}
                       </Typography>{' '}
-                      and{' '}
+                      {intl.formatMessage({ id: 'auth.register.and' })}{' '}
                       <Typography component={RouterLink} to="#" sx={{ color: 'primary.main', textDecoration: 'none' }}>
-                        Privacy Policy
+                        {intl.formatMessage({ id: 'auth.register.privacy' })}
                       </Typography>
                     </Typography>
                   }
@@ -210,19 +223,19 @@ export default function AuthRegister() {
               )}
               <Grid size={12}>
                 <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
-                  Create account
+                  {intl.formatMessage({ id: 'auth.register.button' })}
                 </EventButton>
               </Grid>
               <Grid size={12} sx={{ textAlign: 'center' }}>
                 <Typography variant="body2" sx={{ color: '#999' }}>
-                  Already have an account?{' '}
+                  {intl.formatMessage({ id: 'auth.register.hasAccount' })}{' '}
                   <Typography
                     component={RouterLink}
                     to="/login"
                     variant="body2"
                     sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
                   >
-                    Log in
+                    {intl.formatMessage({ id: 'auth.register.login' })}
                   </Typography>
                 </Typography>
               </Grid>

@@ -2,8 +2,10 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -11,12 +13,25 @@ import Typography from '@mui/material/Typography';
 // project-imports
 import EventButton from 'components/event/EventButton';
 import useAuth from 'hooks/useAuth';
+import useConfig from 'hooks/useConfig';
 import { useIntl } from 'react-intl';
+
+// types
+import { I18n } from 'types/config';
 
 // ==============================|| PUBLIC HEADER ||============================== //
 
+const LANGUAGES: { value: I18n; label: string }[] = [
+  { value: 'en', label: 'English' },
+  { value: 'vi', label: 'Tiếng Việt' },
+  { value: 'fr', label: 'Français' },
+  { value: 'ro', label: 'Română' },
+  { value: 'zh', label: '中文' }
+];
+
 export default function PublicHeader() {
   const { isLoggedIn, logout } = useAuth();
+  const { i18n, onChangeLocalization } = useConfig();
   const intl = useIntl();
 
   return (
@@ -48,6 +63,31 @@ export default function PublicHeader() {
           </Stack>
 
           <Stack direction="row" spacing={1.5} alignItems="center">
+            <FormControl size="small" sx={{ minWidth: { xs: 80, sm: 120 } }}>
+              <Select
+                value={i18n}
+                onChange={(e) => onChangeLocalization(e.target.value as I18n)}
+                variant="outlined"
+                inputProps={{ 'aria-label': 'Language' }}
+                sx={{
+                  '& .MuiSelect-select': {
+                    py: 0.75,
+                    px: 1.5,
+                    fontSize: '0.875rem',
+                    fontWeight: 600
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'divider'
+                  }
+                }}
+              >
+                {LANGUAGES.map((lang) => (
+                  <MenuItem key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             {isLoggedIn ? (
               <>
                 <EventButton component={RouterLink} to="/organizer/events/create" variant="contained" color="primary">

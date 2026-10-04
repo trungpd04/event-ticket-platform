@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 
 // third-party
 import { useTimer } from 'react-timer-hook';
+import { useIntl } from 'react-intl';
 
 // project-imports
 import IconButton from 'components/@extended/IconButton';
@@ -37,6 +38,7 @@ function TimerBox({ count }: { count: number }) {
 }
 
 export default function ComingSoon() {
+  const intl = useIntl();
   const time = new Date();
   time.setSeconds(time.getSeconds() + 3600 * 24 * 2 - 3600 * 15.5);
 
@@ -56,10 +58,10 @@ export default function ComingSoon() {
               <Grid size={12}>
                 <Stack sx={{ gap: 1, justifyContent: 'center', alignItems: 'center' }}>
                   <Typography align="center" variant="h1">
-                    Coming Soon
+                    {intl.formatMessage({ id: 'comingSoon.title' })}
                   </Typography>
                   <Typography align="center" sx={{ color: 'text.secondary' }}>
-                    Something new is on its way
+                    {intl.formatMessage({ id: 'comingSoon.subtitle2' })}
                   </Typography>
                 </Stack>
               </Grid>
@@ -74,9 +76,9 @@ export default function ComingSoon() {
               <Grid sx={{ width: { xs: 380, md: 380, lg: 380 } }} size={12}>
                 <Stack sx={{ gap: 3, mt: 2 }}>
                   <Stack direction="row" sx={{ gap: 1 }}>
-                    <TextField fullWidth placeholder="Email Address" />
+                    <TextField fullWidth placeholder={intl.formatMessage({ id: 'comingSoon.emailPlaceholder' })} />
                     <Button variant="contained" sx={{ width: '50%' }} startIcon={<Notification variant="Bold" />}>
-                      Notify Me
+                      {intl.formatMessage({ id: 'comingSoon.button' })}
                     </Button>
                   </Stack>
                   <Stack direction="row" sx={{ gap: 2, alignItems: 'center', justifyContent: 'center' }}>

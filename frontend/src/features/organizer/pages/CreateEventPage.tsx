@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -14,6 +14,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { openSnackbar } from 'api/snackbar';
 import { createEvent, getCategories, getProvinces } from 'api/events';
@@ -27,7 +30,12 @@ import Summary from 'features/organizer/components/create-event/Summary';
 // types
 import { BankAccount, Category, CreateEventPayload, EventSettings, Province, TicketType } from 'types/organizer';
 
-const steps = ['Event info', 'Tickets', 'Settings', 'Payout'];
+const steps = [
+  'createEvent.steps.info',
+  'createEvent.steps.tickets',
+  'createEvent.steps.settings',
+  'createEvent.steps.payout'
+];
 
 const initialEvent: CreateEventPayload = {
   title: '',
@@ -36,6 +44,7 @@ const initialEvent: CreateEventPayload = {
   coverImageUrl: '',
   categoryId: '',
   provinceId: '',
+  wardId: '',
   startTime: '',
   endTime: '',
   ticketSaleStartTime: '',
@@ -56,7 +65,26 @@ const initialBankAccount: BankAccount = {
   branch: ''
 };
 
+const getValidation = (intl: ReturnType<typeof useIntl>) => [
+  Yup.object({
+    title: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventTitle' }) })),
+    location: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.detailedAddress' }) })),
+    categoryId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.category' }) })),
+    provinceId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.province' }) })),
+    wardId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) }))
+  }),
+  Yup.object({
+    startTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventStartTime' }) })),
+    endTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventEndTime' }) })),
+    ticketSaleStartTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleStart' }) })),
+    ticketSaleEndTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleEnd' }) }))
+  }),
+  Yup.object({}),
+  Yup.object({})
+];
+
 export default function CreateEventPage() {
+  const intl = useIntl();
   const [activeStep, setActiveStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -65,27 +93,13 @@ export default function CreateEventPage() {
   const [bankAccount, setBankAccount] = useState<BankAccount>(initialBankAccount);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
 
+  const stepValidation = useMemo(() => getValidation(intl), [intl]);
+  const stepLabels = useMemo(() => steps.map((key) => intl.formatMessage({ id: key })), [intl]);
+
   useEffect(() => {
     getCategories().then(setCategories).catch(() => setCategories([]));
     getProvinces().then(setProvinces).catch(() => setProvinces([]));
   }, []);
-
-  const stepValidation = [
-    Yup.object({
-      title: Yup.string().required('Title is required'),
-      location: Yup.string().required('Location is required'),
-      categoryId: Yup.number().required('Category is required'),
-      provinceId: Yup.number().required('Province is required')
-    }),
-    Yup.object({
-      startTime: Yup.string().required('Start time is required'),
-      endTime: Yup.string().required('End time is required'),
-      ticketSaleStartTime: Yup.string().required('Ticket sale start is required'),
-      ticketSaleEndTime: Yup.string().required('Ticket sale end is required')
-    }),
-    Yup.object({}),
-    Yup.object({})
-  ];
 
   const handleNext = async (validateForm: () => Promise<any>, values: CreateEventPayload) => {
     const errors = await validateForm();
@@ -95,21 +109,22 @@ export default function CreateEventPage() {
           const payload = {
             ...values,
             categoryId: Number(values.categoryId),
-            provinceId: Number(values.provinceId)
+            provinceId: Number(values.provinceId),
+            wardId: Number(values.wardId)
           };
           const result = await createEvent(payload);
           setCreatedEvent(result);
           setActiveStep(steps.length);
           openSnackbar({
             open: true,
-            message: 'Event created successfully!',
+            message: intl.formatMessage({ id: 'createEvent.success' }),
             variant: 'alert',
             alert: { color: 'success' }
           } as any);
         } catch (err: any) {
           openSnackbar({
             open: true,
-            message: err.message || 'Failed to create event',
+            message: err.message || intl.formatMessage({ id: 'createEvent.failed' }),
             variant: 'alert',
             alert: { color: 'error' }
           } as any);
@@ -123,11 +138,11 @@ export default function CreateEventPage() {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h3" mb={3}>
-        Create new event
+        {intl.formatMessage({ id: 'createEvent.title' })}
       </Typography>
 
       <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-        {steps.map((label) => (
+        {stepLabels.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
@@ -186,10 +201,12 @@ export default function CreateEventPage() {
                     disabled={activeStep === 0}
                     onClick={() => setActiveStep((prev) => prev - 1)}
                   >
-                    Back
+                    {intl.formatMessage({ id: 'createEvent.back' })}
                   </EventButton>
                   <EventButton variant="contained" color="primary" onClick={() => handleNext(validateForm, values)}>
-                    {activeStep === steps.length - 1 ? 'Create event' : 'Next'}
+                    {activeStep === steps.length - 1
+                      ? intl.formatMessage({ id: 'createEvent.create' })
+                      : intl.formatMessage({ id: 'createEvent.next' })}
                   </EventButton>
                 </Stack>
               )}

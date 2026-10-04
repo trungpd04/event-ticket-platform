@@ -8,6 +8,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { APP_DEFAULT_PATH } from 'config';
 
@@ -17,6 +20,8 @@ import error404 from 'assets/images/maintenance/img-error-404.svg';
 // ==============================|| ERROR 404 ||============================== //
 
 export default function Error404() {
+  const intl = useIntl();
+
   return (
     <Grid
       container
@@ -35,12 +40,12 @@ export default function Error404() {
       </Grid>
       <Grid size={12}>
         <Stack sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
-          <Typography variant="h1">Page Not Found</Typography>
+          <Typography variant="h1">{intl.formatMessage({ id: 'error404.title' })}</Typography>
           <Typography align="center" sx={{ color: 'text.secondary', width: { xs: '73%', sm: '61%' } }}>
-            The page you are looking was moved, removed, renamed, or might never exist!
+            {intl.formatMessage({ id: 'error404.message' })}
           </Typography>
           <Button component={Link} to={APP_DEFAULT_PATH} variant="contained">
-            Back To Home
+            {intl.formatMessage({ id: 'error404.button' })}
           </Button>
         </Stack>
       </Grid>

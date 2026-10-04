@@ -8,6 +8,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import IconButton from 'components/@extended/IconButton';
 
@@ -20,6 +23,8 @@ import AuthBackground from 'assets/images/auth/AuthBackground';
 // ==============================|| COMING SOON ||============================== //
 
 export default function ComingSoon() {
+  const intl = useIntl();
+
   return (
     <>
       <AuthBackground />
@@ -31,21 +36,24 @@ export default function ComingSoon() {
               <Grid container spacing={3} direction="column">
                 <Grid size={12}>
                   <Stack sx={{ gap: 3 }}>
-                    <Typography variant="h4">Coming Soon</Typography>
+                    <Typography variant="h4">{intl.formatMessage({ id: 'comingSoon.title' })}</Typography>
                     <Typography variant="h2">
-                      <Box sx={{ color: 'primary.main', display: 'inline-block' }}>Able Pro</Box> - The Bootstrap Admin Template
+                      <Box sx={{ color: 'primary.main', display: 'inline-block' }}>
+                        {intl.formatMessage({ id: 'comingSoon.subtitleBrand' })}
+                      </Box>{' '}
+                      {intl.formatMessage({ id: 'comingSoon.subtitleRest' })}
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
-                      Presenting Material-UI based React Dashboard Template to build performance centric websites and applications.
+                      {intl.formatMessage({ id: 'comingSoon.description' })}
                     </Typography>
                   </Stack>
                 </Grid>
                 <Grid sx={{ width: { xs: 320, md: 380 } }} size={12}>
                   <Stack sx={{ gap: 3, mt: 2 }}>
                     <Stack direction="row" sx={{ gap: 1 }}>
-                      <TextField fullWidth placeholder="Email Address" />
+                      <TextField fullWidth placeholder={intl.formatMessage({ id: 'comingSoon.emailPlaceholder' })} />
                       <Button variant="contained" sx={{ width: '50%' }} startIcon={<Notification variant="Bold" />}>
-                        Notify Me
+                        {intl.formatMessage({ id: 'comingSoon.button' })}
                       </Button>
                     </Stack>
                     <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>

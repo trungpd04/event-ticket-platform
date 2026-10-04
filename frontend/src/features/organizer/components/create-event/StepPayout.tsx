@@ -2,6 +2,9 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { BankAccount } from 'types/organizer';
 
@@ -11,6 +14,8 @@ interface StepPayoutProps {
 }
 
 export default function StepPayout({ values, setValues }: StepPayoutProps) {
+  const intl = useIntl();
+
   const handleChange = (field: keyof BankAccount, value: string) => {
     setValues({ ...values, [field]: value });
   };
@@ -20,7 +25,7 @@ export default function StepPayout({ values, setValues }: StepPayoutProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Bank name"
+          label={intl.formatMessage({ id: 'createEvent.bankName' })}
           value={values.bankName}
           onChange={(e) => handleChange('bankName', e.target.value)}
         />
@@ -28,7 +33,7 @@ export default function StepPayout({ values, setValues }: StepPayoutProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Account number"
+          label={intl.formatMessage({ id: 'createEvent.accountNumber' })}
           value={values.accountNumber}
           onChange={(e) => handleChange('accountNumber', e.target.value)}
         />
@@ -36,7 +41,7 @@ export default function StepPayout({ values, setValues }: StepPayoutProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Account holder"
+          label={intl.formatMessage({ id: 'createEvent.accountHolder' })}
           value={values.accountHolder}
           onChange={(e) => handleChange('accountHolder', e.target.value)}
         />
@@ -44,7 +49,7 @@ export default function StepPayout({ values, setValues }: StepPayoutProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Branch"
+          label={intl.formatMessage({ id: 'createEvent.branch' })}
           value={values.branch}
           onChange={(e) => handleChange('branch', e.target.value)}
         />

@@ -16,7 +16,7 @@ export default function InputLabel(theme: Theme) {
             lineHeight: '1em'
           },
           '&.MuiInputLabel-shrink': {
-            background: theme.palette.background.paper,
+            background: 'transparent',
             padding: '0 8px',
             marginLeft: -6,
             lineHeight: '1.4375em'

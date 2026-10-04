@@ -8,6 +8,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { APP_DEFAULT_PATH } from 'config';
 
@@ -17,6 +20,8 @@ import construction from 'assets/images/maintenance/img-construction-2.svg';
 // ==============================|| UNDER CONSTRUCTION ||============================== //
 
 export default function UnderConstruction() {
+  const intl = useIntl();
+
   return (
     <Grid container spacing={3} direction="column" sx={{ alignItems: 'center', justifyContent: 'center', minHeight: '100vh', py: 2 }}>
       <Grid size={12}>
@@ -29,13 +34,13 @@ export default function UnderConstruction() {
       <Grid size={12}>
         <Stack sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
           <Typography align="center" variant="h1">
-            Under Construction
+            {intl.formatMessage({ id: 'underConstruction.title' })}
           </Typography>
           <Typography align="center" sx={{ color: 'text.secondary', width: '85%' }}>
-            Hey! Please check out this site later. We are doing some maintenance on it right now.
+            {intl.formatMessage({ id: 'underConstruction.message' })}
           </Typography>
           <Button component={Link} to={APP_DEFAULT_PATH} variant="contained">
-            Back To Home
+            {intl.formatMessage({ id: 'underConstruction.button' })}
           </Button>
         </Stack>
       </Grid>

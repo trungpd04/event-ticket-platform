@@ -1,5 +1,8 @@
 import { useState, ChangeEvent } from 'react';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // material-ui
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -20,6 +23,7 @@ const sizes = [
 // ==============================|| CONTACT US - FORM ||============================== //
 
 export default function ContactForm() {
+  const intl = useIntl();
   const [size, setSize] = useState(1);
   const handleCompanySize = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSize(Number(event.target?.value!));
@@ -32,37 +36,37 @@ export default function ContactForm() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack sx={{ gap: 1 }}>
                 <Typography variant="subtitle1" color="secondary">
-                  First Name
+                  {intl.formatMessage({ id: 'contact.firstName' })}
                 </Typography>
-                <TextField fullWidth type="text" placeholder="First name" />
+                <TextField fullWidth type="text" placeholder={intl.formatMessage({ id: 'contact.firstNamePlaceholder' })} />
               </Stack>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack sx={{ gap: 1 }}>
                 <Typography variant="subtitle1" color="secondary">
-                  Last Name
+                  {intl.formatMessage({ id: 'contact.lastName' })}
                 </Typography>
-                <TextField fullWidth type="text" placeholder="Last name" />
+                <TextField fullWidth type="text" placeholder={intl.formatMessage({ id: 'contact.lastNamePlaceholder' })} />
               </Stack>
             </Grid>
             <Grid size={12}>
               <Stack sx={{ gap: 1 }}>
                 <Typography variant="subtitle1" color="secondary">
-                  Email Address
+                  {intl.formatMessage({ id: 'contact.email' })}
                 </Typography>
-                <TextField fullWidth type="email" placeholder="Email Address" />
+                <TextField fullWidth type="email" placeholder={intl.formatMessage({ id: 'contact.emailPlaceholder' })} />
               </Stack>
             </Grid>
             <Grid size={12}>
               <Stack sx={{ gap: 1 }}>
                 <Typography variant="subtitle1" color="secondary">
-                  Phone Number
+                  {intl.formatMessage({ id: 'contact.phone' })}
                 </Typography>
-                <TextField fullWidth type="number" placeholder="Phone Number" />
+                <TextField fullWidth type="number" placeholder={intl.formatMessage({ id: 'contact.phonePlaceholder' })} />
               </Stack>
             </Grid>
             <Grid size={12}>
-              <TextField select fullWidth placeholder="Company Size" value={size} onChange={handleCompanySize}>
+              <TextField select fullWidth placeholder={intl.formatMessage({ id: 'contact.companySize' })} value={size} onChange={handleCompanySize}>
                 {sizes.map((option, index) => (
                   <MenuItem key={index} value={option.value}>
                     {option.label}
@@ -74,16 +78,16 @@ export default function ContactForm() {
               <Stack direction="row" sx={{ alignItems: 'center', ml: -1 }}>
                 <Checkbox sx={{ '& .css-1vjb4cj': { borderRadius: '2px' } }} defaultChecked />
                 <Typography>
-                  I agree to all the{' '}
+                  {intl.formatMessage({ id: 'contact.terms' })}{' '}
                   <Typography component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>
-                    Terms & Condition
+                    {intl.formatMessage({ id: 'contact.termsLink' })}
                   </Typography>
                 </Typography>
               </Stack>
             </Grid>
             <Grid size={12}>
               <Button variant="contained" fullWidth>
-                Submit
+                {intl.formatMessage({ id: 'contact.submit' })}
               </Button>
             </Grid>
           </Grid>

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // material-ui
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -7,6 +10,7 @@ import Typography from '@mui/material/Typography';
 // ==============================|| AUTH TOGGLE ||============================== //
 
 export default function AuthToggle() {
+  const intl = useIntl();
   const [selected, setSelected] = useState<'email' | 'phone'>('email');
 
   const itemSx = (active: boolean) => ({
@@ -22,10 +26,10 @@ export default function AuthToggle() {
   return (
     <Stack direction="row" spacing={0.5} sx={{ bgcolor: '#242424', p: 0.5, borderRadius: 1.5 }}>
       <Typography variant="body2" sx={{ ...itemSx(selected === 'email'), color: '#FFFFFF' }} onClick={() => setSelected('email')}>
-        Email
+        {intl.formatMessage({ id: 'auth.toggle.email' })}
       </Typography>
       <Typography variant="body2" sx={{ ...itemSx(selected === 'phone'), color: '#999999' }} onClick={() => setSelected('phone')}>
-        Phone number
+        {intl.formatMessage({ id: 'auth.toggle.phone' })}
       </Typography>
     </Stack>
   );

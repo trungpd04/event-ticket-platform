@@ -24,19 +24,19 @@ export default function SearchWidget() {
           <Typography variant="caption" color="text.secondary">
             {intl.formatMessage({ id: 'search.what', defaultMessage: 'What' })}
           </Typography>
-          <EventInput placeholder={intl.formatMessage({ id: 'search.what', defaultMessage: 'Search events' })} />
+          <EventInput placeholder={intl.formatMessage({ id: 'search.whatPlaceholder', defaultMessage: 'Search events' })} />
         </Stack>
         <Stack spacing={0.5} flex={1} width="100%">
           <Typography variant="caption" color="text.secondary">
             {intl.formatMessage({ id: 'search.where', defaultMessage: 'Where' })}
           </Typography>
-          <EventInput placeholder={intl.formatMessage({ id: 'search.where', defaultMessage: 'Location' })} />
+          <EventInput placeholder={intl.formatMessage({ id: 'search.wherePlaceholder', defaultMessage: 'Location' })} />
         </Stack>
         <Stack spacing={0.5} flex={1} width="100%">
           <Typography variant="caption" color="text.secondary">
             {intl.formatMessage({ id: 'search.when', defaultMessage: 'When' })}
           </Typography>
-          <EventInput placeholder={intl.formatMessage({ id: 'search.when', defaultMessage: 'Date' })} />
+          <EventInput placeholder={intl.formatMessage({ id: 'search.whenPlaceholder', defaultMessage: 'Date' })} />
         </Stack>
         <EventButton variant="contained" color="primary" sx={{ minWidth: 140, height: 48 }}>
           {intl.formatMessage({ id: 'search.button', defaultMessage: 'Search' })}

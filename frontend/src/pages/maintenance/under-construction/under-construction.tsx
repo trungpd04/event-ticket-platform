@@ -9,6 +9,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { APP_DEFAULT_PATH } from 'config';
 
@@ -20,6 +23,8 @@ import constructionbottom from 'assets/images/maintenance/img-cunstruct-1-bottom
 // ==============================|| UNDER CONSTRUCTION ||============================== //
 
 export default function UnderConstruction() {
+  const intl = useIntl();
+
   return (
     <Box sx={{ minHeight: '100vh', backgroundImage: `url(${constructionBg})`, backgroundSize: '100%', backgroundRepeat: 'no-repeat' }}>
       <Container fixed sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
@@ -39,13 +44,13 @@ export default function UnderConstruction() {
           <Grid size={{ md: 6 }}>
             <Stack sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
               <Typography align="center" variant="h1">
-                Under Construction
+                {intl.formatMessage({ id: 'underConstruction.title' })}
               </Typography>
               <Typography align="center" sx={{ color: 'text.secondary', width: '85%' }}>
-                Hey! Please check out this site later. We are doing some maintenance on it right now.
+                {intl.formatMessage({ id: 'underConstruction.message' })}
               </Typography>
               <Button component={Link} to={APP_DEFAULT_PATH} variant="contained">
-                Back To Home
+                {intl.formatMessage({ id: 'underConstruction.button' })}
               </Button>
             </Stack>
           </Grid>

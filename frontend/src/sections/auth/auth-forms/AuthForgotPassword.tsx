@@ -11,6 +11,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { openSnackbar } from 'api/snackbar';
 import AuthInput from 'components/auth/AuthInput';
@@ -24,6 +27,7 @@ import { Sms } from 'iconsax-reactjs';
 // ============================|| AUTH - FORGOT PASSWORD ||============================ //
 
 export default function AuthForgotPassword() {
+  const intl = useIntl();
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
   const { forgotPassword } = useAuth();
@@ -39,17 +43,20 @@ export default function AuthForgotPassword() {
             color: '#FFFFFF'
           }}
         >
-          Event
+          {intl.formatMessage({ id: 'auth.brand' })}
         </Typography>
         <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
-          Enter your email and we&apos;ll send you an OTP to reset your password
+          {intl.formatMessage({ id: 'auth.forgotPassword.subtitle' })}
         </Typography>
       </Stack>
 
       <Formik
         initialValues={{ email: '', submit: null }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+          email: Yup.string()
+            .email(intl.formatMessage({ id: 'validation.email' }))
+            .max(255)
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.forgotPassword.email' }) }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -59,7 +66,7 @@ export default function AuthForgotPassword() {
               setSubmitting(false);
               openSnackbar({
                 open: true,
-                message: 'OTP has been sent to your email.',
+                message: intl.formatMessage({ id: 'auth.forgotPassword.success' }),
                 variant: 'alert',
                 alert: { color: 'success' }
               } as any);
@@ -70,7 +77,7 @@ export default function AuthForgotPassword() {
           } catch (err: any) {
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message || 'Failed to send OTP' });
+              setErrors({ submit: err.message || intl.formatMessage({ id: 'auth.forgotPassword.failed' }) });
               setSubmitting(false);
             }
           }
@@ -84,7 +91,7 @@ export default function AuthForgotPassword() {
                   id="email-forgot"
                   name="email"
                   type="email"
-                  label="Email"
+                  label={intl.formatMessage({ id: 'auth.forgotPassword.email' })}
                   value={values.email}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -106,7 +113,7 @@ export default function AuthForgotPassword() {
               )}
               <Grid size={12}>
                 <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
-                  Send OTP
+                  {intl.formatMessage({ id: 'auth.forgotPassword.button' })}
                 </EventButton>
               </Grid>
               <Grid size={12} sx={{ textAlign: 'center' }}>
@@ -117,7 +124,7 @@ export default function AuthForgotPassword() {
                     variant="body2"
                     sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
                   >
-                    Back to Login
+                    {intl.formatMessage({ id: 'auth.forgotPassword.backToLogin' })}
                   </Typography>
                 </Typography>
               </Grid>

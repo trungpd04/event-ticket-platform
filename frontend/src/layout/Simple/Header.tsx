@@ -19,6 +19,9 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import AnimateButton from 'components/@extended/AnimateButton';
 import IconButton from 'components/@extended/IconButton';
@@ -60,6 +63,7 @@ interface Props {
 // ==============================|| COMPONENTS - APP BAR ||============================== //
 
 export default function Header({ layout = 'landing', ...others }: Props) {
+  const intl = useIntl();
   const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
   const [drawerToggle, setDrawerToggle] = useState<boolean>(false);
 
@@ -117,10 +121,10 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                 target="_blank"
                 underline="none"
               >
-                Dashboard
+                {intl.formatMessage({ id: 'simpleHeader.dashboard' })}
               </Link>
               <Link className="header-link" color="secondary.main" component={RouterLink} to={'#'} underline="none">
-                Components
+                {intl.formatMessage({ id: 'simpleHeader.components' })}
               </Link>
               <Link
                 className="header-link"
@@ -129,7 +133,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                 target="_blank"
                 underline="none"
               >
-                Documentation
+                {intl.formatMessage({ id: 'simpleHeader.documentation' })}
               </Link>
               <Link
                 component={RouterLink}
@@ -140,7 +144,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                 underline="none"
                 sx={{ path: { strokeWidth: 2 }, svg: { marginBottom: '-3px' } }}
               >
-                Live Preview
+                {intl.formatMessage({ id: 'simpleHeader.livePreview' })}
               </Link>
               <Link href="https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template" target="_blank" underline="none">
                 <IconButton
@@ -173,7 +177,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                     size="large"
                     variant="contained"
                   >
-                    Purchase Now
+                    {intl.formatMessage({ id: 'simpleHeader.purchaseNow' })}
                   </Button>
                 </AnimateButton>
               </Box>
@@ -192,7 +196,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
               <Stack direction="row" sx={{ gap: 2 }}>
                 {layout !== 'component' && (
                   <Button variant="outlined" color="warning" component={RouterLink} to="#" sx={{ mt: 0.25 }}>
-                    All Components
+                    {intl.formatMessage({ id: 'simpleHeader.allComponents' })}
                   </Button>
                 )}
 
@@ -230,7 +234,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Dashboard" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.dashboard' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                       </ListItemButton>
                     </Link>
                     <Link style={{ textDecoration: 'none' }} component={RouterLink} to="#" target="_blank">
@@ -238,7 +242,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="All Components" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.allComponents' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                       </ListItemButton>
                     </Link>
                     <Link
@@ -250,7 +254,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Free Version" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.freeVersion' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                       </ListItemButton>
                     </Link>
                     <Link style={{ textDecoration: 'none' }} href="https://phoenixcoded.gitbook.io/able-pro" target="_blank">
@@ -258,7 +262,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Documentation" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.documentation' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                       </ListItemButton>
                     </Link>
                     <Link style={{ textDecoration: 'none' }} href="https://phoenixcoded.authordesk.app/" target="_blank">
@@ -266,7 +270,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Support" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.support' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                       </ListItemButton>
                     </Link>
                     <Link style={{ textDecoration: 'none' }} href="https://1.envato.market/zNkqj6" target="_blank">
@@ -274,7 +278,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Purchase Now" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.purchaseNow' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                         <Chip color="primary" label={import.meta.env.VITE_APP_VERSION} size="small" />
                       </ListItemButton>
                     </Link>
@@ -283,7 +287,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                         <ListItemIcon>
                           <Minus />
                         </ListItemIcon>
-                        <ListItemText primary="Live Preview" slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
+                        <ListItemText primary={intl.formatMessage({ id: 'simpleHeader.livePreview' })} slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }} />
                         <Stack sx={{ path: { strokeWidth: 2 } }}></Stack>
                       </ListItemButton>
                     </Link>

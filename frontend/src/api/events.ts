@@ -1,5 +1,5 @@
 import axios from 'utils/axios';
-import { Category, CreateEventPayload, Province } from 'types/organizer';
+import { Category, CreateEventPayload, Province, Ward } from 'types/organizer';
 
 // ==============================|| EVENTS API ||============================== //
 
@@ -13,11 +13,17 @@ export const getProvinces = async (): Promise<Province[]> => {
   return response.data as Province[];
 };
 
+export const getWards = async (provinceCode: string): Promise<Ward[]> => {
+  const response = await axios.get(`/api/v1/provinces/${provinceCode}/wards`);
+  return response.data as Ward[];
+};
+
 export const createEvent = async (payload: CreateEventPayload) => {
   const response = await axios.post('/api/v1/events', {
     ...payload,
     categoryId: Number(payload.categoryId),
-    provinceId: Number(payload.provinceId)
+    provinceId: Number(payload.provinceId),
+    wardId: Number(payload.wardId)
   });
   return response.data;
 };

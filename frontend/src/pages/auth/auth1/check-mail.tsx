@@ -6,6 +6,9 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import AnimateButton from 'components/@extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
@@ -15,15 +18,16 @@ import AuthWrapper from 'sections/auth/AuthWrapper';
 
 export default function CheckMail() {
   const { isLoggedIn } = useAuth();
+  const intl = useIntl();
 
   return (
     <AuthWrapper>
       <Grid container spacing={3}>
         <Grid size={12}>
           <Box sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Hi, Check Your Mail</Typography>
+            <Typography variant="h3">{intl.formatMessage({ id: 'auth.checkMail.title' })}</Typography>
             <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
-              We have sent a password recover instructions to your email.
+              {intl.formatMessage({ id: 'auth.checkMail.subtitle' })}
             </Typography>
           </Box>
         </Grid>
@@ -39,7 +43,7 @@ export default function CheckMail() {
               variant="contained"
               color="primary"
             >
-              Sign in
+              {intl.formatMessage({ id: 'auth.checkMail.button' })}
             </Button>
           </AnimateButton>
         </Grid>

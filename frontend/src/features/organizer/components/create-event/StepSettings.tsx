@@ -4,6 +4,9 @@ import Grid from '@mui/material/Grid';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { EventSettings } from 'types/organizer';
 
@@ -13,6 +16,8 @@ interface StepSettingsProps {
 }
 
 export default function StepSettings({ values, setValues }: StepSettingsProps) {
+  const intl = useIntl();
+
   const handleChange = (field: keyof EventSettings, value: any) => {
     setValues({ ...values, [field]: value });
   };
@@ -26,7 +31,7 @@ export default function StepSettings({ values, setValues }: StepSettingsProps) {
           fullWidth
           multiline
           rows={3}
-          label="Refund policy"
+          label={intl.formatMessage({ id: 'createEvent.refundPolicy' })}
           value={values.refundPolicy}
           onChange={(e) => handleChange('refundPolicy', e.target.value)}
         />
@@ -34,7 +39,7 @@ export default function StepSettings({ values, setValues }: StepSettingsProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Age restriction"
+          label={intl.formatMessage({ id: 'createEvent.ageRestriction' })}
           value={values.ageRestriction}
           onChange={(e) => handleChange('ageRestriction', e.target.value)}
         />
@@ -42,7 +47,7 @@ export default function StepSettings({ values, setValues }: StepSettingsProps) {
       <Grid size={12}>
         <TextField
           fullWidth
-          label="Tags (comma separated)"
+          label={intl.formatMessage({ id: 'createEvent.tags' })}
           value={tagString}
           onChange={(e) =>
             handleChange(
@@ -63,7 +68,7 @@ export default function StepSettings({ values, setValues }: StepSettingsProps) {
               onChange={(e) => handleChange('isPublic', e.target.checked)}
             />
           }
-          label="Public event"
+          label={intl.formatMessage({ id: 'createEvent.publicEvent' })}
         />
       </Grid>
     </Grid>

@@ -12,6 +12,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { openSnackbar } from 'api/snackbar';
 import AuthInput from 'components/auth/AuthInput';
@@ -26,6 +29,7 @@ import { Eye, EyeSlash, Lock } from 'iconsax-reactjs';
 // ============================|| AUTH - RESET PASSWORD ||============================ //
 
 export default function AuthResetPassword() {
+  const intl = useIntl();
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -48,20 +52,22 @@ export default function AuthResetPassword() {
             color: '#FFFFFF'
           }}
         >
-          Event
+          {intl.formatMessage({ id: 'auth.brand' })}
         </Typography>
         <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
-          Set a new password for your account
+          {intl.formatMessage({ id: 'auth.resetPassword.subtitle' })}
         </Typography>
       </Stack>
 
       <Formik
         initialValues={{ newPassword: '', confirmPassword: '', submit: null }}
         validationSchema={Yup.object().shape({
-          newPassword: Yup.string().required('New password is required').min(8, 'Password must be at least 8 characters'),
+          newPassword: Yup.string()
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.newPassword' }) }))
+            .min(8, intl.formatMessage({ id: 'validation.passwordMin' }, { min: 8 })),
           confirmPassword: Yup.string()
-            .required('Please confirm your password')
-            .oneOf([Yup.ref('newPassword')], 'Passwords must match')
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.confirmPassword' }) }))
+            .oneOf([Yup.ref('newPassword')], intl.formatMessage({ id: 'validation.passwordMatch' }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -71,7 +77,7 @@ export default function AuthResetPassword() {
               setSubmitting(false);
               openSnackbar({
                 open: true,
-                message: 'Password reset successfully.',
+                message: intl.formatMessage({ id: 'auth.resetPassword.success' }),
                 variant: 'alert',
                 alert: { color: 'success' }
               } as any);
@@ -80,7 +86,7 @@ export default function AuthResetPassword() {
           } catch (err: any) {
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message || 'Password reset failed' });
+              setErrors({ submit: err.message || intl.formatMessage({ id: 'auth.resetPassword.failed' }) });
               setSubmitting(false);
             }
           }
@@ -94,7 +100,7 @@ export default function AuthResetPassword() {
                   id="new-password"
                   name="newPassword"
                   type={showPassword ? 'text' : 'password'}
-                  label="New password"
+                  label={intl.formatMessage({ id: 'auth.resetPassword.newPassword' })}
                   value={values.newPassword}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -121,7 +127,7 @@ export default function AuthResetPassword() {
                   id="confirm-password"
                   name="confirmPassword"
                   type={showConfirm ? 'text' : 'password'}
-                  label="Confirm password"
+                  label={intl.formatMessage({ id: 'auth.resetPassword.confirmPassword' })}
                   value={values.confirmPassword}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -150,7 +156,7 @@ export default function AuthResetPassword() {
               )}
               <Grid size={12}>
                 <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
-                  Reset password
+                  {intl.formatMessage({ id: 'auth.resetPassword.button' })}
                 </EventButton>
               </Grid>
               <Grid size={12} sx={{ textAlign: 'center' }}>
@@ -160,7 +166,7 @@ export default function AuthResetPassword() {
                   variant="body2"
                   sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
                 >
-                  Back to Login
+                  {intl.formatMessage({ id: 'auth.resetPassword.backToLogin' })}
                 </Typography>
               </Grid>
             </Grid>

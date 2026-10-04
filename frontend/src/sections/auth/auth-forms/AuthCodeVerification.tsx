@@ -11,6 +11,9 @@ import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { openSnackbar } from 'api/snackbar';
 import AuthInput from 'components/auth/AuthInput';
@@ -21,6 +24,7 @@ import useScriptRef from 'hooks/useScriptRef';
 // ============================|| AUTH - CODE VERIFICATION ||============================ //
 
 export default function AuthCodeVerification() {
+  const intl = useIntl();
   const scriptedRef = useScriptRef();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -53,17 +57,20 @@ export default function AuthCodeVerification() {
             color: '#FFFFFF'
           }}
         >
-          Event
+          {intl.formatMessage({ id: 'auth.brand' })}
         </Typography>
         <Typography variant="body2" sx={{ color: '#B3B3B3' }}>
-          We sent an OTP to <strong style={{ color: '#FFFFFF' }}>{maskedEmail || 'your email'}</strong>
+          {intl.formatMessage({ id: 'auth.codeVerification.subtitle' })}{' '}
+          <strong style={{ color: '#FFFFFF' }}>{maskedEmail || intl.formatMessage({ id: 'auth.codeVerification.maskedEmail' })}</strong>
         </Typography>
       </Stack>
 
       <Formik
         initialValues={{ code: '', submit: null }}
         validationSchema={Yup.object().shape({
-          code: Yup.string().length(6, 'OTP must be 6 digits').required('OTP is required')
+          code: Yup.string()
+            .length(6, intl.formatMessage({ id: 'validation.otpLength' }, { length: 6 }))
+            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.codeVerification.code' }) }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -73,7 +80,7 @@ export default function AuthCodeVerification() {
               setSubmitting(false);
               openSnackbar({
                 open: true,
-                message: 'Verification successful. Set your new password.',
+                message: intl.formatMessage({ id: 'auth.codeVerification.success' }),
                 variant: 'alert',
                 alert: { color: 'success' }
               } as any);
@@ -84,7 +91,7 @@ export default function AuthCodeVerification() {
           } catch (err: any) {
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message || 'Invalid OTP' });
+              setErrors({ submit: err.message || intl.formatMessage({ id: 'auth.codeVerification.failed' }) });
               setSubmitting(false);
             }
           }
@@ -100,7 +107,7 @@ export default function AuthCodeVerification() {
                   name="code"
                   type="text"
                   inputProps={{ maxLength: 6, inputMode: 'numeric' }}
-                  label="Verification code"
+                  label={intl.formatMessage({ id: 'auth.codeVerification.code' })}
                   value={values.code}
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -115,12 +122,12 @@ export default function AuthCodeVerification() {
               )}
               <Grid size={12}>
                 <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
-                  Continue
+                  {intl.formatMessage({ id: 'auth.codeVerification.button' })}
                 </EventButton>
               </Grid>
               <Grid size={12} sx={{ textAlign: 'center' }}>
                 <Typography variant="body2" sx={{ color: '#999' }}>
-                  Didn&apos;t receive?{' '}
+                  {intl.formatMessage({ id: 'auth.codeVerification.didntReceive' })}{' '}
                   {canResend ? (
                     <Typography
                       component="span"
@@ -131,11 +138,11 @@ export default function AuthCodeVerification() {
                         setCanResend(false);
                       }}
                     >
-                      Resend
+                      {intl.formatMessage({ id: 'auth.codeVerification.resend' })}
                     </Typography>
                   ) : (
                     <Typography component="span" variant="body2" sx={{ color: '#666' }}>
-                      Resend in {timer}s
+                      {intl.formatMessage({ id: 'auth.codeVerification.resendIn' }, { seconds: timer })}
                     </Typography>
                   )}
                 </Typography>
@@ -147,7 +154,7 @@ export default function AuthCodeVerification() {
                   variant="body2"
                   sx={{ color: 'primary.main', textDecoration: 'none', fontWeight: 500 }}
                 >
-                  Back to Login
+                  {intl.formatMessage({ id: 'auth.codeVerification.backToLogin' })}
                 </Typography>
               </Grid>
             </Grid>

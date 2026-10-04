@@ -9,7 +9,13 @@ export interface Category {
 export interface Province {
   id: number;
   name: string;
-  code?: string;
+  provinceCode?: string;
+}
+
+export interface Ward {
+  id: number;
+  wardCode: string;
+  name: string;
 }
 
 export interface TicketType {
@@ -42,6 +48,7 @@ export interface CreateEventPayload {
   coverImageUrl: string;
   categoryId: number | '';
   provinceId: number | '';
+  wardId: number | '';
   startTime: string;
   endTime: string;
   ticketSaleStartTime: string;
