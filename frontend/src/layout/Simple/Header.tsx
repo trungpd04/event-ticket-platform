@@ -1,6 +1,5 @@
 import { useState, cloneElement, ReactElement, CSSProperties } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useIntl } from 'react-intl';
 
 // material-ui
 import { alpha, useTheme } from '@mui/material/styles';
@@ -28,7 +27,7 @@ import Logo from 'components/logo';
 import { ThemeDirection } from 'config';
 
 // assets
-import { Add, ExportSquare, HamburgerMenu, Minus } from 'iconsax-reactjs';
+import { ExportSquare, HamburgerMenu, Minus } from 'iconsax-reactjs';
 import GithubIcon from 'assets/github';
 
 interface ElevationScrollProps {
@@ -61,7 +60,6 @@ interface Props {
 // ==============================|| COMPONENTS - APP BAR ||============================== //
 
 export default function Header({ layout = 'landing', ...others }: Props) {
-  const intl = useIntl();
   const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
   const [drawerToggle, setDrawerToggle] = useState<boolean>(false);
 
@@ -166,21 +164,6 @@ export default function Header({ layout = 'landing', ...others }: Props) {
               <Box sx={{ display: 'inline-block' }}>
                 <AnimateButton>
                   <Button
-                    component={RouterLink}
-                    to="/organizer/events/create"
-                    disableElevation
-                    startIcon={<Add />}
-                    color="primary"
-                    size="large"
-                    variant="contained"
-                  >
-                    {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
-                  </Button>
-                </AnimateButton>
-              </Box>
-              <Box sx={{ display: 'inline-block' }}>
-                <AnimateButton>
-                  <Button
                     component={Link}
                     href="https://1.envato.market/zNkqj6"
                     target="_blank"
@@ -242,17 +225,6 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                   onKeyDown={drawerToggler(false)}
                 >
                   <List>
-                    <Link style={{ textDecoration: 'none' }} component={RouterLink} to={'/organizer/events/create'}>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <Minus />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
-                          slotProps={{ primary: { variant: 'h6', color: 'secondary.main' } }}
-                        />
-                      </ListItemButton>
-                    </Link>
                     <Link style={{ textDecoration: 'none' }} component={RouterLink} to={'/login'} target="_blank">
                       <ListItemButton>
                         <ListItemIcon>

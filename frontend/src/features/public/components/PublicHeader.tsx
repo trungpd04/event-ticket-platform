@@ -49,9 +49,14 @@ export default function PublicHeader() {
 
           <Stack direction="row" spacing={1.5} alignItems="center">
             {isLoggedIn ? (
-              <EventButton variant="outlined" color="primary" onClick={logout}>
-                {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
-              </EventButton>
+              <>
+                <EventButton component={RouterLink} to="/organizer/events/create" variant="contained" color="primary">
+                  {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+                </EventButton>
+                <EventButton variant="outlined" color="primary" onClick={logout}>
+                  {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
+                </EventButton>
+              </>
             ) : (
               <>
                 <EventButton component={RouterLink} to="/login" variant="text" color="primary">
