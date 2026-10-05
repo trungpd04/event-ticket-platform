@@ -32,9 +32,6 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
 
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
-
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.14
         with:
@@ -44,6 +41,7 @@ jobs:
           appdir: "backend"
           usedocker: false
         env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           # Dùng cho database bên ngoài (JDBC URL). Nếu dùng Heroku Postgres, để trống.
           HD_SPRING_DATASOURCE_URL: ${{ secrets.HEROKU_SPRING_DATASOURCE_URL }}
           HD_JWT_SECRET: ${{ secrets.HEROKU_JWT_SECRET }}
