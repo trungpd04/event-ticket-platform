@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="add create event buytton">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V17__update_provinces_and_wards_schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V17__update_provinces_and_wards_schema.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/components/PublicHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/components/PublicHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Simple/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Simple/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-backend-heroku-test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-backend-heroku-test.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
