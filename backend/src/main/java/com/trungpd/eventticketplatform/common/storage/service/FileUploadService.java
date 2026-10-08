@@ -55,7 +55,10 @@ public class FileUploadService {
             FileUploadResponse response = fileMapper.toResponse(saved);
             return response;
         } catch (IOException e) {
-            log.error("Failed to upload file", e);
+            log.error("Failed to upload file to cloud storage", e);
+            throw new FileValidationException("error.file.upload.failed");
+        } catch (Exception e) {
+            log.error("Unexpected error during file upload", e);
             throw new FileValidationException("error.file.upload.failed");
         }
     }
