@@ -23,7 +23,9 @@ export const createEvent = async (payload: CreateEventPayload) => {
     ...payload,
     categoryId: Number(payload.categoryId),
     provinceId: Number(payload.provinceId),
-    wardId: Number(payload.wardId)
+    wardId: Number(payload.wardId),
+    thumbnailFileId: Number(payload.thumbnailFileId),
+    bannerFileId: Number(payload.bannerFileId)
   });
   return response.data;
 };

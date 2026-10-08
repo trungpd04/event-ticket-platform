@@ -45,7 +45,10 @@ export interface CreateEventPayload {
   title: string;
   description: string;
   location: string;
-  coverImageUrl: string;
+  thumbnailFileId: number | '';
+  bannerFileId: number | '';
+  thumbnailUrl?: string;
+  bannerUrl?: string;
   categoryId: number | '';
   provinceId: number | '';
   wardId: number | '';

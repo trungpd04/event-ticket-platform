@@ -41,7 +41,10 @@ const initialEvent: CreateEventPayload = {
   title: '',
   description: '',
   location: '',
-  coverImageUrl: '',
+  thumbnailFileId: '',
+  bannerFileId: '',
+  thumbnailUrl: '',
+  bannerUrl: '',
   categoryId: '',
   provinceId: '',
   wardId: '',
@@ -71,7 +74,9 @@ const getValidation = (intl: ReturnType<typeof useIntl>) => [
     location: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.detailedAddress' }) })),
     categoryId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.category' }) })),
     provinceId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.province' }) })),
-    wardId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) }))
+    wardId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) })),
+    thumbnailFileId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.thumbnailImage' }) })),
+    bannerFileId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.bannerImage' }) }))
   }),
   Yup.object({
     startTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventStartTime' }) })),
@@ -110,7 +115,9 @@ export default function CreateEventPage() {
             ...values,
             categoryId: Number(values.categoryId),
             provinceId: Number(values.provinceId),
-            wardId: Number(values.wardId)
+            wardId: Number(values.wardId),
+            thumbnailFileId: Number(values.thumbnailFileId),
+            bannerFileId: Number(values.bannerFileId)
           };
           const result = await createEvent(payload);
           setCreatedEvent(result);

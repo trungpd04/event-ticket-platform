@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(be) cloudinary upload file module">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(be) link event to file uploaded">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/repository/FileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/repository/FileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/service/FileUploadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/service/FileUploadService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/CreateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/CreateEventRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepEventInfo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepEventInfo.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/organizer/pages/CreateEventPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/organizer/pages/CreateEventPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/types/organizer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/organizer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/locales/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/locales/vi.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/locales/vi.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,6 +115,7 @@
     <MESSAGE value="add create event buytton" />
     <MESSAGE value="refactor heroku configuration" />
     <MESSAGE value="(be) cloudinary upload file module" />
-    <option name="LAST_COMMIT_MESSAGE" value="(be) cloudinary upload file module" />
+    <MESSAGE value="(be) link event to file uploaded" />
+    <option name="LAST_COMMIT_MESSAGE" value="(be) link event to file uploaded" />
   </component>
 </project>
