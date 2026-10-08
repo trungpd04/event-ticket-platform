@@ -56,3 +56,7 @@ jobs:
           HD_ADMIN_PASSWORD: ${{ secrets.HEROKU_ADMIN_PASSWORD }}
           HD_ADMIN_EMAIL: ${{ secrets.HEROKU_ADMIN_EMAIL }}
           HD_ADMIN_FULL_NAME: ${{ secrets.HEROKU_ADMIN_FULL_NAME }}
+          # Cloudinary upload config
+          HD_CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          HD_CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          HD_CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
