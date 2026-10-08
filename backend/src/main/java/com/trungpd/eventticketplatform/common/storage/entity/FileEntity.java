@@ -5,6 +5,9 @@ import com.trungpd.eventticketplatform.common.storage.enums.FileType;
 import com.trungpd.eventticketplatform.common.storage.enums.PlatformType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 @Entity
 @Table(name = "files")
@@ -26,6 +29,7 @@ public class FileEntity extends BaseEntity {
     private PlatformType platformType;
 
     @Enumerated(EnumType.ORDINAL)
+    @JdbcTypeCode(Types.INTEGER)
     @Column(name = "file_type", nullable = false)
     private FileType fileType;
 
