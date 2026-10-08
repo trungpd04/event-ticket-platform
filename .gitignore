@@ -3,6 +3,9 @@ AGENTS.md
 
 # IntelliJ
 .idea/
+backend/.idea/
+frontend/.idea/
+mobile/.idea/
 
 # Node
 node_modules/

@@ -23,7 +23,11 @@ public class CreateEventRequest {
     @NotNull(message = "{error.validation.end-time-required}")
     private Instant endTime;
 
-    private String coverImageUrl;
+    @NotNull(message = "{error.validation.thumbnail-required}")
+    private Long thumbnailFileId;
+
+    @NotNull(message = "{error.validation.banner-required}")
+    private Long bannerFileId;
 
     @NotNull(message = "{error.validation.category-required}")
     private Long categoryId;

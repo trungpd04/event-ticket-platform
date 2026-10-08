@@ -3,6 +3,9 @@ package com.trungpd.eventticketplatform.events.service;
 import com.trungpd.eventticketplatform.common.exception.BusinessException;
 import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.common.mapper.PaginationMapper;
+import com.trungpd.eventticketplatform.common.storage.entity.FileEntity;
+import com.trungpd.eventticketplatform.common.storage.enums.FileType;
+import com.trungpd.eventticketplatform.common.storage.service.FileUploadService;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
@@ -60,6 +63,7 @@ public class EventService {
     private final UserService userService;
     private final TicketService ticketService;
     private final PaginationMapper paginationMapper;
+    private final FileUploadService fileUploadService;
 
     @Transactional
     public EventResponse createEvent(String email, CreateEventRequest request) {
@@ -82,6 +86,10 @@ public class EventService {
         event.setStatus(EventStatus.PENDING);
 
         Event saved = eventRepository.save(event);
+
+        linkEventImage(saved.getId(), request.getThumbnailFileId(), FileType.EVENT_THUMBNAIL, user.getEmail());
+        linkEventImage(saved.getId(), request.getBannerFileId(), FileType.BANNER, user.getEmail());
+
         return enrichEventResponse(eventMapper.toResponse(saved));
     }
 
@@ -169,6 +177,28 @@ public class EventService {
         }
 
         Event updated = eventRepository.save(event);
+
+        Long currentThumbnailId = findEventImageFileId(id, FileType.EVENT_THUMBNAIL);
+        Long currentBannerId = findEventImageFileId(id, FileType.BANNER);
+
+        if (request.getThumbnailFileId() != null
+                && !request.getThumbnailFileId().equals(currentThumbnailId)) {
+            if (currentThumbnailId != null) {
+                fileUploadService.unlinkFromEvent(currentThumbnailId);
+            }
+            linkEventImage(updated.getId(), request.getThumbnailFileId(),
+                    FileType.EVENT_THUMBNAIL, user.getEmail());
+        }
+
+        if (request.getBannerFileId() != null
+                && !request.getBannerFileId().equals(currentBannerId)) {
+            if (currentBannerId != null) {
+                fileUploadService.unlinkFromEvent(currentBannerId);
+            }
+            linkEventImage(updated.getId(), request.getBannerFileId(),
+                    FileType.BANNER, user.getEmail());
+        }
+
         return enrichEventResponse(eventMapper.toResponse(updated));
     }
 
@@ -307,6 +337,14 @@ public class EventService {
             ProvinceResponse province = locationMapper.toProvinceResponse(provinceService.findById(response.getProvince().getId()));
             response.setProvince(province);
         }
+
+        Long thumbnailFileId = findEventImageFileId(response.getId(), FileType.EVENT_THUMBNAIL);
+        Long bannerFileId = findEventImageFileId(response.getId(), FileType.BANNER);
+        response.setThumbnailFileId(thumbnailFileId);
+        response.setBannerFileId(bannerFileId);
+        response.setThumbnailUrl(fileUploadService.getFileUrl(thumbnailFileId));
+        response.setBannerUrl(fileUploadService.getFileUrl(bannerFileId));
+
         return response;
     }
 
@@ -322,7 +360,26 @@ public class EventService {
             ProvinceResponse province = locationMapper.toProvinceResponse(provinceService.findById(response.getProvince().getId()));
             response.setProvince(province);
         }
+
+        Long thumbnailFileId = findEventImageFileId(response.getId(), FileType.EVENT_THUMBNAIL);
+        Long bannerFileId = findEventImageFileId(response.getId(), FileType.BANNER);
+        response.setThumbnailFileId(thumbnailFileId);
+        response.setBannerFileId(bannerFileId);
+        response.setThumbnailUrl(fileUploadService.getFileUrl(thumbnailFileId));
+        response.setBannerUrl(fileUploadService.getFileUrl(bannerFileId));
+
         return response;
+    }
+
+    private void linkEventImage(Long eventId, Long fileId, FileType expectedType, String uploadedByEmail) {
+        fileUploadService.validateEventImage(fileId, expectedType, uploadedByEmail);
+        fileUploadService.linkToEvent(fileId, eventId);
+    }
+
+    private Long findEventImageFileId(Long eventId, FileType fileType) {
+        return fileUploadService.findByReferenceIdAndType(eventId, fileType)
+                .map(FileEntity::getId)
+                .orElse(null);
     }
 
 }

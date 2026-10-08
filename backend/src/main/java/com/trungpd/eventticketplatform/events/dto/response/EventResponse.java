@@ -16,7 +16,10 @@ public class EventResponse {
     private String location;
     private Instant startTime;
     private Instant endTime;
-    private String coverImageUrl;
+    private String thumbnailUrl;
+    private Long thumbnailFileId;
+    private String bannerUrl;
+    private Long bannerFileId;
     private EventStatus status;
     private Long organizerId;
     private Long feePolicyId;

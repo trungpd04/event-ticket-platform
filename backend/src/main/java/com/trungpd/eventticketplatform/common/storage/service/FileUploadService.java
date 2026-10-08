@@ -3,6 +3,7 @@ package com.trungpd.eventticketplatform.common.storage.service;
 import com.trungpd.eventticketplatform.common.storage.dto.response.FileUploadResponse;
 import com.trungpd.eventticketplatform.common.storage.entity.FileEntity;
 import com.trungpd.eventticketplatform.common.storage.config.StorageProperties;
+import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.common.storage.enums.FileType;
 import com.trungpd.eventticketplatform.common.storage.enums.PlatformType;
 import com.trungpd.eventticketplatform.common.storage.exception.FileValidationException;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -77,5 +79,54 @@ public class FileUploadService {
                 .filter(p -> p.getPlatformType().name().equalsIgnoreCase(activeProvider))
                 .findFirst()
                 .orElseThrow(() -> new FileValidationException("error.file.upload.failed"));
+    }
+
+    public FileEntity findById(Long fileId) {
+        return fileRepository.findById(fileId)
+                .orElseThrow(() -> new NotFoundException("error.file.not-found"));
+    }
+
+    public void validateEventImage(Long fileId, FileType expectedType, String uploadedByEmail) {
+        FileEntity file = findById(fileId);
+
+        if (!expectedType.equals(file.getFileType())) {
+            throw new FileValidationException("error.file.wrong-type");
+        }
+
+        if (!file.getUploadedBy().equals(uploadedByEmail)) {
+            throw new FileValidationException("error.file.not-owner");
+        }
+
+        if (file.getReferenceId() != null) {
+            throw new FileValidationException("error.file.already-linked");
+        }
+    }
+
+    public void linkToEvent(Long fileId, Long eventId) {
+        FileEntity file = findById(fileId);
+        file.setReferenceId(eventId);
+        file.setReferenceType("EVENT");
+        fileRepository.save(file);
+    }
+
+    public void unlinkFromEvent(Long fileId) {
+        FileEntity file = findById(fileId);
+        file.setReferenceId(null);
+        file.setReferenceType(null);
+        fileRepository.save(file);
+    }
+
+    public String getFileUrl(Long fileId) {
+        if (fileId == null) {
+            return null;
+        }
+        return fileRepository.findById(fileId)
+                .map(FileEntity::getUrl)
+                .orElse(null);
+    }
+
+    public Optional<FileEntity> findByReferenceIdAndType(Long eventId, FileType fileType) {
+        return fileRepository.findByReferenceIdAndReferenceTypeAndFileType(
+                eventId, "EVENT", fileType);
     }
 }

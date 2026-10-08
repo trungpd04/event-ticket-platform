@@ -12,7 +12,8 @@ public class UpdateEventRequest {
     private String location;
     private Instant startTime;
     private Instant endTime;
-    private String coverImageUrl;
+    private Long thumbnailFileId;
+    private Long bannerFileId;
     private Long categoryId;
     private Long provinceId;
     private Instant ticketSaleStartTime;
