@@ -4,7 +4,7 @@ import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,8 +14,8 @@ public class EventResponse {
     private String title;
     private String description;
     private String location;
-    private Instant startTime;
-    private Instant endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String thumbnailUrl;
     private Long thumbnailFileId;
     private String bannerUrl;
@@ -25,8 +25,8 @@ public class EventResponse {
     private Long feePolicyId;
     private CategoryResponse category;
     private ProvinceResponse province;
-    private Instant ticketSaleStartTime;
-    private Instant ticketSaleEndTime;
+    private LocalDateTime ticketSaleStartTime;
+    private LocalDateTime ticketSaleEndTime;
     private FeePolicySnapshotResponse feePolicySnapshot;
 
 }

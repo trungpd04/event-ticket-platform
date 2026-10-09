@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 public class CreateEventRequest {
@@ -18,10 +18,10 @@ public class CreateEventRequest {
     private String location;
 
     @NotNull(message = "{error.validation.start-time-required}")
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @NotNull(message = "{error.validation.end-time-required}")
-    private Instant endTime;
+    private LocalDateTime endTime;
 
     @NotNull(message = "{error.validation.thumbnail-required}")
     private Long thumbnailFileId;
@@ -36,9 +36,9 @@ public class CreateEventRequest {
     private Long provinceId;
 
     @NotNull(message = "{error.validation.ticket-sale-start-required}")
-    private Instant ticketSaleStartTime;
+    private LocalDateTime ticketSaleStartTime;
 
     @NotNull(message = "{error.validation.ticket-sale-end-required}")
-    private Instant ticketSaleEndTime;
+    private LocalDateTime ticketSaleEndTime;
 
 }

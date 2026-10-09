@@ -41,8 +41,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -95,7 +94,7 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public PagedResponse<EventResponse> searchEvents(String title, String location,
-                                                      Instant fromDate, Instant toDate,
+                                                      LocalDateTime fromDate, LocalDateTime toDate,
                                                       EventStatus status, TimeFilter timeFilter,
                                                       Long categoryId, Long provinceId,
                                                       Pageable pageable) {
@@ -155,10 +154,10 @@ public class EventService {
         boolean timesChanged = request.getStartTime() != null || request.getEndTime() != null;
         boolean saleTimesChanged = request.getTicketSaleStartTime() != null || request.getTicketSaleEndTime() != null;
 
-        Instant startTime = request.getStartTime() != null ? request.getStartTime() : event.getStartTime();
-        Instant endTime = request.getEndTime() != null ? request.getEndTime() : event.getEndTime();
-        Instant saleStart = request.getTicketSaleStartTime() != null ? request.getTicketSaleStartTime() : event.getTicketSaleStartTime();
-        Instant saleEnd = request.getTicketSaleEndTime() != null ? request.getTicketSaleEndTime() : event.getTicketSaleEndTime();
+        LocalDateTime startTime = request.getStartTime() != null ? request.getStartTime() : event.getStartTime();
+        LocalDateTime endTime = request.getEndTime() != null ? request.getEndTime() : event.getEndTime();
+        LocalDateTime saleStart = request.getTicketSaleStartTime() != null ? request.getTicketSaleStartTime() : event.getTicketSaleStartTime();
+        LocalDateTime saleEnd = request.getTicketSaleEndTime() != null ? request.getTicketSaleEndTime() : event.getTicketSaleEndTime();
 
         if (timesChanged) {
             validateEventTimes(startTime, endTime);
@@ -280,8 +279,8 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
     }
 
-    private void validateEventTimes(Instant startTime, Instant endTime) {
-        Instant oneHourFromNow = Instant.now().plus(1, ChronoUnit.HOURS);
+    private void validateEventTimes(LocalDateTime startTime, LocalDateTime endTime) {
+        LocalDateTime oneHourFromNow = LocalDateTime.now().plusHours(1);
         if (!startTime.isAfter(oneHourFromNow)) {
             throw new BusinessException("error.event.start-time-too-soon");
         }
@@ -290,7 +289,7 @@ public class EventService {
         }
     }
 
-    private void validateTicketSalePeriod(Instant saleStart, Instant saleEnd, Instant eventStart) {
+    private void validateTicketSalePeriod(LocalDateTime saleStart, LocalDateTime saleEnd, LocalDateTime eventStart) {
         if (!saleEnd.isAfter(saleStart)) {
             throw new BusinessException("error.event.invalid-sale-period");
         }
@@ -319,7 +318,7 @@ public class EventService {
     }
 
     private List<PromotionResponse> getActivePromotions(Long eventId) {
-        List<Promotion> promotions = promotionRepository.findActiveByEventId(eventId, Instant.now());
+        List<Promotion> promotions = promotionRepository.findActiveByEventId(eventId, LocalDateTime.now());
         return promotions.stream()
                 .map(promotionMapper::toResponse)
                 .toList();

@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class EventSpecification {
 
@@ -24,17 +24,17 @@ public class EventSpecification {
         return (root, query, cb) -> cb.equal(cb.lower(root.get("location")), location.toLowerCase());
     }
 
-    public static Specification<Event> startTimeGreaterThanOrEqual(Instant fromDate) {
+    public static Specification<Event> startTimeGreaterThanOrEqual(LocalDateTime fromDate) {
         return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("startTime"), fromDate);
     }
 
-    public static Specification<Event> startTimeLessThanOrEqual(Instant toDate) {
+    public static Specification<Event> startTimeLessThanOrEqual(LocalDateTime toDate) {
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("startTime"), toDate);
     }
 
     public static Specification<Event> hasTimeFilter(TimeFilter timeFilter) {
         return (root, query, cb) -> {
-            Instant now = Instant.now();
+            LocalDateTime now = LocalDateTime.now();
             return switch (timeFilter) {
                 case UPCOMING -> cb.greaterThan(root.get("startTime"), now);
                 case PAST -> cb.lessThan(root.get("endTime"), now);

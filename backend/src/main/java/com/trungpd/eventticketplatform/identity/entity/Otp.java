@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "otps")
@@ -26,7 +26,7 @@ public class Otp extends BaseEntity {
     private OtpType type;
 
     @Column(name = "expired_at", nullable = false)
-    private Instant expiredAt;
+    private LocalDateTime expiredAt;
 
     @Column(name = "is_used", nullable = false)
     private boolean isUsed;

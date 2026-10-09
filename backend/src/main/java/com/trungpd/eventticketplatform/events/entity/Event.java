@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
@@ -32,10 +32,10 @@ public class Event extends BaseEntity {
     private String location;
 
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "cover_image_url", length = 500)
     private String coverImageUrl;
@@ -47,10 +47,10 @@ public class Event extends BaseEntity {
     private Long provinceId;
 
     @Column(name = "ticket_sale_start_time")
-    private Instant ticketSaleStartTime;
+    private LocalDateTime ticketSaleStartTime;
 
     @Column(name = "ticket_sale_end_time")
-    private Instant ticketSaleEndTime;
+    private LocalDateTime ticketSaleEndTime;
 
     @Column(name = "organizer_commission_rate_snapshot", precision = 5, scale = 4)
     private BigDecimal organizerCommissionRateSnapshot;

@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -26,7 +25,7 @@ public class OtpService {
         otp.setEmail(email);
         otp.setCode(code);
         otp.setType(type);
-        otp.setExpiredAt(Instant.now().plus(5, ChronoUnit.MINUTES));
+        otp.setExpiredAt(LocalDateTime.now().plusMinutes(5));
         otp.setUsed(false);
 
         otpRepository.save(otp);
@@ -42,7 +41,7 @@ public class OtpService {
             throw new BusinessException("error.otp.used");
         }
 
-        if (otp.getExpiredAt().isBefore(Instant.now())) {
+        if (otp.getExpiredAt().isBefore(LocalDateTime.now())) {
             throw new BusinessException("error.otp.expired");
         }
 

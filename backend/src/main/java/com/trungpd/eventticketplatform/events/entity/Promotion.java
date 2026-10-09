@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "promotions")
@@ -35,9 +35,9 @@ public class Promotion extends BaseEntity {
     private Integer usedCount;
 
     @Column(name = "valid_from", nullable = false)
-    private Instant validFrom;
+    private LocalDateTime validFrom;
 
     @Column(name = "valid_until", nullable = false)
-    private Instant validUntil;
+    private LocalDateTime validUntil;
 
 }
