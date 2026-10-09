@@ -58,6 +58,33 @@ export interface CreateEventPayload {
   ticketSaleEndTime: string;
 }
 
+export interface Event {
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  thumbnailUrl?: string;
+  bannerUrl?: string;
+  status: string;
+  organizerId: number;
+  category?: Category;
+  province?: Province;
+  ticketSaleStartTime: string;
+  ticketSaleEndTime: string;
+}
+
+export interface PagedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
 export interface EventWizardState {
   event: CreateEventPayload;
   ticketTypes: TicketType[];
