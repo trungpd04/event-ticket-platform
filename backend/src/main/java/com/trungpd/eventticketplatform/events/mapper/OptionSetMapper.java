@@ -3,6 +3,7 @@ package com.trungpd.eventticketplatform.events.mapper;
 import com.trungpd.eventticketplatform.events.dto.request.OptionSetRequest;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetResponse;
+import com.trungpd.eventticketplatform.events.dto.response.OptionSetValueResponse;
 import com.trungpd.eventticketplatform.events.entity.OptionSet;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
