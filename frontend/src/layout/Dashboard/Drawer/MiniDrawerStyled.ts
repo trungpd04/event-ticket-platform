@@ -10,9 +10,9 @@ const openedMixin = (theme: Theme) =>
     backgroundColor: theme.palette.secondary.lighter,
     width: DRAWER_WIDTH,
     borderRight: 'none',
-    borderRadius: '24px',
-    margin: '16px',
-    height: 'calc(100vh - 32px)',
+    borderRadius: '16px',
+    margin: '12px',
+    height: 'calc(100vh - 24px)',
     boxShadow: theme.customShadows.z1,
     overflowX: 'hidden',
 
@@ -26,9 +26,9 @@ const closedMixin = (theme: Theme) =>
   ({
     overflow: 'hidden',
     backgroundColor: theme.palette.secondary.lighter,
-    borderRadius: '24px',
-    margin: '16px',
-    height: 'calc(100vh - 32px)',
+    borderRadius: '16px',
+    margin: '12px',
+    height: 'calc(100vh - 24px)',
 
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,

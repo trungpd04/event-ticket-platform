@@ -29,7 +29,7 @@ export default function DrawerHeader({ open }: Props) {
       open={open}
       sx={{
         minHeight: isHorizontal ? 'unset' : HEADER_HEIGHT,
-        width: isHorizontal ? { xs: '100%', lg: DRAWER_WIDTH + 50 } : 'initial',
+        width: isHorizontal ? { xs: '100%', lg: DRAWER_WIDTH } : 'initial',
         paddingTop: isHorizontal ? { xs: '10px', lg: '0' } : '8px',
         paddingBottom: isHorizontal ? { xs: '18px', lg: '0' } : '8px',
         paddingLeft: isHorizontal ? { xs: '24px', lg: '0' } : open ? '24px' : 0

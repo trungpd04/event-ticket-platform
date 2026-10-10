@@ -52,9 +52,9 @@ export default function MainDrawer({ window }: Props) {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
               borderRight: 'none',
-              borderRadius: '24px',
-              margin: '16px',
-              height: 'calc(100vh - 32px)',
+              borderRadius: '16px',
+              margin: '12px',
+              height: 'calc(100vh - 24px)',
               bgcolor: 'secondary.lighter',
               backgroundImage: 'none',
               boxShadow: (theme) => theme.customShadows.z1
