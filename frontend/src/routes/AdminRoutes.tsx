@@ -1,18 +1,16 @@
-import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 // project-imports
-import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 import RoleGuard from 'utils/route-guard/RoleGuard';
 
 // render - admin pages
-const AdminDashboardPage = Loadable(lazy(() => import('features/admin/pages/AdminDashboardPage')));
-const EventApprovalPage = Loadable(lazy(() => import('features/admin/pages/EventApprovalPage')));
-const EventApprovalDetailPage = Loadable(lazy(() => import('features/admin/pages/EventApprovalDetailPage')));
-const CategoryManagementPage = Loadable(lazy(() => import('features/admin/pages/CategoryManagementPage')));
-const FeePolicyManagementPage = Loadable(lazy(() => import('features/admin/pages/FeePolicyManagementPage')));
+import AdminDashboardPage from 'features/admin/pages/AdminDashboardPage';
+import EventApprovalPage from 'features/admin/pages/EventApprovalPage';
+import EventApprovalDetailPage from 'features/admin/pages/EventApprovalDetailPage';
+import CategoryManagementPage from 'features/admin/pages/CategoryManagementPage';
+import FeePolicyManagementPage from 'features/admin/pages/FeePolicyManagementPage';
 
 // ==============================|| ADMIN ROUTES ||============================== //
 
