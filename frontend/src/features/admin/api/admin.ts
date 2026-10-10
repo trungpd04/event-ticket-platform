@@ -16,7 +16,7 @@ import {
 // ==============================|| ADMIN API ||============================== //
 
 export const searchAdminEvents = async (params: SearchAdminEventsParams = {}): Promise<PagedResponse<AdminEvent>> => {
-  const response = await axios.get('/api/v1/events', { params });
+  const response = await axios.get('/api/v1/admin/events', { params });
   return response.data as PagedResponse<AdminEvent>;
 };
 
