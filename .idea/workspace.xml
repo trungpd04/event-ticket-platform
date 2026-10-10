@@ -1,36 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(fe) event list">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/auth/AuthInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/auth/AuthInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/event/ImageUploadField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/event/ImageUploadField.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/event/SearchWidget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/event/SearchWidget.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepEventInfo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepEventInfo.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepSettings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/organizer/components/create-event/StepSettings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/organizer/pages/CreateEventPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/organizer/pages/CreateEventPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/components/PublicHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/components/PublicHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/components/home/CategorySection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/components/home/CategorySection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/public/pages/EventsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/public/pages/EventsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerContent/Navigation/NavItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerContent/Navigation/NavItem.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerContent/Navigation/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerContent/Navigation/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerHeader/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerHeader/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/MiniDrawerStyled.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/MiniDrawerStyled.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Simple/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Simple/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/menu-items/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/menu-items/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/maintenance/coming-soon/coming-soon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/maintenance/coming-soon/coming-soon.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthCodeVerification.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthForgotPassword.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthLogin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthRegister.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/auth/auth-forms/AuthResetPassword.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/sections/extra-pages/contact/ContactForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/sections/extra-pages/contact/ContactForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/themes/theme/theme-event.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/themes/theme/theme-event.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/types/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/menu.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/locales/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/locales/vi.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/locales/vi.json" afterDir="false" />
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(fe) admin management">
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/BusinessException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/AdminEventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/AdminEventController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/EventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/EventRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/admin/api/admin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/admin/api/admin.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +118,7 @@
     <MESSAGE value="(fe) event upload image" />
     <MESSAGE value="(fe) refactor backend entity localdatetime" />
     <MESSAGE value="(fe) event list" />
-    <option name="LAST_COMMIT_MESSAGE" value="(fe) event list" />
+    <MESSAGE value="(fe) admin management" />
+    <option name="LAST_COMMIT_MESSAGE" value="(fe) admin management" />
   </component>
 </project>

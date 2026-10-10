@@ -18,4 +18,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 
     Optional<Event> findByIdAndStatus(Long id, EventStatus status);
 
+    long countByStatus(EventStatus status);
+
 }

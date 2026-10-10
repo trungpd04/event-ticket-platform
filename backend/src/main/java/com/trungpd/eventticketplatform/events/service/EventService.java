@@ -10,6 +10,7 @@ import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
+import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
 import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
@@ -111,6 +112,33 @@ public class EventService {
         }
         if (toDate != null) {
             spec = spec.and(EventSpecification.startTimeLessThanOrEqual(toDate));
+        }
+        if (timeFilter != null) {
+            spec = spec.and(EventSpecification.hasTimeFilter(timeFilter));
+        }
+        if (categoryId != null) {
+            spec = spec.and(EventSpecification.hasCategory(categoryId));
+        }
+        if (provinceId != null) {
+            spec = spec.and(EventSpecification.hasProvince(provinceId));
+        }
+
+        Page<Event> page = eventRepository.findAll(spec, pageable);
+        Page<EventResponse> responsePage = page.map(eventMapper::toResponse).map(this::enrichEventResponse);
+        return paginationMapper.toPagedResponse(responsePage);
+    }
+
+    @Transactional(readOnly = true)
+    public PagedResponse<EventResponse> searchAdminEvents(String title, Long categoryId, Long provinceId,
+                                                           EventStatus status, TimeFilter timeFilter,
+                                                           Pageable pageable) {
+        Specification<Event> spec = Specification.where(null);
+
+        if (status != null) {
+            spec = spec.and(EventSpecification.hasStatus(status));
+        }
+        if (title != null && !title.isBlank()) {
+            spec = spec.and(EventSpecification.hasTitle(title));
         }
         if (timeFilter != null) {
             spec = spec.and(EventSpecification.hasTimeFilter(timeFilter));
@@ -263,6 +291,36 @@ public class EventService {
         event.setStatus(EventStatus.CLOSED);
         Event updated = eventRepository.save(event);
         return enrichEventResponse(eventMapper.toResponse(updated));
+    }
+
+    @CacheEvict(value = "events", key = "#id")
+    @Transactional
+    public EventResponse updateEventStatus(Long id, UpdateEventStatusRequest request) {
+        Event event = findEventById(id);
+        EventStatus currentStatus = event.getStatus();
+        EventStatus targetStatus = request.getStatus();
+
+        if (currentStatus == targetStatus) {
+            return enrichEventResponse(eventMapper.toResponse(event));
+        }
+
+        return switch (targetStatus) {
+            case PUBLISHED -> {
+                if (currentStatus != EventStatus.PENDING) {
+                    throw new BusinessException("error.event.invalid-status-transition",
+                            new Object[]{currentStatus.name(), targetStatus.name()});
+                }
+                yield publishEvent(id);
+            }
+            case CLOSED -> {
+                if (currentStatus != EventStatus.PUBLISHED) {
+                    throw new BusinessException("error.event.invalid-status-transition",
+                            new Object[]{currentStatus.name(), targetStatus.name()});
+                }
+                yield closeEvent(id);
+            }
+            case PENDING -> throw new BusinessException("error.event.cannot-revert-to-pending");
+        };
     }
 
     @Transactional(readOnly = true)

@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException ex) {
-        String message = messageUtil.getMessage(ex.getMessageKey());
+        String message = messageUtil.getMessage(ex.getMessageKey(), ex.getArgs());
         log.warn("Business exception: {}", message, ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(message));
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFoundException(NotFoundException ex) {
-        String message = messageUtil.getMessage(ex.getMessageKey());
+        String message = messageUtil.getMessage(ex.getMessageKey(), ex.getArgs());
         log.warn("Not found exception: {}", message, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.error(message));
