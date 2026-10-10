@@ -78,12 +78,7 @@ export default function SearchWidget() {
             onKeyDown={handleKeyDown}
           />
         </Stack>
-        <EventButton
-          variant="contained"
-          color="primary"
-          sx={{ minWidth: 140, height: 48 }}
-          onClick={handleSearch}
-        >
+        <EventButton variant="contained" color="primary" sx={{ minWidth: 140, height: 48 }} onClick={handleSearch}>
           {intl.formatMessage({ id: 'search.button', defaultMessage: 'Search' })}
         </EventButton>
       </Stack>

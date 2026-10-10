@@ -51,10 +51,13 @@ export default function MainDrawer({ window }: Props) {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
-              borderRight: '1px solid',
-              borderColor: 'divider',
+              borderRight: 'none',
+              borderRadius: '24px',
+              margin: '16px',
+              height: 'calc(100vh - 32px)',
+              bgcolor: 'secondary.lighter',
               backgroundImage: 'none',
-              boxShadow: 'inherit'
+              boxShadow: (theme) => theme.customShadows.z1
             }
           }}
         >

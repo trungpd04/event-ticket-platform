@@ -7,15 +7,13 @@ import { DRAWER_WIDTH, MINI_DRAWER_WIDTH } from 'config';
 
 const openedMixin = (theme: Theme) =>
   ({
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.secondary.lighter,
     width: DRAWER_WIDTH,
-    borderRight: '1px dashed',
-    borderRightColor: theme.palette.secondary[400],
-    boxShadow: 'none',
-    ...theme.applyStyles('dark', {
-      borderRightColor: theme.palette.secondary[200],
-      boxShadow: theme.customShadows.z1
-    }),
+    borderRight: 'none',
+    borderRadius: '24px',
+    margin: '16px',
+    height: 'calc(100vh - 32px)',
+    boxShadow: theme.customShadows.z1,
     overflowX: 'hidden',
 
     transition: theme.transitions.create('width', {
@@ -27,7 +25,10 @@ const openedMixin = (theme: Theme) =>
 const closedMixin = (theme: Theme) =>
   ({
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.secondary.lighter,
+    borderRadius: '24px',
+    margin: '16px',
+    height: 'calc(100vh - 32px)',
 
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,

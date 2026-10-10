@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
 // material-ui
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -30,12 +29,7 @@ import Summary from 'features/organizer/components/create-event/Summary';
 // types
 import { BankAccount, Category, CreateEventPayload, EventSettings, Province, TicketType } from 'types/organizer';
 
-const steps = [
-  'createEvent.steps.info',
-  'createEvent.steps.tickets',
-  'createEvent.steps.settings',
-  'createEvent.steps.payout'
-];
+const steps = ['createEvent.steps.info', 'createEvent.steps.tickets', 'createEvent.steps.settings', 'createEvent.steps.payout'];
 
 const initialEvent: CreateEventPayload = {
   title: '',
@@ -70,19 +64,41 @@ const initialBankAccount: BankAccount = {
 
 const getValidation = (intl: ReturnType<typeof useIntl>) => [
   Yup.object({
-    title: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventTitle' }) })),
-    location: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.detailedAddress' }) })),
-    categoryId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.category' }) })),
-    provinceId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.province' }) })),
-    wardId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) })),
-    thumbnailFileId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.thumbnailImage' }) })),
-    bannerFileId: Yup.number().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.bannerImage' }) }))
+    title: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventTitle' }) })
+    ),
+    location: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.detailedAddress' }) })
+    ),
+    categoryId: Yup.number().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.category' }) })
+    ),
+    provinceId: Yup.number().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.province' }) })
+    ),
+    wardId: Yup.number().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) })
+    ),
+    thumbnailFileId: Yup.number().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.thumbnailImage' }) })
+    ),
+    bannerFileId: Yup.number().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.bannerImage' }) })
+    )
   }),
   Yup.object({
-    startTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventStartTime' }) })),
-    endTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventEndTime' }) })),
-    ticketSaleStartTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleStart' }) })),
-    ticketSaleEndTime: Yup.string().required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleEnd' }) }))
+    startTime: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventStartTime' }) })
+    ),
+    endTime: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventEndTime' }) })
+    ),
+    ticketSaleStartTime: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleStart' }) })
+    ),
+    ticketSaleEndTime: Yup.string().required(
+      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleEnd' }) })
+    )
   }),
   Yup.object({}),
   Yup.object({})
@@ -102,8 +118,12 @@ export default function CreateEventPage() {
   const stepLabels = useMemo(() => steps.map((key) => intl.formatMessage({ id: key })), [intl]);
 
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => setCategories([]));
-    getProvinces().then(setProvinces).catch(() => setProvinces([]));
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+    getProvinces()
+      .then(setProvinces)
+      .catch(() => setProvinces([]));
   }, []);
 
   const handleNext = async (validateForm: () => Promise<any>, values: CreateEventPayload) => {

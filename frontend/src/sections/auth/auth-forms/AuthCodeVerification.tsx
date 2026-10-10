@@ -70,7 +70,9 @@ export default function AuthCodeVerification() {
         validationSchema={Yup.object().shape({
           code: Yup.string()
             .length(6, intl.formatMessage({ id: 'validation.otpLength' }, { length: 6 }))
-            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.codeVerification.code' }) }))
+            .required(
+              intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.codeVerification.code' }) })
+            )
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -121,7 +123,14 @@ export default function AuthCodeVerification() {
                 </Grid>
               )}
               <Grid size={12}>
-                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                <EventButton
+                  disabled={isSubmitting}
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ height: 56, borderRadius: 1 }}
+                >
                   {intl.formatMessage({ id: 'auth.codeVerification.button' })}
                 </EventButton>
               </Grid>

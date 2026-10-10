@@ -1,4 +1,5 @@
 // material-ui
+import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // project-imports
@@ -7,6 +8,9 @@ import DrawerHeaderStyled from './DrawerHeaderStyled';
 import Logo from 'components/logo';
 import { DRAWER_WIDTH, HEADER_HEIGHT, MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
+
+// assets
+import logoEvenjo from 'assets/images/logo-evenjo.svg';
 
 interface Props {
   open: boolean;
@@ -31,7 +35,11 @@ export default function DrawerHeader({ open }: Props) {
         paddingLeft: isHorizontal ? { xs: '24px', lg: '0' } : open ? '24px' : 0
       }}
     >
-      <Logo isIcon={!open} sx={{ width: open ? 'auto' : 52, height: 'auto' }} />
+      {open ? (
+        <Box component="img" src={logoEvenjo} alt="Evenjo" sx={{ width: 'auto', height: 32, display: 'block' }} />
+      ) : (
+        <Logo isIcon sx={{ width: 52, height: 'auto' }} />
+      )}
     </DrawerHeaderStyled>
   );
 }

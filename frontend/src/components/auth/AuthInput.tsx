@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 
 // material-ui
-import InputAdornment from '@mui/material/InputAdornment';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 
 // ==============================|| AUTH INPUT ||============================== //

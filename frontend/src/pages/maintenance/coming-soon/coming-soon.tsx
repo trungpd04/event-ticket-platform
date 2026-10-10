@@ -43,9 +43,7 @@ export default function ComingSoon() {
                       </Box>{' '}
                       {intl.formatMessage({ id: 'comingSoon.subtitleRest' })}
                     </Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>
-                      {intl.formatMessage({ id: 'comingSoon.description' })}
-                    </Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>{intl.formatMessage({ id: 'comingSoon.description' })}</Typography>
                   </Stack>
                 </Grid>
                 <Grid sx={{ width: { xs: 320, md: 380 } }} size={12}>

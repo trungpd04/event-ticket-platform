@@ -62,12 +62,7 @@ export default function StepSettings({ values, setValues }: StepSettingsProps) {
       </Grid>
       <Grid size={12}>
         <FormControlLabel
-          control={
-            <Switch
-              checked={values.isPublic}
-              onChange={(e) => handleChange('isPublic', e.target.checked)}
-            />
-          }
+          control={<Switch checked={values.isPublic} onChange={(e) => handleChange('isPublic', e.target.checked)} />}
           label={intl.formatMessage({ id: 'createEvent.publicEvent' })}
         />
       </Grid>

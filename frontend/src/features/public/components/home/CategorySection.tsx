@@ -20,7 +20,9 @@ export default function CategorySection() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => setCategories([]));
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
   }, []);
 
   return (

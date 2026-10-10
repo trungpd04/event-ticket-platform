@@ -62,7 +62,7 @@ export default function StepEventInfo({
       setWards([]);
       setFieldValue('wardId', '');
     }
-  }, [values.provinceId, provinces]);
+  }, [provinces, setFieldValue, values.provinceId, values.wardId]);
 
   return (
     <Grid container spacing={3}>

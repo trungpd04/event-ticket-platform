@@ -53,10 +53,20 @@ export default function PublicHeader() {
             </Typography>
 
             <Stack direction="row" spacing={3} sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Typography component={RouterLink} to="/" color="text.secondary" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+              <Typography
+                component={RouterLink}
+                to="/"
+                color="text.secondary"
+                sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+              >
                 {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
               </Typography>
-              <Typography component={RouterLink} to="/events" color="text.secondary" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+              <Typography
+                component={RouterLink}
+                to="/events"
+                color="text.secondary"
+                sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+              >
                 {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
               </Typography>
             </Stack>

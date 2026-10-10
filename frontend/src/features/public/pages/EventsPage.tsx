@@ -43,9 +43,7 @@ export default function EventsPage() {
       {loading ? (
         <Typography color="text.secondary">{intl.formatMessage({ id: 'events.loading', defaultMessage: 'Loading...' })}</Typography>
       ) : events.length === 0 ? (
-        <Typography color="text.secondary">
-          {intl.formatMessage({ id: 'events.empty', defaultMessage: 'No events found.' })}
-        </Typography>
+        <Typography color="text.secondary">{intl.formatMessage({ id: 'events.empty', defaultMessage: 'No events found.' })}</Typography>
       ) : (
         <Grid container spacing={3}>
           {events.map((event) => (

@@ -63,10 +63,14 @@ export default function AuthResetPassword() {
         initialValues={{ newPassword: '', confirmPassword: '', submit: null }}
         validationSchema={Yup.object().shape({
           newPassword: Yup.string()
-            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.newPassword' }) }))
+            .required(
+              intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.newPassword' }) })
+            )
             .min(8, intl.formatMessage({ id: 'validation.passwordMin' }, { min: 8 })),
           confirmPassword: Yup.string()
-            .required(intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.confirmPassword' }) }))
+            .required(
+              intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'auth.resetPassword.confirmPassword' }) })
+            )
             .oneOf([Yup.ref('newPassword')], intl.formatMessage({ id: 'validation.passwordMatch' }))
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -155,7 +159,14 @@ export default function AuthResetPassword() {
                 </Grid>
               )}
               <Grid size={12}>
-                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                <EventButton
+                  disabled={isSubmitting}
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ height: 56, borderRadius: 1 }}
+                >
                   {intl.formatMessage({ id: 'auth.resetPassword.button' })}
                 </EventButton>
               </Grid>
