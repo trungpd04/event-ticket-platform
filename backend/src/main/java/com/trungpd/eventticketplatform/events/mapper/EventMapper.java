@@ -16,6 +16,7 @@ public interface EventMapper {
 
     @Mapping(target = "category.id", source = "categoryId")
     @Mapping(target = "province.id", source = "provinceId")
+    @Mapping(target = "ward.id", source = "wardId")
     @Mapping(target = "feePolicySnapshot.organizerCommissionRate", source = "organizerCommissionRateSnapshot")
     @Mapping(target = "feePolicySnapshot.customerFeeRate", source = "customerFeeRateSnapshot")
     @Mapping(target = "feePolicySnapshot.customerFlatFee", source = "customerFlatFeeSnapshot")
@@ -23,6 +24,7 @@ public interface EventMapper {
 
     @Mapping(target = "category.id", source = "categoryId")
     @Mapping(target = "province.id", source = "provinceId")
+    @Mapping(target = "ward.id", source = "wardId")
     @Mapping(target = "feePolicySnapshot.organizerCommissionRate", source = "organizerCommissionRateSnapshot")
     @Mapping(target = "feePolicySnapshot.customerFeeRate", source = "customerFeeRateSnapshot")
     @Mapping(target = "feePolicySnapshot.customerFlatFee", source = "customerFlatFeeSnapshot")

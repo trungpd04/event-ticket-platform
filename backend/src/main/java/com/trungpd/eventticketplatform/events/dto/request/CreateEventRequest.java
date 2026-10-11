@@ -35,6 +35,9 @@ public class CreateEventRequest {
     @NotNull(message = "{error.validation.province-required}")
     private Long provinceId;
 
+    @NotNull(message = "{error.validation.ward-required}")
+    private Long wardId;
+
     @NotNull(message = "{error.validation.ticket-sale-start-required}")
     private LocalDateTime ticketSaleStartTime;
 

@@ -54,6 +54,7 @@ public class EventService {
     private final FeePolicyService feePolicyService;
     private final CategoryService categoryService;
     private final ProvinceService provinceService;
+    private final WardService wardService;
     private final CategoryMapper categoryMapper;
     private final LocationMapper locationMapper;
     private final TicketTypeRepository ticketTypeRepository;
@@ -79,6 +80,7 @@ public class EventService {
         FeePolicy defaultFeePolicy = feePolicyService.findDefaultActivePolicy();
         categoryService.findActiveById(request.getCategoryId());
         provinceService.findById(request.getProvinceId());
+        wardService.findById(request.getWardId());
 
         Event event = eventMapper.toEntity(request);
         event.setOrganizerId(user.getId());
@@ -201,6 +203,9 @@ public class EventService {
         }
         if (request.getProvinceId() != null) {
             provinceService.findById(request.getProvinceId());
+        }
+        if (request.getWardId() != null) {
+            wardService.findById(request.getWardId());
         }
 
         Event updated = eventRepository.save(event);
