@@ -25,6 +25,7 @@ public class EventDetailResponse {
     private EventStatus status;
     private Long organizerId;
     private Long feePolicyId;
+    private WardResponse ward;
     private CategoryResponse category;
     private ProvinceResponse province;
     private LocalDateTime ticketSaleStartTime;

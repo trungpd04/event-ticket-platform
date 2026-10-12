@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(be) admin event management, option set configuration">
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(fe) admin refactor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerHeader/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/DrawerHeader/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/MiniDrawerStyled.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/MiniDrawerStyled.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Dashboard/Drawer/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

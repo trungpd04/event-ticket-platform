@@ -16,6 +16,7 @@ public class UpdateEventRequest {
     private Long bannerFileId;
     private Long categoryId;
     private Long provinceId;
+    private Long wardId;
     private LocalDateTime ticketSaleStartTime;
     private LocalDateTime ticketSaleEndTime;
 
