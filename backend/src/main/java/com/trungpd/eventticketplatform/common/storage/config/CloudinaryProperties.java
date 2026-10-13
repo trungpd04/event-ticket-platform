@@ -12,5 +12,5 @@ public class CloudinaryProperties {
     private String cloudName;
     private String apiKey;
     private String apiSecret;
-    private String folder = "event-ticket-platform";
+    private String folder;
 }

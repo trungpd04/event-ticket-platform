@@ -17,19 +17,27 @@ import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.dto.response.ProvinceResponse;
 import com.trungpd.eventticketplatform.events.dto.response.PromotionResponse;
 import com.trungpd.eventticketplatform.events.entity.Event;
+import com.trungpd.eventticketplatform.events.entity.EventPayoutInfo;
+import com.trungpd.eventticketplatform.events.entity.EventSetting;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.entity.FeePolicy;
 import com.trungpd.eventticketplatform.events.entity.Promotion;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import com.trungpd.eventticketplatform.events.mapper.CategoryMapper;
 import com.trungpd.eventticketplatform.events.mapper.EventMapper;
+import com.trungpd.eventticketplatform.events.mapper.EventPayoutInfoMapper;
+import com.trungpd.eventticketplatform.events.mapper.EventSettingMapper;
 import com.trungpd.eventticketplatform.events.mapper.LocationMapper;
 import com.trungpd.eventticketplatform.events.mapper.PromotionMapper;
+import com.trungpd.eventticketplatform.events.repository.EventPayoutInfoRepository;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
+import com.trungpd.eventticketplatform.events.repository.EventSettingRepository;
 import com.trungpd.eventticketplatform.events.repository.PromotionRepository;
 import com.trungpd.eventticketplatform.events.specification.EventSpecification;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
+import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
 import com.trungpd.eventticketplatform.ticketing.mapper.TicketTypeMapper;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
 import com.trungpd.eventticketplatform.ticketing.service.TicketService;
@@ -43,7 +51,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +62,10 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final EventSettingRepository eventSettingRepository;
+    private final EventSettingMapper eventSettingMapper;
+    private final EventPayoutInfoRepository eventPayoutInfoRepository;
+    private final EventPayoutInfoMapper eventPayoutInfoMapper;
     private final FeePolicyService feePolicyService;
     private final CategoryService categoryService;
     private final ProvinceService provinceService;
@@ -76,6 +91,7 @@ public class EventService {
                 request.getTicketSaleEndTime(),
                 request.getStartTime()
         );
+        validateTicketTypes(request.getTicketTypes());
 
         FeePolicy defaultFeePolicy = feePolicyService.findDefaultActivePolicy();
         categoryService.findActiveById(request.getCategoryId());
@@ -88,6 +104,25 @@ public class EventService {
         event.setStatus(EventStatus.PENDING);
 
         Event saved = eventRepository.save(event);
+
+        for (CreateTicketTypeRequest ticketTypeRequest : request.getTicketTypes()) {
+            TicketType ticketType = ticketTypeMapper.toEntity(ticketTypeRequest);
+            ticketType.setEventId(saved.getId());
+            ticketType.setAvailableQuantity(ticketTypeRequest.getTotalQuantity());
+            ticketTypeRepository.save(ticketType);
+        }
+
+        if (request.getSettings() != null) {
+            EventSetting setting = eventSettingMapper.toEntity(request.getSettings());
+            setting.setEventId(saved.getId());
+            eventSettingRepository.save(setting);
+        }
+
+        if (request.getPayoutInfo() != null) {
+            EventPayoutInfo payoutInfo = eventPayoutInfoMapper.toEntity(request.getPayoutInfo());
+            payoutInfo.setEventId(saved.getId());
+            eventPayoutInfoRepository.save(payoutInfo);
+        }
 
         linkEventImage(saved.getId(), request.getThumbnailFileId(), FileType.EVENT_THUMBNAIL, user.getEmail());
         linkEventImage(saved.getId(), request.getBannerFileId(), FileType.BANNER, user.getEmail());
@@ -209,6 +244,28 @@ public class EventService {
         }
 
         Event updated = eventRepository.save(event);
+
+        if (request.getSettings() != null) {
+            EventSetting setting = eventSettingRepository.findById(updated.getId())
+                    .orElseGet(() -> {
+                        EventSetting created = new EventSetting();
+                        created.setEventId(updated.getId());
+                        return created;
+                    });
+            eventSettingMapper.updateEntityFromRequest(request.getSettings(), setting);
+            eventSettingRepository.save(setting);
+        }
+
+        if (request.getPayoutInfo() != null) {
+            EventPayoutInfo payoutInfo = eventPayoutInfoRepository.findByEventId(updated.getId())
+                    .orElseGet(() -> {
+                        EventPayoutInfo created = new EventPayoutInfo();
+                        created.setEventId(updated.getId());
+                        return created;
+                    });
+            eventPayoutInfoMapper.updateEntityFromRequest(request.getPayoutInfo(), payoutInfo);
+            eventPayoutInfoRepository.save(payoutInfo);
+        }
 
         Long currentThumbnailId = findEventImageFileId(id, FileType.EVENT_THUMBNAIL);
         Long currentBannerId = findEventImageFileId(id, FileType.BANNER);
@@ -361,6 +418,22 @@ public class EventService {
         }
     }
 
+    private void validateTicketTypes(List<CreateTicketTypeRequest> ticketTypes) {
+        if (ticketTypes == null || ticketTypes.isEmpty()) {
+            throw new BusinessException("error.event.ticket-types.empty");
+        }
+
+        Set<String> names = new HashSet<>();
+        for (CreateTicketTypeRequest ticketType : ticketTypes) {
+            String normalizedName = ticketType.getName() == null
+                    ? ""
+                    : ticketType.getName().trim().toLowerCase(Locale.ROOT);
+            if (!names.add(normalizedName)) {
+                throw new BusinessException("error.event.ticket-types.duplicate-name");
+            }
+        }
+    }
+
     private void validateEventOwnership(Event event, Long userId) {
         if (!event.getOrganizerId().equals(userId)) {
             throw new BusinessException("error.event.not-owner");
@@ -407,6 +480,16 @@ public class EventService {
         response.setThumbnailUrl(fileUploadService.getFileUrl(thumbnailFileId));
         response.setBannerUrl(fileUploadService.getFileUrl(bannerFileId));
 
+        response.setTicketTypes(ticketTypeRepository.findByEventId(response.getId()).stream()
+                .map(ticketTypeMapper::toResponse)
+                .toList());
+        eventSettingRepository.findById(response.getId())
+                .map(eventSettingMapper::toResponse)
+                .ifPresent(response::setSettings);
+        eventPayoutInfoRepository.findByEventId(response.getId())
+                .map(eventPayoutInfoMapper::toResponse)
+                .ifPresent(response::setPayoutInfo);
+
         return response;
     }
 
@@ -429,6 +512,13 @@ public class EventService {
         response.setBannerFileId(bannerFileId);
         response.setThumbnailUrl(fileUploadService.getFileUrl(thumbnailFileId));
         response.setBannerUrl(fileUploadService.getFileUrl(bannerFileId));
+
+        eventSettingRepository.findById(response.getId())
+                .map(eventSettingMapper::toResponse)
+                .ifPresent(response::setSettings);
+        eventPayoutInfoRepository.findByEventId(response.getId())
+                .map(eventPayoutInfoMapper::toResponse)
+                .ifPresent(response::setPayoutInfo);
 
         return response;
     }

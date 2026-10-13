@@ -1,12 +1,18 @@
 package com.trungpd.eventticketplatform.events.dto.request;
 
+import com.trungpd.eventticketplatform.events.validation.EventTimeValid;
+import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
+@EventTimeValid
 public class CreateEventRequest {
 
     @NotBlank(message = "{error.validation.title-required}")
@@ -43,5 +49,15 @@ public class CreateEventRequest {
 
     @NotNull(message = "{error.validation.ticket-sale-end-required}")
     private LocalDateTime ticketSaleEndTime;
+
+    @NotEmpty(message = "{error.event.ticket-types.empty}")
+    @Valid
+    private List<CreateTicketTypeRequest> ticketTypes;
+
+    @Valid
+    private EventSettingRequest settings;
+
+    @Valid
+    private EventPayoutInfoRequest payoutInfo;
 
 }

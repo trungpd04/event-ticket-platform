@@ -26,6 +26,7 @@ public class EventDetailResponse {
     private Long organizerId;
     private Long feePolicyId;
     private WardResponse ward;
+    private Long wardId;
     private CategoryResponse category;
     private ProvinceResponse province;
     private LocalDateTime ticketSaleStartTime;
@@ -33,5 +34,7 @@ public class EventDetailResponse {
     private FeePolicySnapshotResponse feePolicySnapshot;
     private List<TicketTypeResponse> ticketTypes;
     private List<PromotionResponse> activePromotions;
+    private EventSettingResponse settings;
+    private EventPayoutInfoResponse payoutInfo;
 
 }

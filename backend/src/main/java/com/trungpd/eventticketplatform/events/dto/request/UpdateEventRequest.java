@@ -1,5 +1,6 @@
 package com.trungpd.eventticketplatform.events.dto.request;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,5 +20,11 @@ public class UpdateEventRequest {
     private Long wardId;
     private LocalDateTime ticketSaleStartTime;
     private LocalDateTime ticketSaleEndTime;
+
+    @Valid
+    private EventSettingRequest settings;
+
+    @Valid
+    private EventPayoutInfoRequest payoutInfo;
 
 }

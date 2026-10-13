@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
+            String errorMessage = resolveMessageKey(error.getDefaultMessage());
             errors.put(fieldName, errorMessage);
         });
 
@@ -67,10 +67,24 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
+    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
         log.error("Unexpected error occurred", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(messageUtil.getMessage("error.internal-server")));
+    }
+
+    private String resolveMessageKey(String message) {
+        if (message == null || message.length() < 3 || message.charAt(0) != '{'
+                || message.charAt(message.length() - 1) != '}') {
+            return message;
+        }
+
+        String code = message.substring(1, message.length() - 1);
+        try {
+            return messageUtil.getMessage(code);
+        } catch (Exception ex) {
+            return message;
+        }
     }
 
 }

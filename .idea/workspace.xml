@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(fe) admin refactor">
+    <list default="true" id="e2fe7c39-6099-4baf-8d58-5453c501a359" name="Changes" comment="(be) refactor">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/config/CloudinaryProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/config/StorageConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/config/StorageProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/controller/FileUploadController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/dto/response/FileUploadResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/entity/FileEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/enums/FileType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/enums/PlatformType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/exception/FileValidationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/mapper/FileMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/provider/CloudinaryStorageProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/provider/StorageProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/repository/FileRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/service/FileUploadService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/storage/service/FileValidationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/EventPayoutInfoRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/EventSettingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/OptionSetRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/OptionSetValueRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventStatusRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventPayoutInfoResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventSettingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/EventPayoutInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/EventSetting.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/mapper/EventPayoutInfoMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/mapper/EventSettingMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/EventPayoutInfoRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/EventSettingRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/validation/EventTimeValid.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/validation/EventTimeValidator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V25__create_event_settings.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V26__create_event_payout_infos.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/trungpd/eventticketplatform/events/validation/EventTimeValidatorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/BusinessException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/common/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/EventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/controller/EventController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/CreateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/CreateEventRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/request/UpdateEventRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventDetailResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/dto/response/EventResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/entity/Event.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/PromotionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/repository/PromotionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/service/EventService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/specification/EventSpecification.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/events/specification/EventSpecification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/ticketing/dto/request/CreateTicketTypeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/trungpd/eventticketplatform/ticketing/dto/request/CreateTicketTypeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-heroku.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-heroku.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-test.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_en_US.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/i18n/messages_vi.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,29 +91,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;test&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/University/DOANTOTNGHIEP/event-ticket-platform&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\prettier&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\typescript\\lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "dev",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/University/DOANTOTNGHIEP/event-ticket-platform",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\prettier",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "show.migrate.to.gradle.popup": "false",
+    "ts.external.directory.path": "D:\\University\\DOANTOTNGHIEP\\event-ticket-platform\\frontend\\node_modules\\typescript\\lib"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -116,6 +166,9 @@
     <MESSAGE value="(fe) event list" />
     <MESSAGE value="(fe) admin management" />
     <MESSAGE value="(be) admin event management, option set configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="(be) admin event management, option set configuration" />
+    <MESSAGE value="(fe) admin sidebar refactor" />
+    <MESSAGE value="(fe) admin refactor" />
+    <MESSAGE value="(be) refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="(fe) admin refactor" />
   </component>
 </project>
