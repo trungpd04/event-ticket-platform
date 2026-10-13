@@ -25,8 +25,19 @@ export const createEvent = async (payload: CreateEventPayload) => {
     provinceId: Number(payload.provinceId),
     wardId: Number(payload.wardId),
     thumbnailFileId: Number(payload.thumbnailFileId),
-    bannerFileId: Number(payload.bannerFileId)
+    bannerFileId: Number(payload.bannerFileId),
+    ticketTypes: payload.ticketTypes.map((ticket) => ({
+      name: ticket.name,
+      description: ticket.description || '',
+      price: Number(ticket.price),
+      totalQuantity: Number(ticket.totalQuantity)
+    }))
   });
+  return response.data;
+};
+
+export const requestPublishEvent = async (eventId: number) => {
+  const response = await axios.post(`/api/v1/events/${eventId}/request-publish`);
   return response.data;
 };
 

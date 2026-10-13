@@ -22,7 +22,8 @@ export interface TicketType {
   id: string;
   name: string;
   price: number;
-  quantity: number;
+  totalQuantity: number;
+  description?: string;
   minPerOrder: number;
   maxPerOrder: number;
 }
@@ -56,6 +57,9 @@ export interface CreateEventPayload {
   endTime: string;
   ticketSaleStartTime: string;
   ticketSaleEndTime: string;
+  ticketTypes: TicketType[];
+  settings: EventSettings;
+  payoutInfo: BankAccount;
 }
 
 export interface Event {

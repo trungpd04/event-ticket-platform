@@ -10,6 +10,7 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 
 // third-party
+import { FormikErrors, FormikTouched } from 'formik';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -27,26 +28,9 @@ import StepTickets from 'features/organizer/components/create-event/StepTickets'
 import Summary from 'features/organizer/components/create-event/Summary';
 
 // types
-import { BankAccount, Category, CreateEventPayload, EventSettings, Province, TicketType } from 'types/organizer';
+import { BankAccount, Category, CreateEventPayload, EventSettings, Province } from 'types/organizer';
 
 const steps = ['createEvent.steps.info', 'createEvent.steps.tickets', 'createEvent.steps.settings', 'createEvent.steps.payout'];
-
-const initialEvent: CreateEventPayload = {
-  title: '',
-  description: '',
-  location: '',
-  thumbnailFileId: '',
-  bannerFileId: '',
-  thumbnailUrl: '',
-  bannerUrl: '',
-  categoryId: '',
-  provinceId: '',
-  wardId: '',
-  startTime: '',
-  endTime: '',
-  ticketSaleStartTime: '',
-  ticketSaleEndTime: ''
-};
 
 const initialSettings: EventSettings = {
   refundPolicy: '',
@@ -62,56 +46,137 @@ const initialBankAccount: BankAccount = {
   branch: ''
 };
 
-const getValidation = (intl: ReturnType<typeof useIntl>) => [
-  Yup.object({
-    title: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventTitle' }) })
-    ),
-    location: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.detailedAddress' }) })
-    ),
-    categoryId: Yup.number().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.category' }) })
-    ),
-    provinceId: Yup.number().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.province' }) })
-    ),
-    wardId: Yup.number().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ward' }) })
-    ),
-    thumbnailFileId: Yup.number().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.thumbnailImage' }) })
-    ),
-    bannerFileId: Yup.number().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.bannerImage' }) })
-    )
-  }),
-  Yup.object({
-    startTime: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventStartTime' }) })
-    ),
-    endTime: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.eventEndTime' }) })
-    ),
-    ticketSaleStartTime: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleStart' }) })
-    ),
-    ticketSaleEndTime: Yup.string().required(
-      intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: 'createEvent.ticketSaleEnd' }) })
-    )
-  }),
-  Yup.object({}),
-  Yup.object({})
-];
+const initialEvent: CreateEventPayload = {
+  title: '',
+  description: '',
+  location: '',
+  thumbnailFileId: '',
+  bannerFileId: '',
+  thumbnailUrl: '',
+  bannerUrl: '',
+  categoryId: '',
+  provinceId: '',
+  wardId: '',
+  startTime: '',
+  endTime: '',
+  ticketSaleStartTime: '',
+  ticketSaleEndTime: '',
+  ticketTypes: [],
+  settings: initialSettings,
+  payoutInfo: initialBankAccount
+};
+
+const ONE_HOUR_MS = 60 * 60 * 1000;
+
+const isAfter = (value?: string, other?: string) => {
+  if (!value || !other) return true;
+  return new Date(value).getTime() > new Date(other).getTime();
+};
+
+const isBeforeOrEqual = (value?: string, other?: string) => {
+  if (!value || !other) return true;
+  return new Date(value).getTime() <= new Date(other).getTime();
+};
+
+const findFirstErrorMessage = (errors: unknown): string | undefined => {
+  if (!errors || typeof errors !== 'object') return undefined;
+  for (const value of Object.values(errors as Record<string, unknown>)) {
+    if (typeof value === 'string' && value.trim()) return value;
+    if (value && typeof value === 'object') {
+      const nested = findFirstErrorMessage(value);
+      if (nested) return nested;
+    }
+  }
+  return undefined;
+};
+
+const getApiErrorMessage = (err: any, fallback: string): string => {
+  const body = err && typeof err === 'object' && err.data && typeof err.data === 'object' ? err.data : err?.response?.data;
+  if (body?.data && typeof body.data === 'object') {
+    const detail = findFirstErrorMessage(body.data);
+    if (detail) return detail;
+  }
+  if (typeof body?.message === 'string' && body.message) return body.message;
+  if (typeof err?.message === 'string' && err.message) return err.message;
+  return fallback;
+};
+
+const getValidation = (intl: ReturnType<typeof useIntl>) => {
+  const required = (fieldId: string) => intl.formatMessage({ id: 'validation.required' }, { field: intl.formatMessage({ id: fieldId }) });
+
+  return [
+    Yup.object({
+      title: Yup.string().required(required('createEvent.eventTitle')),
+      location: Yup.string().required(required('createEvent.detailedAddress')),
+      categoryId: Yup.number().required(required('createEvent.category')),
+      provinceId: Yup.number().required(required('createEvent.province')),
+      wardId: Yup.number().required(required('createEvent.ward')),
+      thumbnailFileId: Yup.number().required(required('createEvent.thumbnailImage')),
+      bannerFileId: Yup.number().required(required('createEvent.bannerImage'))
+    }),
+    Yup.object({
+      startTime: Yup.string()
+        .required(required('createEvent.eventStartTime'))
+        .test(
+          'start-time-too-soon',
+          intl.formatMessage({ id: 'createEvent.errors.startTimeTooSoon' }),
+          (value) => !value || new Date(value).getTime() > Date.now() + ONE_HOUR_MS
+        ),
+      endTime: Yup.string()
+        .required(required('createEvent.eventEndTime'))
+        .test('end-after-start', intl.formatMessage({ id: 'createEvent.errors.endTimeAfterStart' }), function (value) {
+          return isAfter(value, this.parent.startTime);
+        }),
+      ticketSaleStartTime: Yup.string().required(required('createEvent.ticketSaleStart')),
+      ticketSaleEndTime: Yup.string()
+        .required(required('createEvent.ticketSaleEnd'))
+        .test('sale-end-after-sale-start', intl.formatMessage({ id: 'createEvent.errors.saleEndAfterSaleStart' }), function (value) {
+          return isAfter(value, this.parent.ticketSaleStartTime);
+        })
+        .test('sale-end-before-event-start', intl.formatMessage({ id: 'createEvent.errors.saleEndBeforeStart' }), function (value) {
+          return isBeforeOrEqual(value, this.parent.startTime);
+        }),
+      ticketTypes: Yup.array()
+        .min(1, intl.formatMessage({ id: 'createEvent.errors.ticketTypesEmpty' }))
+        .of(
+          Yup.object({
+            name: Yup.string()
+              .trim()
+              .required(intl.formatMessage({ id: 'createEvent.errors.ticketNameRequired' })),
+            price: Yup.number()
+              .typeError(intl.formatMessage({ id: 'createEvent.errors.ticketPriceMin' }))
+              .min(0, intl.formatMessage({ id: 'createEvent.errors.ticketPriceMin' }))
+              .required(intl.formatMessage({ id: 'createEvent.errors.ticketPriceMin' })),
+            totalQuantity: Yup.number()
+              .typeError(intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
+              .min(1, intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
+              .required(intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
+          })
+        )
+        .test('unique-ticket-names', intl.formatMessage({ id: 'createEvent.errors.duplicateTicketName' }), (tickets: any) => {
+          if (!Array.isArray(tickets) || tickets.length === 0) return true;
+          const names = tickets.map((ticket: any) =>
+            String(ticket?.name ?? '')
+              .trim()
+              .toLowerCase()
+          );
+          return new Set(names).size === names.length;
+        })
+    }),
+    Yup.object({}),
+    Yup.object({
+      bankName: Yup.string().trim().required(required('createEvent.bankName')),
+      accountNumber: Yup.string().trim().required(required('createEvent.accountNumber')),
+      accountHolder: Yup.string().trim().required(required('createEvent.accountHolder'))
+    })
+  ];
+};
 
 export default function CreateEventPage() {
   const intl = useIntl();
   const [activeStep, setActiveStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [provinces, setProvinces] = useState<Province[]>([]);
-  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
-  const [settings, setSettings] = useState<EventSettings>(initialSettings);
-  const [bankAccount, setBankAccount] = useState<BankAccount>(initialBankAccount);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
 
   const stepValidation = useMemo(() => getValidation(intl), [intl]);
@@ -126,40 +191,58 @@ export default function CreateEventPage() {
       .catch(() => setProvinces([]));
   }, []);
 
-  const handleNext = async (validateForm: () => Promise<any>, values: CreateEventPayload) => {
+  const handleNext = async (
+    validateForm: () => Promise<FormikErrors<CreateEventPayload>>,
+    setTouched: (touched: FormikTouched<CreateEventPayload>) => void,
+    values: CreateEventPayload
+  ) => {
     const errors = await validateForm();
-    if (Object.keys(errors).length === 0) {
-      if (activeStep === steps.length - 1) {
-        try {
-          const payload = {
-            ...values,
-            categoryId: Number(values.categoryId),
-            provinceId: Number(values.provinceId),
-            wardId: Number(values.wardId),
-            thumbnailFileId: Number(values.thumbnailFileId),
-            bannerFileId: Number(values.bannerFileId)
-          };
-          const result = await createEvent(payload);
-          setCreatedEvent(result);
-          setActiveStep(steps.length);
-          openSnackbar({
-            open: true,
-            message: intl.formatMessage({ id: 'createEvent.success' }),
-            variant: 'alert',
-            alert: { color: 'success' }
-          } as any);
-        } catch (err: any) {
-          openSnackbar({
-            open: true,
-            message: err.message || intl.formatMessage({ id: 'createEvent.failed' }),
-            variant: 'alert',
-            alert: { color: 'error' }
-          } as any);
-        }
-      } else {
-        setActiveStep((prev) => prev + 1);
+    if (Object.keys(errors).length > 0) {
+      const message = findFirstErrorMessage(errors);
+      const touched = Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {} as FormikTouched<CreateEventPayload>);
+      setTouched(touched);
+      if (message) {
+        openSnackbar({
+          open: true,
+          message,
+          variant: 'alert',
+          alert: { color: 'error' }
+        } as any);
       }
+      return;
     }
+
+    if (activeStep === steps.length - 1) {
+      try {
+        const payload: CreateEventPayload = {
+          ...values,
+          categoryId: Number(values.categoryId),
+          provinceId: Number(values.provinceId),
+          wardId: Number(values.wardId),
+          thumbnailFileId: Number(values.thumbnailFileId),
+          bannerFileId: Number(values.bannerFileId)
+        };
+        const result = await createEvent(payload);
+        setCreatedEvent(result);
+        setActiveStep(steps.length);
+        openSnackbar({
+          open: true,
+          message: intl.formatMessage({ id: 'createEvent.success' }),
+          variant: 'alert',
+          alert: { color: 'success' }
+        } as any);
+      } catch (err: any) {
+        openSnackbar({
+          open: true,
+          message: getApiErrorMessage(err, intl.formatMessage({ id: 'createEvent.failed' })),
+          variant: 'alert',
+          alert: { color: 'error' }
+        } as any);
+      }
+      return;
+    }
+
+    setActiveStep((prev) => prev + 1);
   };
 
   return (
@@ -185,7 +268,7 @@ export default function CreateEventPage() {
           validateOnBlur={false}
           onSubmit={() => {}}
         >
-          {({ values, errors, touched, handleChange, handleBlur, setFieldValue, validateForm }) => (
+          {({ values, errors, touched, handleChange, handleBlur, setFieldValue, setTouched, validateForm }) => (
             <>
               {activeStep === 0 && (
                 <StepEventInfo
@@ -202,20 +285,22 @@ export default function CreateEventPage() {
               {activeStep === 1 && (
                 <StepTickets
                   values={values}
-                  ticketTypes={ticketTypes}
-                  setTicketTypes={setTicketTypes}
+                  ticketTypes={values.ticketTypes}
+                  setTicketTypes={(types) => setFieldValue('ticketTypes', types)}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
                 />
               )}
-              {activeStep === 2 && <StepSettings values={settings} setValues={setSettings} />}
-              {activeStep === 3 && <StepPayout values={bankAccount} setValues={setBankAccount} />}
+              {activeStep === 2 && <StepSettings values={values.settings} setValues={(settings) => setFieldValue('settings', settings)} />}
+              {activeStep === 3 && (
+                <StepPayout values={values.payoutInfo} setValues={(payoutInfo) => setFieldValue('payoutInfo', payoutInfo)} />
+              )}
               {activeStep === steps.length && (
                 <Summary
                   event={values}
-                  ticketTypes={ticketTypes}
-                  settings={settings}
-                  bankAccount={bankAccount}
+                  ticketTypes={values.ticketTypes}
+                  settings={values.settings}
+                  bankAccount={values.payoutInfo}
                   createdEvent={createdEvent}
                 />
               )}
@@ -230,7 +315,7 @@ export default function CreateEventPage() {
                   >
                     {intl.formatMessage({ id: 'createEvent.back' })}
                   </EventButton>
-                  <EventButton variant="contained" color="primary" onClick={() => handleNext(validateForm, values)}>
+                  <EventButton variant="contained" color="primary" onClick={() => handleNext(validateForm, setTouched, values)}>
                     {activeStep === steps.length - 1
                       ? intl.formatMessage({ id: 'createEvent.create' })
                       : intl.formatMessage({ id: 'createEvent.next' })}
