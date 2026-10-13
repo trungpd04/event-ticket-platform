@@ -29,7 +29,7 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
   const addTicketType = () => {
     setTicketTypes([
       ...ticketTypes,
-      { id: Math.random().toString(36).slice(2), name: '', price: 0, quantity: 0, minPerOrder: 1, maxPerOrder: 10 }
+      { id: Math.random().toString(36).slice(2), name: '', price: 0, totalQuantity: 1, description: '', minPerOrder: 1, maxPerOrder: 10 }
     ]);
   };
 
@@ -120,8 +120,8 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
             <TextField
               label={intl.formatMessage({ id: 'createEvent.ticketQuantity' })}
               type="number"
-              value={ticket.quantity}
-              onChange={(e) => updateTicket(ticket.id, 'quantity', Number(e.target.value))}
+              value={ticket.totalQuantity}
+              onChange={(e) => updateTicket(ticket.id, 'totalQuantity', Number(e.target.value))}
               sx={{ flex: 1 }}
             />
             <TextField
