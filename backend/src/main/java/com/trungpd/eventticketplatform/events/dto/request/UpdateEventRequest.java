@@ -1,8 +1,9 @@
 package com.trungpd.eventticketplatform.events.dto.request;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 public class UpdateEventRequest {
@@ -10,13 +11,20 @@ public class UpdateEventRequest {
     private String title;
     private String description;
     private String location;
-    private Instant startTime;
-    private Instant endTime;
-    private String coverImageUrl;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Long thumbnailFileId;
+    private Long bannerFileId;
     private Long categoryId;
     private Long provinceId;
     private Long wardId;
-    private Instant ticketSaleStartTime;
-    private Instant ticketSaleEndTime;
+    private LocalDateTime ticketSaleStartTime;
+    private LocalDateTime ticketSaleEndTime;
+
+    @Valid
+    private EventSettingRequest settings;
+
+    @Valid
+    private EventPayoutInfoRequest payoutInfo;
 
 }

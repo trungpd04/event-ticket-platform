@@ -1,12 +1,18 @@
 package com.trungpd.eventticketplatform.events.dto.request;
 
+import com.trungpd.eventticketplatform.events.validation.EventTimeValid;
+import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
+@EventTimeValid
 public class CreateEventRequest {
 
     @NotBlank(message = "{error.validation.title-required}")
@@ -18,12 +24,16 @@ public class CreateEventRequest {
     private String location;
 
     @NotNull(message = "{error.validation.start-time-required}")
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @NotNull(message = "{error.validation.end-time-required}")
-    private Instant endTime;
+    private LocalDateTime endTime;
 
-    private String coverImageUrl;
+    @NotNull(message = "{error.validation.thumbnail-required}")
+    private Long thumbnailFileId;
+
+    @NotNull(message = "{error.validation.banner-required}")
+    private Long bannerFileId;
 
     @NotNull(message = "{error.validation.category-required}")
     private Long categoryId;
@@ -35,9 +45,19 @@ public class CreateEventRequest {
     private Long wardId;
 
     @NotNull(message = "{error.validation.ticket-sale-start-required}")
-    private Instant ticketSaleStartTime;
+    private LocalDateTime ticketSaleStartTime;
 
     @NotNull(message = "{error.validation.ticket-sale-end-required}")
-    private Instant ticketSaleEndTime;
+    private LocalDateTime ticketSaleEndTime;
+
+    @NotEmpty(message = "{error.event.ticket-types.empty}")
+    @Valid
+    private List<CreateTicketTypeRequest> ticketTypes;
+
+    @Valid
+    private EventSettingRequest settings;
+
+    @Valid
+    private EventPayoutInfoRequest payoutInfo;
 
 }
