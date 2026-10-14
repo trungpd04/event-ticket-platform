@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -139,6 +140,46 @@ export default function EventApprovalDetailPage() {
               <strong>{intl.formatMessage({ id: 'admin.events.category' })}:</strong> {event.category?.name || '-'}
             </Typography>
           </Stack>
+        </AdminCard>
+
+        <AdminCard>
+          <Typography variant="h5" mb={2}>
+            {intl.formatMessage({ id: 'admin.events.images' })}
+          </Typography>
+          <Grid container spacing={2}>
+            {[
+              { label: intl.formatMessage({ id: 'admin.events.thumbnailImage' }), url: event.thumbnailUrl },
+              { label: intl.formatMessage({ id: 'admin.events.bannerImage' }), url: event.bannerUrl }
+            ].map(({ label, url }) => (
+              <Grid key={label} size={{ xs: 12, md: 6 }}>
+                <Typography variant="subtitle1" fontWeight={600} mb={1}>
+                  {label}
+                </Typography>
+                <Box
+                  sx={{
+                    width: '100%',
+                    height: 220,
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    bgcolor: 'background.default',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {url ? (
+                    <Box component="img" src={url} alt={label} sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <Typography color="secondary.800">
+                      {intl.formatMessage({ id: 'admin.events.imageUnavailable' })}
+                    </Typography>
+                  )}
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         </AdminCard>
 
         <AdminCard>
