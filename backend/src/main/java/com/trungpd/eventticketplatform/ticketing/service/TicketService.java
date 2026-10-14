@@ -261,31 +261,31 @@ public class TicketService {
             throw new BusinessException("error.event.not-published");
         }
 
-        private int getReservationMinutes() {
-            OptionSetValue setting = optionSetValueRepository
-                    .findByOptionSetCodeAndCode("RESERVATION_CONFIG", "RESERVATION_MINUTES")
-                    .orElseThrow(() -> new BusinessException("error.reservation.minutes.config-missing"));
-            if (!"ACTIVE".equalsIgnoreCase(setting.getStatus())) {
-                throw new BusinessException("error.reservation.minutes.config-invalid");
-            }
-
-            try {
-                int minutes = Integer.parseInt(setting.getValue());
-                if (minutes < 1) {
-                    throw new NumberFormatException("must be positive");
-                }
-                return minutes;
-            } catch (NumberFormatException exception) {
-                throw new BusinessException("error.reservation.minutes.config-invalid");
-            }
-        }
-
         LocalDateTime now = LocalDateTime.now();
         if (event.getTicketSaleStartTime() != null && now.isBefore(event.getTicketSaleStartTime())) {
             throw new BusinessException("error.event.sale-not-started");
         }
         if (event.getTicketSaleEndTime() != null && now.isAfter(event.getTicketSaleEndTime())) {
             throw new BusinessException("error.event.sale-ended");
+        }
+    }
+
+    private int getReservationMinutes() {
+        OptionSetValue setting = optionSetValueRepository
+                .findByOptionSetCodeAndCode("RESERVATION_CONFIG", "RESERVATION_MINUTES")
+                .orElseThrow(() -> new BusinessException("error.reservation.minutes.config-missing"));
+        if (!"ACTIVE".equalsIgnoreCase(setting.getStatus())) {
+            throw new BusinessException("error.reservation.minutes.config-invalid");
+        }
+
+        try {
+            int minutes = Integer.parseInt(setting.getValue());
+            if (minutes < 1) {
+                throw new NumberFormatException("must be positive");
+            }
+            return minutes;
+        } catch (NumberFormatException exception) {
+            throw new BusinessException("error.reservation.minutes.config-invalid");
         }
     }
 
