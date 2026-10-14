@@ -19,20 +19,19 @@ import com.trungpd.eventticketplatform.ticketing.dto.response.ReserveTicketRespo
 import com.trungpd.eventticketplatform.ticketing.dto.response.TicketStatusResponse;
 import com.trungpd.eventticketplatform.ticketing.entity.Ticket;
 import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
-import com.trungpd.eventticketplatform.ticketing.enums.TicketStatus;
+import com.trungpd.eventticketplatform.ticketing.repository.TicketPoolJdbcDao;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketRepository;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,44 +40,36 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final TicketTypeRepository ticketTypeRepository;
+    private final TicketPoolJdbcDao ticketPoolJdbcDao;
     private final EventRepository eventRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final UserService userService;
 
-    private static final int BATCH_SIZE = 1000;
+    @Value("${ticket.pool.batch-size:500}")
+    private int poolBatchSize;
+
+    @Value("${ticket.pool.warm-size:100}")
+    private int poolWarmSize;
 
     @Transactional
-    public void preAllocateTickets(Long eventId) {
+    public void materializeWarmBatch(Long eventId) {
         List<TicketType> ticketTypes = ticketTypeRepository.findByEventId(eventId);
         if (ticketTypes.isEmpty()) {
-            log.warn("No ticket types found for event {}. Skipping pre-allocation.", eventId);
+            log.warn("No ticket types found for event {}. Skipping warm batch.", eventId);
             return;
         }
 
         for (TicketType ticketType : ticketTypes) {
-            int total = ticketType.getTotalQuantity();
+            int total = ticketType.getTotalQuantity() == null ? 0 : ticketType.getTotalQuantity();
             if (total <= 0) {
                 continue;
             }
 
-            List<Ticket> batch = new ArrayList<>(Math.min(total, BATCH_SIZE));
-            for (int i = 0; i < total; i++) {
-                Ticket ticket = new Ticket();
-                ticket.setTicketTypeId(ticketType.getId());
-                ticket.setEventId(eventId);
-                ticket.setStatus(TicketStatus.AVAILABLE);
-                batch.add(ticket);
-
-                if (batch.size() == BATCH_SIZE) {
-                    ticketRepository.saveAll(batch);
-                    batch.clear();
-                }
-            }
-            if (!batch.isEmpty()) {
-                ticketRepository.saveAll(batch);
-            }
-            log.info("Pre-allocated {} tickets for ticket type {}", total, ticketType.getId());
+            int warm = Math.min(total, poolWarmSize);
+            ticketPoolJdbcDao.insertAvailableBatch(ticketType.getId(), eventId, warm);
+            ticketTypeRepository.decrementAvailableQuantity(ticketType.getId(), warm);
+            log.info("Materialized {}/{} warm tickets for ticket type {}", warm, total, ticketType.getId());
         }
     }
 
@@ -149,8 +140,8 @@ public class TicketService {
             );
 
             if (reserved.size() < item.getQuantity()) {
-                throw new BusinessException("error.ticket.not-enough",
-                        new Object[]{ticketType.getName()});
+                reserved = refillAndReserve(
+                        event.getId(), ticketType, item.getQuantity(), reserved, reservedUntil, detail.getId());
             }
 
             List<Long> ticketIds = reserved.stream()
@@ -177,6 +168,45 @@ public class TicketService {
                 .items(itemResponses)
                 .totalAmount(totalAmount)
                 .build();
+    }
+
+    private List<Ticket> refillAndReserve(Long eventId, TicketType ticketType, int quantity,
+                                          List<Ticket> alreadyReserved, LocalDateTime reservedUntil,
+                                          Long orderDetailId) {
+        TicketType locked = ticketTypeRepository.findByIdForUpdate(ticketType.getId())
+                .orElseThrow(() -> new NotFoundException("error.ticket-type.not-found"));
+
+        int takeable = ticketRepository.countTakeable(ticketType.getId(), eventId);
+        int shortfall = quantity - alreadyReserved.size() - takeable;
+
+        if (shortfall > 0) {
+            Integer available = locked.getAvailableQuantity();
+            int refill = Math.min(poolBatchSize, available == null ? 0 : available);
+            if (refill <= 0) {
+                throw new BusinessException("error.ticket.not-enough",
+                        new Object[]{ticketType.getName()});
+            }
+            ticketPoolJdbcDao.insertAvailableBatch(ticketType.getId(), eventId, refill);
+            int decremented = ticketTypeRepository.decrementAvailableQuantity(ticketType.getId(), refill);
+            if (decremented == 0) {
+                throw new BusinessException("error.ticket.not-enough",
+                        new Object[]{ticketType.getName()});
+            }
+            log.info("Refilled {} tickets for ticket type {} (ledger now {})",
+                    refill, ticketType.getId(), available - refill);
+        }
+
+        int remaining = quantity - alreadyReserved.size();
+        List<Ticket> more = ticketRepository.reserveTickets(
+                ticketType.getId(), eventId, remaining, reservedUntil, orderDetailId);
+
+        List<Ticket> all = new ArrayList<>(alreadyReserved);
+        all.addAll(more);
+        if (all.size() < quantity) {
+            throw new BusinessException("error.ticket.not-enough",
+                    new Object[]{ticketType.getName()});
+        }
+        return all;
     }
 
     @Transactional
