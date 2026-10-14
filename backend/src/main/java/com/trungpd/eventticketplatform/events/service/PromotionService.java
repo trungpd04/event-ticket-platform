@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -72,7 +72,7 @@ public class PromotionService {
             return buildInvalidResponse(request.getCode());
         }
 
-        Instant now = Instant.now();
+        LocalDateTime now = LocalDateTime.now();
         boolean isValid = !now.isBefore(promotion.getValidFrom())
                 && !now.isAfter(promotion.getValidUntil())
                 && promotion.getUsedCount() < promotion.getUsageLimit();

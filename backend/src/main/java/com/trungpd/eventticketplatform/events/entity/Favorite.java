@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "favorites")
@@ -27,6 +27,6 @@ public class Favorite {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
 }

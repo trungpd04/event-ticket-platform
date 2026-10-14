@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 public class PromotionRequest {
@@ -27,9 +27,9 @@ public class PromotionRequest {
     private Integer usageLimit;
 
     @NotNull(message = "{error.validation.valid-from-required}")
-    private Instant validFrom;
+    private LocalDateTime validFrom;
 
     @NotNull(message = "{error.validation.valid-until-required}")
-    private Instant validUntil;
+    private LocalDateTime validUntil;
 
 }

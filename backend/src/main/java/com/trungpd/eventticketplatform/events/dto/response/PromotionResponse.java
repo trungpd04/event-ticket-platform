@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -17,7 +17,7 @@ public class PromotionResponse {
     private Long maxDiscount;
     private Integer usageLimit;
     private Integer usedCount;
-    private Instant validFrom;
-    private Instant validUntil;
+    private LocalDateTime validFrom;
+    private LocalDateTime validUntil;
 
 }
