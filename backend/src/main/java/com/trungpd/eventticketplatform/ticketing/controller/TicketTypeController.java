@@ -38,7 +38,17 @@ public class TicketTypeController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<TicketTypeResponse>>> getTicketTypes(
             @PathVariable Long eventId) {
-        List<TicketTypeResponse> response = ticketTypeService.findByEventId(eventId);
+        List<TicketTypeResponse> response = ticketTypeService.findPublicByEventId(eventId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/organizer")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ApiResponse<List<TicketTypeResponse>>> getOrganizerTicketTypes(
+            @AuthenticationPrincipal String email,
+            @PathVariable Long eventId) {
+        List<TicketTypeResponse> response = ticketTypeService.findOrganizerTicketTypes(email, eventId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

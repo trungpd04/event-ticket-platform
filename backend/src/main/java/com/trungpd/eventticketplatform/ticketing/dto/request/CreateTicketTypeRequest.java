@@ -21,4 +21,10 @@ public class CreateTicketTypeRequest {
     @Min(value = 1, message = "{error.ticket-type.total-quantity.min}")
     private Integer totalQuantity;
 
+    @Min(value = 1, message = "{error.ticket-type.min-per-order.min}")
+    private Integer minPerOrder = 1;
+
+    @Min(value = 1, message = "{error.ticket-type.max-per-order.min}")
+    private Integer maxPerOrder;
+
 }

@@ -33,4 +33,9 @@ public class TicketType extends BaseEntity {
     @Column(name = "available_quantity", nullable = false)
     private Integer availableQuantity;
 
+    @Column(name = "min_per_order", nullable = false)
+    private Integer minPerOrder = 1;
+
+    @Column(name = "max_per_order", nullable = false)
+    private Integer maxPerOrder;
 }
