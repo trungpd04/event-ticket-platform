@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net">
+<mxfile host="Electron">
   <diagram name="Page-1" id="b0Kjw6EVBSa2cM5Rv4ym">
-    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1650" pageHeight="1000" math="0" shadow="0">
+    <mxGraphModel dx="4938" dy="2956" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1650" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -34,7 +34,7 @@
         <mxCell id="tbl_ticket_types_cols" parent="tbl_ticket_types" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;event_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;name: VARCHAR(100)&#xa;price: DECIMAL&#xa;total_quantity: INT&#xa;available_quantity: INT" vertex="1">
           <mxGeometry height="100" width="280" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="tbl_fee_policies" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffcccc;swimlaneFillColor=#ffcccc;strokeColor=#000000;fontColor=#000000;" value="fee_policies" vertex="1">
+        <mxCell id="tbl_fee_policies" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76C9ED;swimlaneFillColor=#76C9ED;strokeColor=#000000;" value="fee_policies" vertex="1">
           <mxGeometry height="145" width="280" x="40" y="337.5" as="geometry" />
         </mxCell>
         <mxCell id="tbl_fee_policies_cols" parent="tbl_fee_policies" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;name: VARCHAR(100)&#xa;organizer_commission_rate: DECIMAL&#xa;customer_fee_rate: DECIMAL&#xa;customer_flat_fee: DECIMAL&#xa;status: VARCHAR(50)&#xa;created_at: TIMESTAMP" vertex="1">
@@ -52,7 +52,7 @@
         <mxCell id="tbl_promotions_cols" parent="tbl_promotions" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;event_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;code: VARCHAR(50)&#xa;discount_percent: DECIMAL&#xa;max_discount: DECIMAL&#xa;expiry_date: TIMESTAMP&#xa;usage_limit: INT&#xa;used_count: INT" vertex="1">
           <mxGeometry height="130" width="250" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="tbl_payouts" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffcc99;swimlaneFillColor=#ffcc99;strokeColor=#000000;fontColor=#000000;" value="payout_requests" vertex="1">
+        <mxCell id="tbl_payouts" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76C9ED;swimlaneFillColor=#76C9ED;strokeColor=#000000;fontColor=#000000;" value="payout_requests" vertex="1">
           <mxGeometry height="205" width="260" x="780" y="550" as="geometry" />
         </mxCell>
         <mxCell id="tbl_payouts_cols" parent="tbl_payouts" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;organizer_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;event_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;gross_revenue: DECIMAL&#xa;commission_fee: DECIMAL&#xa;net_revenue: DECIMAL&#xa;bank_name: VARCHAR(100)&#xa;bank_account: VARCHAR(50)&#xa;status: VARCHAR(50)&#xa;transaction_ref: VARCHAR(255)&#xa;requested_at: TIMESTAMP" vertex="1">
@@ -70,7 +70,7 @@
         <mxCell id="tbl_checkers_cols" parent="tbl_checkers" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;event_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;checker_id: BIGINT &lt;&lt;FK&gt;&gt;&#xa;assigned_at: TIMESTAMP" vertex="1">
           <mxGeometry height="70" width="250" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="tbl_otps" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="otps" vertex="1">
+        <mxCell id="tbl_otps" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76C9ED;swimlaneFillColor=#76c9ed;strokeColor=#000000;" value="otps" vertex="1">
           <mxGeometry height="115" width="250" x="1190" y="595" as="geometry" />
         </mxCell>
         <mxCell id="tbl_otps_cols" parent="tbl_otps" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;email: VARCHAR(255)&#xa;code: VARCHAR(10)&#xa;expired_at: TIMESTAMP&#xa;is_used: BOOLEAN" vertex="1">
@@ -166,8 +166,13 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e12" edge="1" parent="1" source="tbl_events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="tbl_checkers">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e12" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;entryX=0.5;entryY=0;" target="tbl_checkers">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525" y="500" />
+            </Array>
+            <mxPoint x="525" y="500" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="e13" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;entryX=0;entryY=0.5;" target="tbl_checkers">
           <mxGeometry relative="1" as="geometry">
@@ -185,16 +190,16 @@
           <mxGeometry height="70" width="250" y="30" as="geometry" />
         </mxCell>
         <mxCell id="tbl_categories" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="categories" vertex="1">
-          <mxGeometry height="130" width="250" x="340" y="850" as="geometry" />
+          <mxGeometry height="145" width="250" x="340" y="850" as="geometry" />
         </mxCell>
         <mxCell id="tbl_categories_cols" parent="tbl_categories" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;name: VARCHAR(255)&#xa;slug: VARCHAR(255)&#xa;icon_url: VARCHAR(500)&#xa;is_active: BOOLEAN&#xa;created_at: TIMESTAMP&#xa;updated_at: TIMESTAMP" vertex="1">
-          <mxGeometry height="100" width="250" y="30" as="geometry" />
+          <mxGeometry height="115" width="250" y="30" as="geometry" />
         </mxCell>
         <mxCell id="tbl_provinces" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="provinces" vertex="1">
-          <mxGeometry height="160" width="280" x="630" y="820" as="geometry" />
+          <mxGeometry height="175" width="280" x="630" y="820" as="geometry" />
         </mxCell>
         <mxCell id="tbl_provinces_cols" parent="tbl_provinces" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;province_code: VARCHAR(2)&#xa;name: VARCHAR(255)&#xa;short_name: VARCHAR(255)&#xa;code: VARCHAR(5)&#xa;place_type: VARCHAR(255)&#xa;country_code: VARCHAR(10)&#xa;created_at: TIMESTAMP&#xa;updated_at: TIMESTAMP" vertex="1">
-          <mxGeometry height="130" width="280" y="30" as="geometry" />
+          <mxGeometry height="145" width="280" y="30" as="geometry" />
         </mxCell>
         <mxCell id="tbl_wards" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="wards" vertex="1">
           <mxGeometry height="130" width="260" x="950" y="850" as="geometry" />
@@ -208,11 +213,11 @@
         <mxCell id="tbl_event_settings_cols" parent="tbl_event_settings" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="event_id: BIGINT &lt;&lt;PK, FK&gt;&gt;&#xa;refund_policy: VARCHAR(255)&#xa;age_restriction: VARCHAR(50)&#xa;tags: TEXT[]&#xa;is_public: BOOLEAN&#xa;created_at: TIMESTAMP&#xa;updated_at: TIMESTAMP" vertex="1">
           <mxGeometry height="130" width="280" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="tbl_event_payout_infos" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffcc99;swimlaneFillColor=#ffcc99;strokeColor=#000000;fontColor=#000000;" value="event_payout_infos" vertex="1">
-          <mxGeometry height="145" width="280" x="1560" y="820" as="geometry" />
+        <mxCell id="tbl_event_payout_infos" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76C9ED;swimlaneFillColor=#76C9ED;strokeColor=#000000;" value="event_payout_infos" vertex="1">
+          <mxGeometry height="160" width="280" x="1560" y="820" as="geometry" />
         </mxCell>
         <mxCell id="tbl_event_payout_infos_cols" parent="tbl_event_payout_infos" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;event_id: BIGINT &lt;&lt;FK, UQ&gt;&gt;&#xa;bank_name: VARCHAR(255)&#xa;account_number: VARCHAR(50)&#xa;account_holder: VARCHAR(255)&#xa;branch: VARCHAR(255)&#xa;created_at: TIMESTAMP&#xa;updated_at: TIMESTAMP" vertex="1">
-          <mxGeometry height="115" width="280" y="30" as="geometry" />
+          <mxGeometry height="130" width="280" y="30" as="geometry" />
         </mxCell>
         <mxCell id="tbl_option_sets" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="option_sets" vertex="1">
           <mxGeometry height="145" width="280" x="50" y="1080" as="geometry" />
@@ -227,16 +232,23 @@
           <mxGeometry height="145" width="300" y="30" as="geometry" />
         </mxCell>
         <mxCell id="tbl_files" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#76c9ed;swimlaneFillColor=#76c9ed;strokeColor=#000000;fontColor=#000000;" value="files" vertex="1">
-          <mxGeometry height="205" width="300" x="740" y="1050" as="geometry" />
+          <mxGeometry height="235" width="300" x="740" y="1050" as="geometry" />
         </mxCell>
         <mxCell id="tbl_files_cols" parent="tbl_files" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;wordWrap=1;fontColor=#000000;" value="id: BIGINT &lt;&lt;PK&gt;&gt;&#xa;url: VARCHAR(500)&#xa;public_id: VARCHAR(255)&#xa;platform_type: VARCHAR(50)&#xa;file_type: INT&#xa;content_type: VARCHAR(100)&#xa;size_bytes: BIGINT&#xa;width: INT&#xa;height: INT&#xa;uploaded_by: VARCHAR(255)&#xa;reference_id: BIGINT&#xa;reference_type: VARCHAR(50)&#xa;created_at: TIMESTAMP&#xa;updated_at: TIMESTAMP" vertex="1">
-          <mxGeometry height="175" width="300" y="30" as="geometry" />
+          <mxGeometry height="205" width="300" y="30" as="geometry" />
         </mxCell>
         <mxCell id="e_user_roles" edge="1" parent="1" source="tbl_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="tbl_user_roles">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_event_category" edge="1" parent="1" source="tbl_categories" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="tbl_events">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e_event_category" edge="1" parent="1" source="tbl_categories" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=0;entryX=0.003;entryY=0.867;entryDx=0;entryDy=0;entryPerimeter=0;" target="tbl_events_cols">
+          <mxGeometry relative="1" x="0.1985" as="geometry">
+            <Array as="points">
+              <mxPoint x="465" y="820" />
+              <mxPoint x="330" y="820" />
+              <mxPoint x="330" y="480" />
+            </Array>
+            <mxPoint x="370" y="460" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="e_event_province" edge="1" parent="1" source="tbl_provinces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="tbl_events">
           <mxGeometry relative="1" as="geometry" />
@@ -245,7 +257,12 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e_event_ward" edge="1" parent="1" source="tbl_wards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERmany;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="tbl_events">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1080" y="530" />
+              <mxPoint x="535" y="530" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="e_event_settings" edge="1" parent="1" source="tbl_events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERzeroToOne;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=1;entryX=0.5;entryY=0;" target="tbl_event_settings">
           <mxGeometry relative="1" as="geometry" />
