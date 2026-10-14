@@ -36,7 +36,16 @@ const ACCEPTED_TYPES = {
   'image/webp': ['.webp']
 };
 
-export default function ImageUploadField({ label, hint, fileType, value, previewUrl, onChange, error, helperText }: ImageUploadFieldProps) {
+export default function ImageUploadField({
+  label,
+  hint,
+  fileType,
+  value,
+  previewUrl,
+  onChange,
+  error,
+  helperText
+}: ImageUploadFieldProps) {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
@@ -50,12 +59,12 @@ export default function ImageUploadField({ label, hint, fileType, value, preview
     };
   }, [localPreview]);
 
-  const clearPreview = useCallback(() => {
+  const clearPreview = () => {
     if (localPreview) {
       URL.revokeObjectURL(localPreview);
       setLocalPreview(null);
     }
-  }, [localPreview]);
+  };
 
   const handleRemove = () => {
     clearPreview();
@@ -99,7 +108,7 @@ export default function ImageUploadField({ label, hint, fileType, value, preview
           setLoading(false);
         });
     },
-    [clearPreview, fileType, intl, onChange]
+    [fileType, intl, onChange]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -216,7 +225,9 @@ export default function ImageUploadField({ label, hint, fileType, value, preview
         </Paper>
       )}
 
-      {(helperText || uploadError) && <FormHelperText error={Boolean(error || uploadError)}>{uploadError || helperText}</FormHelperText>}
+      {(helperText || uploadError) && (
+        <FormHelperText error={Boolean(error || uploadError)}>{uploadError || helperText}</FormHelperText>
+      )}
     </Box>
   );
 }
