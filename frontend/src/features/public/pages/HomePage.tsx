@@ -1,63 +1,117 @@
 // material-ui
+import { useEffect, useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import EventButton from 'components/event/EventButton';
-import { ArrowRight2, PlayCircle } from 'iconsax-reactjs';
-import { Link as RouterLink } from 'react-router-dom';
+import ButtonBase from '@mui/material/ButtonBase';
+import { ArrowRight2 } from 'iconsax-reactjs';
 
 // third-party
 import { useIntl } from 'react-intl';
 
 // project-imports
+import { getCategories, searchEvents } from 'api/events';
 import SearchWidget from 'components/event/SearchWidget';
-import CategorySection from '../components/home/CategorySection';
-import FAQSection from '../components/home/FAQSection';
-import FeaturedEventsSection from '../components/home/FeaturedEventsSection';
-import FeaturesSection from '../components/home/FeaturesSection';
-import ReviewsSection from '../components/home/ReviewsSection';
+import { Category, Event } from 'types/organizer';
+import heroImage from 'assets/images/home/hero.jpeg';
 
 // ==============================|| HOME PAGE ||============================== //
 
 export default function HomePage() {
   const intl = useIntl();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [eventsByCategory, setEventsByCategory] = useState<Record<number, Event[]>>({});
+
+  useEffect(() => {
+    getCategories()
+      .then(async (items) => {
+        setCategories(items);
+        const featured = items.slice(0, 4);
+        const results = await Promise.all(
+          featured.map(async (category) => {
+            try {
+              const response = await searchEvents({
+                categoryId: category.id,
+                status: 'PUBLISHED',
+                timeFilter: 'UPCOMING',
+                page: 0,
+                size: 4
+              });
+              return [category.id, response.content] as const;
+            } catch {
+              return [category.id, []] as const;
+            }
+          })
+        );
+        setEventsByCategory(Object.fromEntries(results));
+      })
+      .catch(() => setCategories([]));
+  }, []);
 
   return (
-    <Box>
+    <Box sx={{ bgcolor: 'background.default' }}>
       <Box
         sx={{
           position: 'relative',
-          py: { xs: 10, md: 16 },
-          background: (theme) =>
-            `radial-gradient(circle at 70% 10%, ${theme.palette.primary.dark} 0%, transparent 32%), linear-gradient(135deg, #201328 0%, ${theme.palette.background.default} 70%)`,
-          overflow: 'hidden'
+          minHeight: { xs: 720, md: 840 },
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+          backgroundImage: `linear-gradient(180deg, rgba(13, 10, 18, 0.28) 0%, rgba(13, 10, 18, 0.86) 100%), url(${heroImage})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
         }}
       >
-        <Container maxWidth="xl">
-          <Stack spacing={3} alignItems={{ xs: 'center', md: 'flex-start' }} textAlign={{ xs: 'center', md: 'left' }} maxWidth={760}>
-            <Chip label="THE BEST EXPERIENCES, ALL IN ONE PLACE" sx={{ bgcolor: 'rgba(193,79,230,0.16)', color: 'primary.light', fontWeight: 700 }} />
-            <Typography variant="h1" color="text.primary" sx={{ fontSize: { xs: '3rem', md: '5.5rem' }, lineHeight: 0.98, letterSpacing: '-0.07em', fontWeight: 800 }}>
-              {intl.formatMessage({ id: 'home.hero.title', defaultMessage: 'Discover amazing events' })}
+        <Box sx={{ position: 'absolute', width: 382, height: 382, borderRadius: '50%', bgcolor: 'primary.main', opacity: 0.22, filter: 'blur(80px)', top: -165, left: '37%' }} />
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+          <Stack alignItems="center" textAlign="center" spacing={3}>
+            <Typography variant="h1" color="common.white" sx={{ maxWidth: 760, fontSize: { xs: '3rem', md: '4.5rem' }, lineHeight: 1.08, fontWeight: 800, letterSpacing: '-0.06em' }}>
+              What event would you like to go to?
             </Typography>
-            <Typography variant="h6" color="text.secondary" maxWidth={600} sx={{ lineHeight: 1.6 }}>
-              {intl.formatMessage({ id: 'home.hero.subtitle', defaultMessage: 'Buy tickets easily, experience unforgettable moments.' })}
+            <Typography variant="body1" color="rgba(255,255,255,0.72)" maxWidth={620}>
+              More than 100 events in different cities are now available to you.
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-              <EventButton component={RouterLink} to="/events" variant="contained" endIcon={<ArrowRight2 size={18} />}>Explore events</EventButton>
-              <EventButton component={RouterLink} to="/events" variant="outlined" color="inherit" startIcon={<PlayCircle size={18} />}>How it works</EventButton>
-            </Stack>
+            <Box sx={{ width: '100%', maxWidth: 1016, mt: 6 }}>
+              <SearchWidget />
+            </Box>
           </Stack>
-          <Box sx={{ mt: { xs: 7, md: 10 }, maxWidth: 1100 }}><SearchWidget /></Box>
         </Container>
       </Box>
 
-      <CategorySection />
-      <FeaturedEventsSection />
-      <FeaturesSection />
-      <ReviewsSection />
-      <FAQSection />
+      <Container maxWidth="xl" sx={{ py: { xs: 7, md: 10 } }}>
+        <Stack spacing={{ xs: 8, md: 12 }}>
+          {categories.slice(0, 4).map((category) => (
+            <Box key={category.id}>
+              <Stack direction="row" justifyContent="space-between" alignItems="end" mb={3}>
+                <Box>
+                  <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.05em' }}>{category.name}</Typography>
+                  <Typography color="text.secondary" sx={{ mt: 0.5 }}>Discover the best {category.name.toLowerCase()} events.</Typography>
+                </Box>
+                <ButtonBase sx={{ color: 'primary.main', fontWeight: 700, gap: 0.75, pb: 0.5 }}>
+                  View all <ArrowRight2 size={18} />
+                </ButtonBase>
+              </Stack>
+              <Grid container spacing={3}>
+                {(eventsByCategory[category.id] || []).map((event) => (
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }} key={event.id}>
+                    <Box sx={{ overflow: 'hidden', borderRadius: 2.5, bgcolor: 'background.paper', border: 1, borderColor: 'divider', '&:hover img': { transform: 'scale(1.04)' } }}>
+                      <Box component="img" src={event.thumbnailUrl || event.bannerUrl} alt={event.title} sx={{ width: '100%', height: 240, objectFit: 'cover', display: 'block', transition: 'transform .3s' }} />
+                      <Box sx={{ p: 2 }}>
+                        <Typography variant="h6" noWrap fontWeight={700}>{event.title}</Typography>
+                        <Typography variant="body2" color="text.secondary" noWrap sx={{ mt: 0.5 }}>{event.location}</Typography>
+                        <Typography variant="caption" color="primary.main" fontWeight={700} sx={{ display: 'block', mt: 1 }}>{new Date(event.startTime).toLocaleDateString()}</Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          ))}
+        </Stack>
+      </Container>
     </Box>
   );
 }
