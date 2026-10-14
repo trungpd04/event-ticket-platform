@@ -101,7 +101,7 @@ public class EventService {
         Event event = eventMapper.toEntity(request);
         event.setOrganizerId(user.getId());
         event.setFeePolicyId(defaultFeePolicy.getId());
-        event.setStatus(EventStatus.PENDING);
+        event.setStatus(EventStatus.PENDING_REVIEW);
 
         Event saved = eventRepository.save(event);
 
@@ -109,6 +109,12 @@ public class EventService {
             TicketType ticketType = ticketTypeMapper.toEntity(ticketTypeRequest);
             ticketType.setEventId(saved.getId());
             ticketType.setAvailableQuantity(ticketTypeRequest.getTotalQuantity());
+            if (ticketType.getMinPerOrder() == null) {
+                ticketType.setMinPerOrder(1);
+            }
+            if (ticketType.getMaxPerOrder() == null) {
+                ticketType.setMaxPerOrder(ticketTypeRequest.getTotalQuantity());
+            }
             ticketTypeRepository.save(ticketType);
         }
 
@@ -197,6 +203,9 @@ public class EventService {
     public EventDetailResponse getEventDetail(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
+        if (event.getStatus() != EventStatus.PUBLISHED) {
+            throw new BusinessException("error.event.not-published");
+        }
 
         EventDetailResponse response = eventMapper.toDetailResponse(event);
         response.setTicketTypes(ticketTypeRepository.findByEventId(id).stream()
@@ -291,14 +300,17 @@ public class EventService {
         return enrichEventResponse(eventMapper.toResponse(updated));
     }
 
-    @Transactional(readOnly = true)
-    public void requestPublish(String email, Long id) {
+    @Transactional
+    public EventResponse requestPublish(String email, Long id) {
         User user = userService.findByEmail(email);
         Event event = findEventById(id);
 
         validateEventOwnership(event, user.getId());
         validateEventEditable(event);
         validateHasTicketTypes(id);
+        event.setStatus(EventStatus.PENDING_REVIEW);
+        Event updated = eventRepository.save(event);
+        return enrichEventResponse(eventMapper.toResponse(updated));
     }
 
     @CacheEvict(value = "events", key = "#id")
@@ -322,7 +334,7 @@ public class EventService {
     public EventResponse publishEvent(Long id) {
         Event event = findEventById(id);
 
-        if (event.getStatus() != EventStatus.PENDING) {
+        if (event.getStatus() != EventStatus.PENDING_REVIEW) {
             throw new BusinessException("error.event.invalid-status");
         }
 
@@ -368,7 +380,7 @@ public class EventService {
 
         return switch (targetStatus) {
             case PUBLISHED -> {
-                if (currentStatus != EventStatus.PENDING) {
+                if (currentStatus != EventStatus.PENDING_REVIEW) {
                     throw new BusinessException("error.event.invalid-status-transition",
                             new Object[]{currentStatus.name(), targetStatus.name()});
                 }
@@ -382,6 +394,8 @@ public class EventService {
                 yield closeEvent(id);
             }
             case PENDING -> throw new BusinessException("error.event.cannot-revert-to-pending");
+            case PENDING_REVIEW -> throw new BusinessException("error.event.invalid-status-transition",
+                    new Object[]{currentStatus.name(), targetStatus.name()});
         };
     }
 
@@ -431,6 +445,17 @@ public class EventService {
             if (!names.add(normalizedName)) {
                 throw new BusinessException("error.event.ticket-types.duplicate-name");
             }
+            validateTicketTypeLimits(ticketType);
+        }
+    }
+
+    private void validateTicketTypeLimits(CreateTicketTypeRequest ticketType) {
+        int minPerOrder = ticketType.getMinPerOrder() == null ? 1 : ticketType.getMinPerOrder();
+        int maxPerOrder = ticketType.getMaxPerOrder() == null
+                ? ticketType.getTotalQuantity()
+                : ticketType.getMaxPerOrder();
+        if (minPerOrder > maxPerOrder || maxPerOrder > ticketType.getTotalQuantity()) {
+            throw new BusinessException("error.ticket-type.order-limit.invalid");
         }
     }
 

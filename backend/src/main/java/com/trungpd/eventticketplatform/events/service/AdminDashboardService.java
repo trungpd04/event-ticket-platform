@@ -19,7 +19,7 @@ public class AdminDashboardService {
 
     @Transactional(readOnly = true)
     public AdminDashboardStatsResponse getStats() {
-        long pendingEventsCount = eventRepository.countByStatus(EventStatus.PENDING);
+        long pendingEventsCount = eventRepository.countByStatus(EventStatus.PENDING_REVIEW);
         long totalCategories = categoryRepository.count();
         long totalFeePolicies = feePolicyRepository.count();
 

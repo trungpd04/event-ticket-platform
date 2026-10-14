@@ -3,6 +3,7 @@ package com.trungpd.eventticketplatform.ticketing.service;
 import com.trungpd.eventticketplatform.common.exception.BusinessException;
 import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
+import com.trungpd.eventticketplatform.events.entity.OptionSetValue;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.UserService;
@@ -20,6 +21,7 @@ import com.trungpd.eventticketplatform.ticketing.enums.TicketStatus;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketPoolJdbcDao;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketRepository;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
+import com.trungpd.eventticketplatform.events.repository.OptionSetValueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +44,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 class TicketServiceRefillTest {
 
@@ -59,6 +63,8 @@ class TicketServiceRefillTest {
     private OrderDetailRepository orderDetailRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private OptionSetValueRepository optionSetValueRepository;
 
     @InjectMocks
     private TicketService ticketService;
@@ -78,6 +84,12 @@ class TicketServiceRefillTest {
         event = new Event();
         event.setId(1L);
         event.setStatus(EventStatus.PUBLISHED);
+
+        OptionSetValue reservationMinutes = new OptionSetValue();
+        reservationMinutes.setValue("10");
+        when(optionSetValueRepository.findByOptionSetCodeAndCode(
+                "RESERVATION_CONFIG", "RESERVATION_MINUTES"))
+                .thenReturn(Optional.of(reservationMinutes));
 
         ticketType = new TicketType();
         ticketType.setId(10L);

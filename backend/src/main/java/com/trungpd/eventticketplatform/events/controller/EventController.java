@@ -80,11 +80,11 @@ public class EventController {
     @PostMapping("/{id}/request-publish")
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<ApiResponse<Void>> requestPublish(
+    public ResponseEntity<ApiResponse<EventResponse>> requestPublish(
             @AuthenticationPrincipal String email,
             @PathVariable Long id) {
-        eventService.requestPublish(email, id);
-        return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
+        EventResponse response = eventService.requestPublish(email, id);
+        return ResponseEntity.ok(ApiResponse.success("success.operation.completed", response));
     }
 
     @GetMapping("/organizer/events")

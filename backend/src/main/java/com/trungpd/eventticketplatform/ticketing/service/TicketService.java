@@ -4,6 +4,8 @@ import com.trungpd.eventticketplatform.common.exception.BusinessException;
 import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
+import com.trungpd.eventticketplatform.events.entity.OptionSetValue;
+import com.trungpd.eventticketplatform.events.repository.OptionSetValueRepository;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.UserService;
@@ -45,6 +47,7 @@ public class TicketService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final UserService userService;
+    private final OptionSetValueRepository optionSetValueRepository;
 
     @Value("${ticket.pool.batch-size:500}")
     private int poolBatchSize;
@@ -87,7 +90,8 @@ public class TicketService {
         validateEventForReservation(event);
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservedUntil = now.plusMinutes(request.getReservationMinutes());
+        int reservationMinutes = getReservationMinutes();
+        LocalDateTime reservedUntil = now.plusMinutes(reservationMinutes);
 
         String orderCode = generateReservationCode();
         Order order = new Order();
@@ -111,6 +115,13 @@ public class TicketService {
             }
 
             int quantity = item.getQuantity();
+            int minPerOrder = ticketType.getMinPerOrder() == null ? 1 : ticketType.getMinPerOrder();
+            int maxPerOrder = ticketType.getMaxPerOrder() == null
+                    ? ticketType.getTotalQuantity()
+                    : ticketType.getMaxPerOrder();
+            if (quantity < minPerOrder || quantity > maxPerOrder) {
+                throw new BusinessException("error.ticket-type.order-limit.invalid");
+            }
             long subtotal = ticketType.getPrice() * quantity;
 
             OrderDetail detail = new OrderDetail();
@@ -248,6 +259,25 @@ public class TicketService {
     private void validateEventForReservation(Event event) {
         if (event.getStatus() != EventStatus.PUBLISHED) {
             throw new BusinessException("error.event.not-published");
+        }
+
+        private int getReservationMinutes() {
+            OptionSetValue setting = optionSetValueRepository
+                    .findByOptionSetCodeAndCode("RESERVATION_CONFIG", "RESERVATION_MINUTES")
+                    .orElseThrow(() -> new BusinessException("error.reservation.minutes.config-missing"));
+            if (!"ACTIVE".equalsIgnoreCase(setting.getStatus())) {
+                throw new BusinessException("error.reservation.minutes.config-invalid");
+            }
+
+            try {
+                int minutes = Integer.parseInt(setting.getValue());
+                if (minutes < 1) {
+                    throw new NumberFormatException("must be positive");
+                }
+                return minutes;
+            } catch (NumberFormatException exception) {
+                throw new BusinessException("error.reservation.minutes.config-invalid");
+            }
         }
 
         LocalDateTime now = LocalDateTime.now();
