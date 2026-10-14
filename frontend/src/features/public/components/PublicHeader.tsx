@@ -9,6 +9,8 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { ArrowDown2, Ticket2 } from 'iconsax-reactjs';
 
 // project-imports
 import EventButton from 'components/event/EventButton';
@@ -35,29 +37,48 @@ export default function PublicHeader() {
   const intl = useIntl();
 
   return (
-    <AppBar position="sticky" color="transparent" elevation={0} sx={{ bgcolor: 'background.paper' }}>
+    <AppBar
+      position="sticky"
+      color="transparent"
+      elevation={0}
+      sx={{ bgcolor: 'background.default', borderBottom: 1, borderColor: 'rgba(255,255,255,0.08)', zIndex: 10 }}
+    >
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-          <Stack direction="row" spacing={4} alignItems="center">
+        <Toolbar disableGutters sx={{ minHeight: { xs: 68, md: 78 }, justifyContent: 'space-between' }}>
+          <Stack direction="row" spacing={{ xs: 2, md: 6 }} alignItems="center">
             <Typography
               component={RouterLink}
               to="/"
-              variant="h5"
+              variant="h4"
               sx={{
-                fontWeight: 700,
+                fontWeight: 800,
+                letterSpacing: '-0.06em',
                 color: 'text.primary',
                 textDecoration: 'none'
               }}
             >
-              {intl.formatMessage({ id: 'app.name', defaultMessage: 'Event Ticket Platform' })}
+              <Box component="span" sx={{ color: 'primary.main' }}>even</Box>jo
             </Typography>
 
-            <Stack direction="row" spacing={3} sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Typography component={RouterLink} to="/" color="text.secondary" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+            <Stack direction="row" spacing={3.5} sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <Typography
+                component={RouterLink}
+                to="/"
+                color="text.primary"
+                sx={{ textDecoration: 'none', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
+              >
                 {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
               </Typography>
-              <Typography component={RouterLink} to="/events" color="text.secondary" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+              <Typography
+                component={RouterLink}
+                to="/events"
+                color="text.secondary"
+                sx={{ textDecoration: 'none', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
+              >
                 {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
+              </Typography>
+              <Typography component={RouterLink} to="/events?category=concerts" color="text.secondary" sx={{ textDecoration: 'none', fontWeight: 600 }}>
+                Concerts
               </Typography>
             </Stack>
           </Stack>
@@ -69,7 +90,11 @@ export default function PublicHeader() {
                 onChange={(e) => onChangeLocalization(e.target.value as I18n)}
                 variant="outlined"
                 inputProps={{ 'aria-label': 'Language' }}
+                IconComponent={ArrowDown2}
                 sx={{
+                  color: 'text.secondary',
+                  borderRadius: 2,
+                  bgcolor: 'background.paper',
                   '& .MuiSelect-select': {
                     py: 0.75,
                     px: 1.5,
@@ -90,7 +115,7 @@ export default function PublicHeader() {
             </FormControl>
             {isLoggedIn ? (
               <>
-                <EventButton component={RouterLink} to="/organizer/events/create" variant="contained" color="primary">
+                <EventButton component={RouterLink} to="/organizer/events/create" variant="contained" color="primary" startIcon={<Ticket2 size={18} />}>
                   {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
                 </EventButton>
                 <EventButton variant="outlined" color="primary" onClick={logout}>
@@ -99,7 +124,7 @@ export default function PublicHeader() {
               </>
             ) : (
               <>
-                <EventButton component={RouterLink} to="/login" variant="text" color="primary">
+                <EventButton component={RouterLink} to="/login" variant="text" color="inherit" sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
                   {intl.formatMessage({ id: 'header.login', defaultMessage: 'Login' })}
                 </EventButton>
                 <EventButton component={RouterLink} to="/register" variant="contained" color="primary">

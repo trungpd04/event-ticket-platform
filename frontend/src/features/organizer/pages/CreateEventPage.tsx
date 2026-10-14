@@ -8,6 +8,9 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 
 // third-party
 import { FormikErrors, FormikTouched } from 'formik';
@@ -259,20 +262,34 @@ export default function CreateEventPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h3" mb={3}>
+    <Container maxWidth="xl" sx={{ py: { xs: 3, md: 6 } }}>
+      <Typography variant="h2" mb={1} sx={{ fontWeight: 800, letterSpacing: '-0.06em' }}>
         {intl.formatMessage({ id: 'createEvent.title' })}
       </Typography>
+      <Typography color="text.secondary" mb={4}>Bring your experience to life and reach the right audience.</Typography>
 
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-        {stepLabels.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
-      <Paper sx={{ p: 4 }}>
+      <Grid container spacing={4} alignItems="flex-start">
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Paper sx={{ p: 2.5, position: { md: 'sticky' }, top: 96 }}>
+            <Typography variant="overline" color="text.secondary" fontWeight={700}>CREATE YOUR EVENT</Typography>
+            <Stepper activeStep={activeStep} orientation="vertical" sx={{ mt: 2 }}>
+              {stepLabels.map((label, index) => (
+                <Step key={label} completed={activeStep > index}>
+                  <StepLabel>
+                    <Typography fontWeight={activeStep === index ? 700 : 500} color={activeStep === index ? 'primary.main' : 'text.secondary'}>{label}</Typography>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, md: 9 }}>
+          <Paper sx={{ p: { xs: 2, md: 4 }, borderRadius: 3 }}>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h4" fontWeight={700}>{activeStep === steps.length ? 'Event submitted' : stepLabels[activeStep]}</Typography>
+              <Typography color="text.secondary" variant="body2" sx={{ mt: 0.5 }}>Complete each section to submit your event for review.</Typography>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
         <Formik
           initialValues={initialEvent}
           validationSchema={stepValidation[activeStep]}
@@ -340,7 +357,9 @@ export default function CreateEventPage() {
             </>
           )}
         </Formik>
-      </Paper>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

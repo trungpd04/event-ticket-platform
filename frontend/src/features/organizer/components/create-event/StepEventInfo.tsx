@@ -5,6 +5,7 @@ import { FormikErrors, FormikTouched } from 'formik';
 import Autocomplete from '@mui/material/Autocomplete';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 // third-party
 import { useIntl } from 'react-intl';
@@ -12,6 +13,7 @@ import { useIntl } from 'react-intl';
 // project-imports
 import { getWards } from 'api/events';
 import { Category, CreateEventPayload, Province, Ward } from 'types/organizer';
+import ImageUploadField from 'components/event/ImageUploadField';
 
 interface StepEventInfoProps {
   values: CreateEventPayload;
@@ -66,6 +68,10 @@ export default function StepEventInfo({
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
+        <Typography variant="h6" fontWeight={700}>Tell people about your event</Typography>
+        <Typography variant="body2" color="text.secondary">Use a clear title, description and cover images so attendees know what to expect.</Typography>
+      </Grid>
+      <Grid size={12}>
         <TextField
           fullWidth
           name="title"
@@ -75,6 +81,36 @@ export default function StepEventInfo({
           onBlur={handleBlur}
           error={Boolean(touched.title && errors.title)}
           helperText={touched.title && errors.title}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ImageUploadField
+          label={intl.formatMessage({ id: 'createEvent.thumbnailImage' })}
+          hint="Square image used in event cards"
+          fileType={1}
+          value={values.thumbnailFileId}
+          previewUrl={values.thumbnailUrl}
+          onChange={(id, url) => {
+            setFieldValue('thumbnailFileId', id);
+            setFieldValue('thumbnailUrl', url || '');
+          }}
+          error={Boolean(touched.thumbnailFileId && errors.thumbnailFileId)}
+          helperText={touched.thumbnailFileId && errors.thumbnailFileId}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ImageUploadField
+          label={intl.formatMessage({ id: 'createEvent.bannerImage' })}
+          hint="Wide image used on the event detail page"
+          fileType={2}
+          value={values.bannerFileId}
+          previewUrl={values.bannerUrl}
+          onChange={(id, url) => {
+            setFieldValue('bannerFileId', id);
+            setFieldValue('bannerUrl', url || '');
+          }}
+          error={Boolean(touched.bannerFileId && errors.bannerFileId)}
+          helperText={touched.bannerFileId && errors.bannerFileId}
         />
       </Grid>
       <Grid size={12}>
