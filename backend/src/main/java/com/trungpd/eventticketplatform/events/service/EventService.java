@@ -216,6 +216,19 @@ public class EventService {
         return enrichEventDetailResponse(response);
     }
 
+    @Transactional(readOnly = true)
+    public EventDetailResponse getAdminEventDetail(Long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("error.event.not-found"));
+
+        EventDetailResponse response = eventMapper.toDetailResponse(event);
+        response.setTicketTypes(ticketTypeRepository.findByEventId(id).stream()
+                .map(ticketTypeMapper::toResponse)
+                .toList());
+        response.setActivePromotions(getActivePromotions(id));
+        return enrichEventDetailResponse(response);
+    }
+
     @CacheEvict(value = "events", key = "#id")
     @Transactional
     public EventResponse updateEvent(String email, Long id, UpdateEventRequest request) {

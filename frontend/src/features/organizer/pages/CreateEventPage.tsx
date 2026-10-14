@@ -151,6 +151,19 @@ const getValidation = (intl: ReturnType<typeof useIntl>) => {
               .typeError(intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
               .min(1, intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
               .required(intl.formatMessage({ id: 'createEvent.errors.ticketQuantityMin' }))
+            ,
+            minPerOrder: Yup.number()
+              .typeError(intl.formatMessage({ id: 'createEvent.errors.ticketMinInvalid' }))
+              .min(1, intl.formatMessage({ id: 'createEvent.errors.ticketMinInvalid' }))
+              .required(intl.formatMessage({ id: 'createEvent.errors.ticketMinInvalid' })),
+            maxPerOrder: Yup.number()
+              .typeError(intl.formatMessage({ id: 'createEvent.errors.ticketMaxInvalid' }))
+              .min(1, intl.formatMessage({ id: 'createEvent.errors.ticketMaxInvalid' }))
+              .max(Yup.ref('totalQuantity'), intl.formatMessage({ id: 'createEvent.errors.ticketMaxExceedsQuantity' }))
+              .required(intl.formatMessage({ id: 'createEvent.errors.ticketMaxInvalid' }))
+              .test('max-after-min', intl.formatMessage({ id: 'createEvent.errors.ticketMaxBeforeMin' }), function (value) {
+                return value == null || this.parent.minPerOrder == null || value >= this.parent.minPerOrder;
+              })
           })
         )
         .test('unique-ticket-names', intl.formatMessage({ id: 'createEvent.errors.duplicateTicketName' }), (tickets: any) => {
@@ -289,6 +302,8 @@ export default function CreateEventPage() {
                   setTicketTypes={(types) => setFieldValue('ticketTypes', types)}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
+                  errors={errors}
+                  touched={touched}
                 />
               )}
               {activeStep === 2 && <StepSettings values={values.settings} setValues={(settings) => setFieldValue('settings', settings)} />}

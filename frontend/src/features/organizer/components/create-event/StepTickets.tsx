@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 
 // third-party
 import { useIntl } from 'react-intl';
+import { FormikErrors, FormikTouched, getIn } from 'formik';
 
 // project-imports
 import EventButton from 'components/event/EventButton';
@@ -21,9 +22,19 @@ interface StepTicketsProps {
   setTicketTypes: (types: TicketType[]) => void;
   handleChange: (e: React.ChangeEvent<any>) => void;
   handleBlur: (e: React.FocusEvent<any>) => void;
+  errors: FormikErrors<CreateEventPayload>;
+  touched: FormikTouched<CreateEventPayload>;
 }
 
-export default function StepTickets({ values, ticketTypes, setTicketTypes, handleChange, handleBlur }: StepTicketsProps) {
+export default function StepTickets({
+  values,
+  ticketTypes,
+  setTicketTypes,
+  handleChange,
+  handleBlur,
+  errors,
+  touched
+}: StepTicketsProps) {
   const intl = useIntl();
 
   const addTicketType = () => {
@@ -108,6 +119,14 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
               label={intl.formatMessage({ id: 'createEvent.ticketName' })}
               value={ticket.name}
               onChange={(e) => updateTicket(ticket.id, 'name', e.target.value)}
+              error={Boolean(getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].name`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].name`))}
+              helperText={getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].name`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].name`)}
+              sx={{ flex: 2 }}
+            />
+            <TextField
+              label={intl.formatMessage({ id: 'createEvent.ticketDescription' })}
+              value={ticket.description || ''}
+              onChange={(e) => updateTicket(ticket.id, 'description', e.target.value)}
               sx={{ flex: 2 }}
             />
             <TextField
@@ -115,6 +134,8 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
               type="number"
               value={ticket.price}
               onChange={(e) => updateTicket(ticket.id, 'price', Number(e.target.value))}
+              error={Boolean(getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].price`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].price`))}
+              helperText={getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].price`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].price`)}
               sx={{ flex: 1 }}
             />
             <TextField
@@ -122,6 +143,8 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
               type="number"
               value={ticket.totalQuantity}
               onChange={(e) => updateTicket(ticket.id, 'totalQuantity', Number(e.target.value))}
+              error={Boolean(getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].totalQuantity`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].totalQuantity`))}
+              helperText={getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].totalQuantity`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].totalQuantity`)}
               sx={{ flex: 1 }}
             />
             <TextField
@@ -129,6 +152,8 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
               type="number"
               value={ticket.minPerOrder}
               onChange={(e) => updateTicket(ticket.id, 'minPerOrder', Number(e.target.value))}
+              error={Boolean(getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].minPerOrder`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].minPerOrder`))}
+              helperText={getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].minPerOrder`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].minPerOrder`)}
               sx={{ flex: 1 }}
             />
             <TextField
@@ -136,6 +161,8 @@ export default function StepTickets({ values, ticketTypes, setTicketTypes, handl
               type="number"
               value={ticket.maxPerOrder}
               onChange={(e) => updateTicket(ticket.id, 'maxPerOrder', Number(e.target.value))}
+              error={Boolean(getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].maxPerOrder`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].maxPerOrder`))}
+              helperText={getIn(touched, `ticketTypes[${ticketTypes.indexOf(ticket)}].maxPerOrder`) && getIn(errors, `ticketTypes[${ticketTypes.indexOf(ticket)}].maxPerOrder`)}
               sx={{ flex: 1 }}
             />
             <IconButton color="error" onClick={() => removeTicket(ticket.id)}>

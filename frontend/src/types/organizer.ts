@@ -46,7 +46,10 @@ export interface CreateEventPayload {
   title: string;
   description: string;
   location: string;
-  coverImageUrl: string;
+  thumbnailFileId: number | '';
+  bannerFileId: number | '';
+  thumbnailUrl?: string;
+  bannerUrl?: string;
   categoryId: number | '';
   provinceId: number | '';
   wardId: number | '';
@@ -57,6 +60,33 @@ export interface CreateEventPayload {
   ticketTypes: TicketType[];
   settings: EventSettings;
   payoutInfo: BankAccount;
+}
+
+export interface Event {
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  thumbnailUrl?: string;
+  bannerUrl?: string;
+  status: 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'CLOSED' | string;
+  organizerId: number;
+  category?: Category;
+  province?: Province;
+  ticketSaleStartTime: string;
+  ticketSaleEndTime: string;
+}
+
+export interface PagedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
 }
 
 export interface EventWizardState {

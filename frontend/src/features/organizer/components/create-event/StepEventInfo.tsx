@@ -89,16 +89,6 @@ export default function StepEventInfo({
           onBlur={handleBlur}
         />
       </Grid>
-      <Grid size={12}>
-        <TextField
-          fullWidth
-          name="coverImageUrl"
-          label={intl.formatMessage({ id: 'createEvent.coverImageUrl' })}
-          value={values.coverImageUrl}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-      </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Autocomplete
           options={categories}
