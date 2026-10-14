@@ -21,7 +21,7 @@ export const searchAdminEvents = async (params: SearchAdminEventsParams = {}): P
 };
 
 export const getEventDetail = async (id: number): Promise<AdminEventDetail> => {
-  const response = await axios.get(`/api/v1/events/${id}`);
+  const response = await axios.get(`/api/v1/admin/events/${id}`);
   return response.data as AdminEventDetail;
 };
 

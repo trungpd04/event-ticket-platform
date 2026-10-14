@@ -107,6 +107,10 @@
   "createEvent.errors.ticketNameRequired": "Ticket type name is required",
   "createEvent.errors.ticketPriceMin": "Ticket price must be 0 or more",
   "createEvent.errors.ticketQuantityMin": "Ticket quantity must be at least 1",
+  "createEvent.errors.ticketMinInvalid": "Minimum tickets per order must be at least 1",
+  "createEvent.errors.ticketMaxInvalid": "Maximum tickets per order must be at least 1",
+  "createEvent.errors.ticketMaxExceedsQuantity": "Maximum tickets per order cannot exceed total quantity",
+  "createEvent.errors.ticketMaxBeforeMin": "Maximum tickets per order must be at least the minimum",
   "createEvent.errors.duplicateTicketName": "Ticket type names must be unique",
   "createEvent.errors.startTimeTooSoon": "Start time must be at least 1 hour from now",
   "createEvent.errors.endTimeAfterStart": "End time must be after start time",
@@ -115,6 +119,7 @@
   "createEvent.requestPublish": "Submit for review",
   "createEvent.requestPublishSuccess": "Review request has been sent",
   "createEvent.requestPublishFailed": "Failed to send review request",
+  "createEvent.summary.pendingReview": "This event is waiting for administrator review.",
 
   "createEvent.eventTitle": "Event title",
   "createEvent.description": "Description",
@@ -142,6 +147,7 @@
   "createEvent.ticketTypes": "Ticket types",
   "createEvent.addTicketType": "+ Add ticket type",
   "createEvent.ticketName": "Name",
+  "createEvent.ticketDescription": "Description",
   "createEvent.ticketPrice": "Price (VND)",
   "createEvent.ticketQuantity": "Quantity",
   "createEvent.ticketMin": "Min",
@@ -291,6 +297,7 @@
   "admin.feePolicies": "Fee policies",
 
   "admin.status.pending": "Pending",
+  "admin.status.pendingReview": "Pending review",
   "admin.status.published": "Published",
   "admin.status.closed": "Closed",
 
@@ -298,6 +305,7 @@
   "admin.events.search": "Search events",
   "admin.events.filter.all": "All ({count})",
   "admin.events.filter.pending": "Pending ({count})",
+  "admin.events.filter.pendingReview": "Pending review ({count})",
   "admin.events.filter.published": "Published ({count})",
   "admin.events.filter.closed": "Closed ({count})",
   "admin.events.empty": "No events found.",

@@ -71,7 +71,7 @@ export interface Event {
   endTime: string;
   thumbnailUrl?: string;
   bannerUrl?: string;
-  status: string;
+  status: 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'CLOSED' | string;
   organizerId: number;
   category?: Category;
   province?: Province;

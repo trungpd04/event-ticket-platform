@@ -32,7 +32,7 @@ export default function EventApprovalDetailPage() {
 
   const [event, setEvent] = useState<AdminEventDetail | null>(null);
   const [feePolicies, setFeePolicies] = useState<FeePolicy[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<EventStatus>('PENDING');
+  const [selectedStatus, setSelectedStatus] = useState<EventStatus>('PENDING_REVIEW');
   const [selectedFeePolicyId, setSelectedFeePolicyId] = useState<number | ''>('');
   const [savingStatus, setSavingStatus] = useState(false);
   const [savingFeePolicy, setSavingFeePolicy] = useState(false);
@@ -154,7 +154,7 @@ export default function EventApprovalDetailPage() {
                 onChange={(e) => setSelectedStatus(e.target.value as EventStatus)}
                 input={<OutlinedInput label={intl.formatMessage({ id: 'admin.events.status' })} />}
               >
-                <MenuItem value="PENDING">{intl.formatMessage({ id: 'admin.status.pending' })}</MenuItem>
+                <MenuItem value="PENDING_REVIEW">{intl.formatMessage({ id: 'admin.status.pendingReview' })}</MenuItem>
                 <MenuItem value="PUBLISHED">{intl.formatMessage({ id: 'admin.status.published' })}</MenuItem>
                 <MenuItem value="CLOSED">{intl.formatMessage({ id: 'admin.status.closed' })}</MenuItem>
               </Select>

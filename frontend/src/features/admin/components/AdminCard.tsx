@@ -1,8 +1,5 @@
-// material-ui
 import Paper from '@mui/material/Paper';
 import { SxProps, Theme } from '@mui/material/styles';
-
-// ==============================|| ADMIN CARD ||============================== //
 
 interface AdminCardProps {
   children: React.ReactNode;

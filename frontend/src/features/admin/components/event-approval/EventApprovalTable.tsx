@@ -1,22 +1,14 @@
-// material-ui
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-// third-party
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
-// project-imports
 import { ArrowRight2, Calendar, Location, Tag } from 'iconsax-reactjs';
 import AdminCard from 'features/admin/components/AdminCard';
 import StatusBadge from 'features/admin/components/StatusBadge';
-
-// types
 import { AdminEvent } from 'features/admin/types/admin';
-
-// ==============================|| EVENT APPROVAL TABLE ||============================== //
 
 interface EventApprovalTableProps {
   events: AdminEvent[];
@@ -52,7 +44,6 @@ export default function EventApprovalTable({ events }: EventApprovalTableProps) 
               </Box>
               <StatusBadge status={event.status} />
             </Box>
-
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} color="secondary.800">
               <Stack direction="row" spacing={1} alignItems="center">
                 <Calendar size={18} />
@@ -67,7 +58,6 @@ export default function EventApprovalTable({ events }: EventApprovalTableProps) 
                 <Typography variant="body2">{event.category?.name || '-'}</Typography>
               </Stack>
             </Stack>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 variant="text"

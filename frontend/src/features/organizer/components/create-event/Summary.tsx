@@ -1,4 +1,3 @@
-import { useState } from 'react';
 
 // material-ui
 import Chip from '@mui/material/Chip';
@@ -11,9 +10,6 @@ import Typography from '@mui/material/Typography';
 import { useIntl } from 'react-intl';
 
 // project-imports
-import { requestPublishEvent } from 'api/events';
-import { openSnackbar } from 'api/snackbar';
-import EventButton from 'components/event/EventButton';
 import { BankAccount, CreateEventPayload, EventSettings, TicketType } from 'types/organizer';
 
 interface SummaryProps {
@@ -26,37 +22,16 @@ interface SummaryProps {
 
 export default function Summary({ event, ticketTypes, settings, bankAccount, createdEvent }: SummaryProps) {
   const intl = useIntl();
-  const [publishState, setPublishState] = useState<'idle' | 'sending' | 'done'>('idle');
   const toDate = (value: string) => (value ? new Date(value).toLocaleString(intl.locale) : '-');
-
-  const handleRequestPublish = async () => {
-    if (!createdEvent?.id || publishState !== 'idle') return;
-    setPublishState('sending');
-    try {
-      await requestPublishEvent(createdEvent.id);
-      setPublishState('done');
-      openSnackbar({
-        open: true,
-        message: intl.formatMessage({ id: 'createEvent.requestPublishSuccess' }),
-        variant: 'alert',
-        alert: { color: 'success' }
-      } as any);
-    } catch (err: any) {
-      setPublishState('idle');
-      openSnackbar({
-        open: true,
-        message: err?.data?.message || err?.message || intl.formatMessage({ id: 'createEvent.requestPublishFailed' }),
-        variant: 'alert',
-        alert: { color: 'error' }
-      } as any);
-    }
-  };
 
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
         <Typography variant="h5" color="primary">
           {intl.formatMessage({ id: 'createEvent.summary.created' })}
+        </Typography>
+        <Typography variant="body2" color="warning.main">
+          {intl.formatMessage({ id: 'createEvent.summary.pendingReview' })}
         </Typography>
         {createdEvent?.id && (
           <Typography variant="body2" color="text.secondary">
@@ -160,24 +135,6 @@ export default function Summary({ event, ticketTypes, settings, bankAccount, cre
         </Typography>
       </Grid>
 
-      {createdEvent?.id && (
-        <>
-          <Grid size={12}>
-            <Divider />
-          </Grid>
-          <Grid size={12}>
-            {publishState === 'done' ? (
-              <Typography variant="h6" color="success.main">
-                {intl.formatMessage({ id: 'createEvent.requestPublishSuccess' })}
-              </Typography>
-            ) : (
-              <EventButton variant="contained" color="primary" disabled={publishState === 'sending'} onClick={handleRequestPublish}>
-                {intl.formatMessage({ id: 'createEvent.requestPublish' })}
-              </EventButton>
-            )}
-          </Grid>
-        </>
-      )}
     </Grid>
   );
 }

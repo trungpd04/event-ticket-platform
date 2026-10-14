@@ -7,7 +7,7 @@ export interface AdminEvent {
   location: string;
   startTime: string;
   endTime: string;
-  status: 'PENDING' | 'PUBLISHED' | 'CLOSED';
+  status: 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'CLOSED';
   organizerId: number;
   feePolicyId?: number;
   thumbnailUrl?: string;
@@ -65,7 +65,7 @@ export interface PagedResponse<T> {
   last: boolean;
 }
 
-export type EventStatus = 'PENDING' | 'PUBLISHED' | 'CLOSED';
+export type EventStatus = 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'CLOSED';
 
 export interface SearchAdminEventsParams {
   title?: string;

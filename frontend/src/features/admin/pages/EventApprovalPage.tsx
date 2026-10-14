@@ -34,6 +34,7 @@ export default function EventApprovalPage() {
   const [counts, setCounts] = useState<Record<EventStatus | 'ALL', number>>({
     ALL: 0,
     PENDING: 0,
+    PENDING_REVIEW: 0,
     PUBLISHED: 0,
     CLOSED: 0
   });
@@ -42,15 +43,16 @@ export default function EventApprovalPage() {
     const load = async () => {
       setLoading(true);
       try {
-        const [allRes, pendingRes, publishedRes, closedRes] = await Promise.all([
+        const [allRes, pendingReviewRes, publishedRes, closedRes] = await Promise.all([
           searchAdminEvents({ size: 1 }),
-          searchAdminEvents({ status: 'PENDING', size: 1 }),
+          searchAdminEvents({ status: 'PENDING_REVIEW', size: 1 }),
           searchAdminEvents({ status: 'PUBLISHED', size: 1 }),
           searchAdminEvents({ status: 'CLOSED', size: 1 })
         ]);
         setCounts({
           ALL: allRes.totalElements,
-          PENDING: pendingRes.totalElements,
+          PENDING: 0,
+          PENDING_REVIEW: pendingReviewRes.totalElements,
           PUBLISHED: publishedRes.totalElements,
           CLOSED: closedRes.totalElements
         });

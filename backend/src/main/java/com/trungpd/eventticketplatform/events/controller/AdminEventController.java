@@ -5,6 +5,7 @@ import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
+import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import com.trungpd.eventticketplatform.events.service.EventService;
@@ -16,7 +17,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/events")
@@ -60,6 +66,12 @@ public class AdminEventController {
         Pageable pageable = PageRequest.of(page, size);
         PagedResponse<EventResponse> response = eventService.searchAdminEvents(
                 title, categoryId, provinceId, status, timeFilter, pageable);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<EventDetailResponse>> getEventDetail(@PathVariable Long id) {
+        EventDetailResponse response = eventService.getAdminEventDetail(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

@@ -30,7 +30,9 @@ export const createEvent = async (payload: CreateEventPayload) => {
       name: ticket.name,
       description: ticket.description || '',
       price: Number(ticket.price),
-      totalQuantity: Number(ticket.totalQuantity)
+      totalQuantity: Number(ticket.totalQuantity),
+      minPerOrder: Number(ticket.minPerOrder),
+      maxPerOrder: Number(ticket.maxPerOrder)
     }))
   });
   return response.data;
@@ -38,6 +40,16 @@ export const createEvent = async (payload: CreateEventPayload) => {
 
 export const requestPublishEvent = async (eventId: number) => {
   const response = await axios.post(`/api/v1/events/${eventId}/request-publish`);
+  return response.data;
+};
+
+export const getPublicTicketTypes = async (eventId: number) => {
+  const response = await axios.get(`/api/v1/events/${eventId}/ticket-types`);
+  return response.data;
+};
+
+export const getOrganizerTicketTypes = async (eventId: number) => {
+  const response = await axios.get(`/api/v1/events/${eventId}/ticket-types/organizer`);
   return response.data;
 };
 

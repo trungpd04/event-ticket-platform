@@ -28,7 +28,7 @@ export default function EventApprovalFilters({ status, onStatusChange, search, o
 
   const tabs = [
     { value: 'ALL', label: intl.formatMessage({ id: 'admin.events.filter.all' }, { count: counts.ALL }) },
-    { value: 'PENDING', label: intl.formatMessage({ id: 'admin.events.filter.pending' }, { count: counts.PENDING }) },
+    { value: 'PENDING_REVIEW', label: intl.formatMessage({ id: 'admin.events.filter.pendingReview' }, { count: counts.PENDING_REVIEW }) },
     { value: 'PUBLISHED', label: intl.formatMessage({ id: 'admin.events.filter.published' }, { count: counts.PUBLISHED }) },
     { value: 'CLOSED', label: intl.formatMessage({ id: 'admin.events.filter.closed' }, { count: counts.CLOSED }) }
   ];

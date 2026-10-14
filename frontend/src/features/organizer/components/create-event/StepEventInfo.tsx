@@ -11,7 +11,6 @@ import { useIntl } from 'react-intl';
 
 // project-imports
 import { getWards } from 'api/events';
-import ImageUploadField from 'components/event/ImageUploadField';
 import { Category, CreateEventPayload, Province, Ward } from 'types/organizer';
 
 interface StepEventInfoProps {
@@ -62,7 +61,7 @@ export default function StepEventInfo({
       setWards([]);
       setFieldValue('wardId', '');
     }
-  }, [provinces, setFieldValue, values.provinceId, values.wardId]);
+  }, [values.provinceId, provinces]);
 
   return (
     <Grid container spacing={3}>
@@ -88,36 +87,6 @@ export default function StepEventInfo({
           value={values.description}
           onChange={handleChange}
           onBlur={handleBlur}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ImageUploadField
-          label={intl.formatMessage({ id: 'createEvent.thumbnailImage' })}
-          hint={intl.formatMessage({ id: 'createEvent.thumbnailHint' })}
-          fileType={1}
-          value={values.thumbnailFileId}
-          previewUrl={values.thumbnailUrl}
-          onChange={(fileId, url) => {
-            setFieldValue('thumbnailFileId', fileId);
-            setFieldValue('thumbnailUrl', url);
-          }}
-          error={Boolean(touched.thumbnailFileId && errors.thumbnailFileId)}
-          helperText={touched.thumbnailFileId && errors.thumbnailFileId}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ImageUploadField
-          label={intl.formatMessage({ id: 'createEvent.bannerImage' })}
-          hint={intl.formatMessage({ id: 'createEvent.bannerHint' })}
-          fileType={2}
-          value={values.bannerFileId}
-          previewUrl={values.bannerUrl}
-          onChange={(fileId, url) => {
-            setFieldValue('bannerFileId', fileId);
-            setFieldValue('bannerUrl', url);
-          }}
-          error={Boolean(touched.bannerFileId && errors.bannerFileId)}
-          helperText={touched.bannerFileId && errors.bannerFileId}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>

@@ -20,6 +20,11 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       bg: 'rgba(193, 79, 230, 0.08)',
       label: intl.formatMessage({ id: 'admin.status.pending' })
     },
+    PENDING_REVIEW: {
+      color: 'primary',
+      bg: 'rgba(255, 152, 0, 0.08)',
+      label: intl.formatMessage({ id: 'admin.status.pendingReview' })
+    },
     PUBLISHED: {
       color: 'success',
       bg: 'rgba(76, 175, 80, 0.08)',

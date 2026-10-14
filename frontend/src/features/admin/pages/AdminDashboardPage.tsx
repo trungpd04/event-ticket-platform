@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
     const loadStats = async () => {
       try {
         const [eventsRes, categories, feePolicies] = await Promise.all([
-          searchAdminEvents({ status: 'PENDING', size: 1 }),
+          searchAdminEvents({ status: 'PENDING_REVIEW', size: 1 }),
           getCategoriesAdmin(),
           getFeePolicies()
         ]);

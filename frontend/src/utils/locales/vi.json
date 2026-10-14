@@ -117,6 +117,10 @@
   "createEvent.errors.ticketNameRequired": "Tên hạng vé không được để trống",
   "createEvent.errors.ticketPriceMin": "Giá vé phải lớn hơn hoặc bằng 0",
   "createEvent.errors.ticketQuantityMin": "Số lượng vé phải lớn hơn 0",
+  "createEvent.errors.ticketMinInvalid": "Số vé tối thiểu mỗi đơn phải ít nhất là 1",
+  "createEvent.errors.ticketMaxInvalid": "Số vé tối đa mỗi đơn phải ít nhất là 1",
+  "createEvent.errors.ticketMaxExceedsQuantity": "Số vé tối đa mỗi đơn không được vượt quá tổng số vé",
+  "createEvent.errors.ticketMaxBeforeMin": "Số vé tối đa phải lớn hơn hoặc bằng số vé tối thiểu",
   "createEvent.errors.duplicateTicketName": "Không được trùng tên hạng vé",
   "createEvent.errors.startTimeTooSoon": "Thời gian bắt đầu phải sau hiện tại ít nhất 1 giờ",
   "createEvent.errors.endTimeAfterStart": "Thời gian kết thúc phải sau thời gian bắt đầu",
@@ -125,6 +129,7 @@
   "createEvent.requestPublish": "Gửi yêu cầu duyệt",
   "createEvent.requestPublishSuccess": "Đã gửi yêu cầu duyệt sự kiện",
   "createEvent.requestPublishFailed": "Gửi yêu cầu duyệt thất bại",
+  "createEvent.summary.pendingReview": "Sự kiện đang chờ quản trị viên xét duyệt.",
 
   "createEvent.eventTitle": "Tên sự kiện",
   "createEvent.description": "Mô tả",
@@ -152,6 +157,7 @@
   "createEvent.ticketTypes": "Loại vé",
   "createEvent.addTicketType": "+ Thêm loại vé",
   "createEvent.ticketName": "Tên vé",
+  "createEvent.ticketDescription": "Mô tả",
   "createEvent.ticketPrice": "Giá (VND)",
   "createEvent.ticketQuantity": "Số lượng",
   "createEvent.ticketMin": "Tối thiểu",
@@ -301,6 +307,7 @@
   "admin.feePolicies": "Chính sách phí",
 
   "admin.status.pending": "Chờ duyệt",
+  "admin.status.pendingReview": "Chờ xét duyệt",
   "admin.status.published": "Đã xuất bản",
   "admin.status.closed": "Đã đóng",
 
@@ -308,6 +315,7 @@
   "admin.events.search": "Tìm kiếm sự kiện",
   "admin.events.filter.all": "Tất cả ({count})",
   "admin.events.filter.pending": "Chờ duyệt ({count})",
+  "admin.events.filter.pendingReview": "Chờ xét duyệt ({count})",
   "admin.events.filter.published": "Đã xuất bản ({count})",
   "admin.events.filter.closed": "Đã đóng ({count})",
   "admin.events.empty": "Không có sự kiện nào.",
