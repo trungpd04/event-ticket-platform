@@ -13,10 +13,15 @@ import { ArrowRight2 } from 'iconsax-reactjs';
 import { useIntl } from 'react-intl';
 
 // project-imports
-import { getCategories, searchEvents } from 'api/events';
+import { getCategories, getPublicTicketTypes, searchEvents } from 'api/events';
+import EventCard from 'components/event/EventCard';
 import SearchWidget from 'components/event/SearchWidget';
 import { Category, Event } from 'types/organizer';
 import heroImage from 'assets/images/home/hero.jpeg';
+
+type PublicTicketType = {
+  price?: number;
+};
 
 // ==============================|| HOME PAGE ||============================== //
 
@@ -24,6 +29,7 @@ export default function HomePage() {
   const intl = useIntl();
   const [categories, setCategories] = useState<Category[]>([]);
   const [eventsByCategory, setEventsByCategory] = useState<Record<number, Event[]>>({});
+  const [pricesByEvent, setPricesByEvent] = useState<Record<number, number | null>>({});
 
   useEffect(() => {
     getCategories()
@@ -47,6 +53,20 @@ export default function HomePage() {
           })
         );
         setEventsByCategory(Object.fromEntries(results));
+
+        const events = results.flatMap(([, categoryEvents]) => categoryEvents);
+        const prices = await Promise.all(
+          events.map(async (event) => {
+            try {
+              const ticketTypes = (await getPublicTicketTypes(event.id)) as PublicTicketType[];
+              const availablePrices = ticketTypes.map((ticket) => Number(ticket.price)).filter((price) => Number.isFinite(price));
+              return [event.id, availablePrices.length ? Math.min(...availablePrices) : null] as const;
+            } catch {
+              return [event.id, null] as const;
+            }
+          })
+        );
+        setPricesByEvent(Object.fromEntries(prices));
       })
       .catch(() => setCategories([]));
   }, []);
@@ -105,14 +125,7 @@ export default function HomePage() {
               <Grid container spacing={3}>
                 {(eventsByCategory[category.id] || []).map((event) => (
                   <Grid size={{ xs: 12, sm: 6, md: 3 }} key={event.id}>
-                    <Box sx={{ overflow: 'hidden', borderRadius: 2.5, bgcolor: 'background.paper', border: 1, borderColor: 'divider', '&:hover img': { transform: 'scale(1.04)' } }}>
-                      <Box component="img" src={event.thumbnailUrl || event.bannerUrl} alt={event.title} sx={{ width: '100%', height: 240, objectFit: 'cover', display: 'block', transition: 'transform .3s' }} />
-                      <Box sx={{ p: 2 }}>
-                        <Typography variant="h6" noWrap fontWeight={700}>{event.title}</Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap sx={{ mt: 0.5 }}>{event.location}</Typography>
-                        <Typography variant="caption" color="primary.main" fontWeight={700} sx={{ display: 'block', mt: 1 }}>{new Date(event.startTime).toLocaleDateString()}</Typography>
-                      </Box>
-                    </Box>
+                    <EventCard event={event} price={pricesByEvent[event.id]} />
                   </Grid>
                 ))}
               </Grid>

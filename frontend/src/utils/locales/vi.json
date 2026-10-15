@@ -48,6 +48,9 @@
   "home.hero.subtitle": "Hơn 100 sự kiện tại nhiều thành phố đang chờ bạn khám phá.",
   "home.category.description": "Khám phá những sự kiện {category} hấp dẫn nhất.",
   "home.viewAll": "Xem tất cả",
+  "home.card.timeToSaleEnd": "Thời gian kết thúc bán vé",
+  "home.card.from": "từ",
+  "home.card.priceUnavailable": "Liên hệ để biết giá",
   "home.cta": "Xem tất cả sự kiện",
 
   "auth.brand": "Event",
