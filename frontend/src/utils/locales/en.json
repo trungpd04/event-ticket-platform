@@ -38,6 +38,9 @@
   "home.hero.subtitle": "More than 100 events in different cities are now available to you.",
   "home.category.description": "Discover the best {category} events.",
   "home.viewAll": "View all",
+  "home.card.timeToSaleEnd": "Time to ticket sale end",
+  "home.card.from": "from",
+  "home.card.priceUnavailable": "Contact for price",
   "home.cta": "View all events",
 
   "auth.brand": "Event",
