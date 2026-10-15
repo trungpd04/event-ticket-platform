@@ -2,7 +2,6 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import AppBar from '@mui/material/AppBar';
-import Container from '@mui/material/Container';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -34,111 +33,163 @@ export default function PublicHeader() {
   const intl = useIntl();
 
   return (
-    <AppBar
-      position="sticky"
-      color="transparent"
-      elevation={0}
-      sx={{ bgcolor: 'background.default', borderBottom: 1, borderColor: 'rgba(255,255,255,0.08)', zIndex: 10 }}
-    >
-      <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ minHeight: { xs: 68, md: 78 }, justifyContent: 'space-between' }}>
-          <Stack direction="row" spacing={{ xs: 2, md: 6 }} alignItems="center">
+    <AppBar position="absolute" color="transparent" elevation={0} sx={{ top: 0, left: 0, bgcolor: 'transparent', zIndex: 10 }}>
+      <Toolbar
+        disableGutters
+        sx={{
+          width: '100%',
+          minHeight: { xs: 68, md: 77 },
+          px: { xs: 2.5, md: 13.5 },
+          justifyContent: 'space-between'
+        }}
+      >
+        <Stack direction="row" spacing={{ xs: 2, md: 10 }} alignItems="center">
+          <Typography
+            component={RouterLink}
+            to="/"
+            variant="h4"
+            sx={{
+              fontFamily: "'Lobster', cursive",
+              fontSize: { xs: '2rem', md: '2.25rem' },
+              fontWeight: 400,
+              letterSpacing: 0,
+              color: '#c14fe6',
+              textDecoration: 'none'
+            }}
+          >
+            Evenjo
+          </Typography>
+
+          <Stack direction="row" spacing={5} sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Typography
               component={RouterLink}
               to="/"
-              variant="h4"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
+            </Typography>
+            <Typography
+              component={RouterLink}
+              to="/events"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
+            </Typography>
+            <Typography
+              component={RouterLink}
+              to="/events?category=concerts"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.concerts', defaultMessage: 'Concerts' })}
+            </Typography>
+            <Typography
+              component={RouterLink}
+              to="/events?category=shows"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.shows', defaultMessage: 'Shows' })}
+            </Typography>
+            <Typography
+              component={RouterLink}
+              to="/events?category=sports"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.sports', defaultMessage: 'Sports' })}
+            </Typography>
+            <Typography
+              component={RouterLink}
+              to="/events?category=festivals"
+              color="common.white"
+              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+            >
+              {intl.formatMessage({ id: 'header.festivals', defaultMessage: 'Festivals' })}
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <FormControl size="small" sx={{ minWidth: 89 }}>
+            <Select
+              value={i18n}
+              onChange={(e) => onChangeLocalization(e.target.value as I18n)}
+              renderValue={(value) => {
+                const language = LANGUAGES.find((item) => item.value === value);
+                return language ? `${language.flag} ${language.value === 'en' ? 'Eng' : 'Vie'}` : value;
+              }}
+              variant="outlined"
+              inputProps={{ 'aria-label': 'Language' }}
+              IconComponent={ArrowDown2}
               sx={{
-                fontFamily: "'Lobster', cursive",
-                fontSize: { xs: '2rem', md: '2.25rem' },
-                fontWeight: 400,
-                letterSpacing: 0,
-                color: 'primary.main',
-                textDecoration: 'none'
+                color: 'common.white',
+                borderRadius: 0,
+                bgcolor: 'transparent',
+                '& .MuiSelect-select': {
+                  py: 0.5,
+                  px: 0,
+                  fontSize: 18,
+                  fontWeight: 500
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 0
+                },
+                '& .MuiSvgIcon-root': { color: 'common.white' }
               }}
             >
-              Evenjo
-            </Typography>
-
-            <Stack direction="row" spacing={3.5} sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Typography
+              {LANGUAGES.map((lang) => (
+                <MenuItem key={lang.value} value={lang.value}>
+                  <Box component="span" sx={{ mr: 1, fontSize: '1.1rem' }}>
+                    {lang.flag}
+                  </Box>
+                  {intl.formatMessage({ id: lang.labelId, defaultMessage: lang.defaultMessage })}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {isLoggedIn ? (
+            <>
+              <EventButton
                 component={RouterLink}
-                to="/"
-                color="text.primary"
-                sx={{ textDecoration: 'none', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
+                to="/organizer/events/create"
+                variant="contained"
+                color="primary"
+                startIcon={<Ticket2 size={18} />}
+                sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
               >
-                {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
-              </Typography>
-              <Typography
+                {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+              </EventButton>
+              <EventButton variant="outlined" color="primary" onClick={logout} sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}>
+                {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
+              </EventButton>
+            </>
+          ) : (
+            <>
+              <EventButton
                 component={RouterLink}
-                to="/events"
-                color="text.secondary"
-                sx={{ textDecoration: 'none', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
+                to="/login"
+                variant="text"
+                color="inherit"
+                sx={{ display: { xs: 'none', sm: 'inline-flex' }, color: 'common.white', fontSize: 16, fontWeight: 400 }}
               >
-                {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
-              </Typography>
-              <Typography component={RouterLink} to="/events?category=concerts" color="text.secondary" sx={{ textDecoration: 'none', fontWeight: 600 }}>
-                {intl.formatMessage({ id: 'header.concerts', defaultMessage: 'Concerts' })}
-              </Typography>
-            </Stack>
-          </Stack>
-
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <FormControl size="small" sx={{ minWidth: { xs: 80, sm: 120 } }}>
-              <Select
-                value={i18n}
-                onChange={(e) => onChangeLocalization(e.target.value as I18n)}
-                renderValue={(value) => {
-                  const language = LANGUAGES.find((item) => item.value === value);
-                  return language ? `${language.flag} ${language.value === 'en' ? 'Eng' : 'Vie'}` : value;
-                }}
-                variant="outlined"
-                inputProps={{ 'aria-label': 'Language' }}
-                IconComponent={ArrowDown2}
-                sx={{
-                  color: 'text.secondary',
-                  borderRadius: 2,
-                  bgcolor: 'background.paper',
-                  '& .MuiSelect-select': {
-                    py: 0.75,
-                    px: 1.5,
-                    fontSize: '0.875rem',
-                    fontWeight: 600
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'divider'
-                  }
-                }}
+                {intl.formatMessage({ id: 'header.login', defaultMessage: 'Login' })}
+              </EventButton>
+              <EventButton
+                component={RouterLink}
+                to="/register"
+                variant="contained"
+                color="primary"
+                sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
               >
-                {LANGUAGES.map((lang) => (
-                  <MenuItem key={lang.value} value={lang.value}>
-                    <Box component="span" sx={{ mr: 1, fontSize: '1.1rem' }}>{lang.flag}</Box>
-                    {intl.formatMessage({ id: lang.labelId, defaultMessage: lang.defaultMessage })}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {isLoggedIn ? (
-              <>
-                <EventButton component={RouterLink} to="/organizer/events/create" variant="contained" color="primary" startIcon={<Ticket2 size={18} />}>
-                  {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
-                </EventButton>
-                <EventButton variant="outlined" color="primary" onClick={logout}>
-                  {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
-                </EventButton>
-              </>
-            ) : (
-              <>
-                <EventButton component={RouterLink} to="/login" variant="text" color="inherit" sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
-                  {intl.formatMessage({ id: 'header.login', defaultMessage: 'Login' })}
-                </EventButton>
-                <EventButton component={RouterLink} to="/register" variant="contained" color="primary">
-                  {intl.formatMessage({ id: 'header.register', defaultMessage: 'Register' })}
-                </EventButton>
-              </>
-            )}
-          </Stack>
-        </Toolbar>
-      </Container>
+                {intl.formatMessage({ id: 'header.register', defaultMessage: 'Register' })}
+              </EventButton>
+            </>
+          )}
+        </Stack>
+      </Toolbar>
     </AppBar>
   );
 }

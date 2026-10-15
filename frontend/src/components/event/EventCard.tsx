@@ -133,7 +133,7 @@ export default function EventCard({ event, price }: EventCardProps) {
             <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0, maxWidth: '45%' }}>
               <Location size={16} color="#999999" />
               <Typography variant="body2" color="#999999" noWrap>
-                {event.location}
+                {event.province?.name}
               </Typography>
             </Stack>
           </Stack>
