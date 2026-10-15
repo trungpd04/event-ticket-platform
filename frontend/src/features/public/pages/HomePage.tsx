@@ -69,10 +69,13 @@ export default function HomePage() {
         <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
           <Stack alignItems="center" textAlign="center" spacing={3}>
             <Typography variant="h1" color="common.white" sx={{ maxWidth: 760, fontSize: { xs: '3rem', md: '4.5rem' }, lineHeight: 1.08, fontWeight: 800, letterSpacing: '-0.06em' }}>
-              What event would you like to go to?
+              {intl.formatMessage({ id: 'home.hero.title', defaultMessage: 'What event would you like to go to?' })}
             </Typography>
             <Typography variant="body1" color="rgba(255,255,255,0.72)" maxWidth={620}>
-              More than 100 events in different cities are now available to you.
+              {intl.formatMessage({
+                id: 'home.hero.subtitle',
+                defaultMessage: 'More than 100 events in different cities are now available to you.'
+              })}
             </Typography>
             <Box sx={{ width: '100%', maxWidth: 1016, mt: 6 }}>
               <SearchWidget />
@@ -88,10 +91,15 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="end" mb={3}>
                 <Box>
                   <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.05em' }}>{category.name}</Typography>
-                  <Typography color="text.secondary" sx={{ mt: 0.5 }}>Discover the best {category.name.toLowerCase()} events.</Typography>
+                  <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+                    {intl.formatMessage(
+                      { id: 'home.category.description', defaultMessage: 'Discover the best {category} events.' },
+                      { category: category.name.toLowerCase() }
+                    )}
+                  </Typography>
                 </Box>
                 <ButtonBase sx={{ color: 'primary.main', fontWeight: 700, gap: 0.75, pb: 0.5 }}>
-                  View all <ArrowRight2 size={18} />
+                  {intl.formatMessage({ id: 'home.viewAll', defaultMessage: 'View all' })} <ArrowRight2 size={18} />
                 </ButtonBase>
               </Stack>
               <Grid container spacing={3}>

@@ -1,5 +1,10 @@
 {
   "app.name": "Event Ticket Platform",
+  "language.english": "English",
+  "language.vietnamese": "Tiếng Việt",
+  "language.french": "Français",
+  "language.romanian": "Română",
+  "language.chinese": "中文",
 
   "sample-page": "Trang mẫu",
   "maintenance": "Bảo trì",
@@ -17,8 +22,18 @@
   "header.register": "Đăng ký",
   "header.logout": "Đăng xuất",
   "header.addEvent": "Tạo sự kiện",
+  "header.concerts": "Âm nhạc",
+  "header.shows": "Chương trình",
+  "header.sports": "Thể thao",
+  "header.festivals": "Lễ hội",
 
   "footer.copyright": "© 2026 Event Ticket Platform. Mọi quyền được bảo lưu.",
+  "footer.description": "Tìm kiếm những khoảnh khắc đáng nhớ. Khám phá, đặt vé và chia sẻ trải nghiệm tiếp theo của bạn.",
+  "footer.explore": "Khám phá",
+  "footer.company": "Công ty",
+  "footer.allEvents": "Tất cả sự kiện",
+  "footer.categories": "Danh mục",
+  "footer.contact": "Liên hệ",
 
   "search.what": "Tìm gì",
   "search.where": "Ở đâu",
@@ -27,9 +42,12 @@
   "search.wherePlaceholder": "Địa điểm",
   "search.whenPlaceholder": "Ngày",
   "search.button": "Tìm kiếm",
+  "search.tab.all": "Tất cả sự kiện",
 
-  "home.hero.title": "Khám phá sự kiện tuyệt vời",
-  "home.hero.subtitle": "Mua vé dễ dàng, trải nghiệm khó quên.",
+  "home.hero.title": "Bạn muốn tham gia sự kiện nào?",
+  "home.hero.subtitle": "Hơn 100 sự kiện tại nhiều thành phố đang chờ bạn khám phá.",
+  "home.category.description": "Khám phá những sự kiện {category} hấp dẫn nhất.",
+  "home.viewAll": "Xem tất cả",
   "home.cta": "Xem tất cả sự kiện",
 
   "auth.brand": "Event",

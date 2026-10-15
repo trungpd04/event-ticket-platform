@@ -8,7 +8,13 @@ import { useIntl } from 'react-intl';
 import EventButton from 'components/event/EventButton';
 import EventInput from 'components/event/EventInput';
 
-const TABS = ['All events', 'Concerts', 'Shows', 'Sports', 'Festivals'];
+const TABS = [
+  { id: 'all', message: 'search.tab.all' },
+  { id: 'concerts', message: 'header.concerts' },
+  { id: 'shows', message: 'header.shows' },
+  { id: 'sports', message: 'header.sports' },
+  { id: 'festivals', message: 'header.festivals' }
+];
 
 export default function SearchWidget() {
   const intl = useIntl();
@@ -34,9 +40,9 @@ export default function SearchWidget() {
   return (
     <Box sx={{ bgcolor: 'background.paper', borderRadius: 2, p: { xs: 2, md: 3 }, boxShadow: '0 20px 60px rgba(0,0,0,.22)' }}>
       <Stack direction="row" spacing={{ xs: 2, md: 5 }} sx={{ px: { xs: 0, md: 2 }, mb: 2, overflowX: 'auto' }}>
-        {TABS.map((label, index) => (
+        {TABS.map((tab, index) => (
           <Typography
-            key={label}
+            key={tab.id}
             variant="body2"
             sx={{
               whiteSpace: 'nowrap',
@@ -47,7 +53,10 @@ export default function SearchWidget() {
               borderColor: index === 0 ? 'primary.main' : 'transparent'
             }}
           >
-            {label}
+            {intl.formatMessage({
+              id: tab.message,
+              defaultMessage: tab.id === 'all' ? 'All events' : tab.id
+            })}
           </Typography>
         ))}
       </Stack>
