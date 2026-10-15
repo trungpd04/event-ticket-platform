@@ -12,19 +12,33 @@ export default function PublicFooter() {
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, md: 5 }}>
             <Typography variant="h4" fontWeight={800} letterSpacing="-0.06em">
-              <Box component="span" sx={{ color: 'primary.main' }}>even</Box>jo
+              <Box component="span" sx={{ fontFamily: "'Lobster', cursive", color: 'primary.main', fontWeight: 400 }}>Evenjo</Box>
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 2, maxWidth: 360 }}>
-              Find the moments worth remembering. Discover, book and share your next experience.
+              {intl.formatMessage({
+                id: 'footer.description',
+                defaultMessage: 'Find the moments worth remembering. Discover, book and share your next experience.'
+              })}
             </Typography>
           </Grid>
-          {['Explore', 'Company'].map((group) => (
-            <Grid size={{ xs: 6, md: 2 }} key={group}>
-              <Typography fontWeight={700} mb={2}>{group}</Typography>
+          {[
+            { id: 'explore', label: 'footer.explore' },
+            { id: 'company', label: 'footer.company' }
+          ].map((group) => (
+            <Grid size={{ xs: 6, md: 2 }} key={group.id}>
+              <Typography fontWeight={700} mb={2}>
+                {intl.formatMessage({ id: group.label, defaultMessage: group.id })}
+              </Typography>
               <Stack spacing={1.2}>
-                <Link href="/events" color="text.secondary" underline="hover">All events</Link>
-                <Link href="/events" color="text.secondary" underline="hover">Categories</Link>
-                <Link href="/contact-us" color="text.secondary" underline="hover">Contact us</Link>
+                <Link href="/events" color="text.secondary" underline="hover">
+                  {intl.formatMessage({ id: 'footer.allEvents', defaultMessage: 'All events' })}
+                </Link>
+                <Link href="/events" color="text.secondary" underline="hover">
+                  {intl.formatMessage({ id: 'footer.categories', defaultMessage: 'Categories' })}
+                </Link>
+                <Link href="/contact-us" color="text.secondary" underline="hover">
+                  {intl.formatMessage({ id: 'footer.contact', defaultMessage: 'Contact us' })}
+                </Link>
               </Stack>
             </Grid>
           ))}

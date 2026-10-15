@@ -1,5 +1,10 @@
 {
   "app.name": "Event Ticket Platform",
+  "language.english": "English",
+  "language.vietnamese": "Vietnamese",
+  "language.french": "French",
+  "language.romanian": "Romanian",
+  "language.chinese": "Chinese",
 
   "header.home": "Home",
   "header.events": "Events",
@@ -7,8 +12,18 @@
   "header.register": "Register",
   "header.logout": "Logout",
   "header.addEvent": "Create Event",
+  "header.concerts": "Concerts",
+  "header.shows": "Shows",
+  "header.sports": "Sports",
+  "header.festivals": "Festivals",
 
   "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
+  "footer.description": "Find the moments worth remembering. Discover, book and share your next experience.",
+  "footer.explore": "Explore",
+  "footer.company": "Company",
+  "footer.allEvents": "All events",
+  "footer.categories": "Categories",
+  "footer.contact": "Contact us",
 
   "search.what": "What",
   "search.where": "Where",
@@ -17,9 +32,12 @@
   "search.wherePlaceholder": "Location",
   "search.whenPlaceholder": "Date",
   "search.button": "Search",
+  "search.tab.all": "All events",
 
-  "home.hero.title": "Discover amazing events",
-  "home.hero.subtitle": "Buy tickets easily, experience unforgettable moments.",
+  "home.hero.title": "What event would you like to go to?",
+  "home.hero.subtitle": "More than 100 events in different cities are now available to you.",
+  "home.category.description": "Discover the best {category} events.",
+  "home.viewAll": "View all",
   "home.cta": "View all events",
 
   "auth.brand": "Event",

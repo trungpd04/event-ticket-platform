@@ -23,12 +23,9 @@ import { I18n } from 'types/config';
 
 // ==============================|| PUBLIC HEADER ||============================== //
 
-const LANGUAGES: { value: I18n; label: string }[] = [
-  { value: 'en', label: 'English' },
-  { value: 'vi', label: 'Tiếng Việt' },
-  { value: 'fr', label: 'Français' },
-  { value: 'ro', label: 'Română' },
-  { value: 'zh', label: '中文' }
+const LANGUAGES: { value: I18n; flag: string; labelId: string; defaultMessage: string }[] = [
+  { value: 'en', flag: '🇺🇸', labelId: 'language.english', defaultMessage: 'English' },
+  { value: 'vi', flag: '🇻🇳', labelId: 'language.vietnamese', defaultMessage: 'Tiếng Việt' }
 ];
 
 export default function PublicHeader() {
@@ -51,13 +48,15 @@ export default function PublicHeader() {
               to="/"
               variant="h4"
               sx={{
-                fontWeight: 800,
-                letterSpacing: '-0.06em',
-                color: 'text.primary',
+                fontFamily: "'Lobster', cursive",
+                fontSize: { xs: '2rem', md: '2.25rem' },
+                fontWeight: 400,
+                letterSpacing: 0,
+                color: 'primary.main',
                 textDecoration: 'none'
               }}
             >
-              <Box component="span" sx={{ color: 'primary.main' }}>even</Box>jo
+              Evenjo
             </Typography>
 
             <Stack direction="row" spacing={3.5} sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -78,7 +77,7 @@ export default function PublicHeader() {
                 {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
               </Typography>
               <Typography component={RouterLink} to="/events?category=concerts" color="text.secondary" sx={{ textDecoration: 'none', fontWeight: 600 }}>
-                Concerts
+                {intl.formatMessage({ id: 'header.concerts', defaultMessage: 'Concerts' })}
               </Typography>
             </Stack>
           </Stack>
@@ -88,6 +87,10 @@ export default function PublicHeader() {
               <Select
                 value={i18n}
                 onChange={(e) => onChangeLocalization(e.target.value as I18n)}
+                renderValue={(value) => {
+                  const language = LANGUAGES.find((item) => item.value === value);
+                  return language ? `${language.flag} ${language.value === 'en' ? 'Eng' : 'Vie'}` : value;
+                }}
                 variant="outlined"
                 inputProps={{ 'aria-label': 'Language' }}
                 IconComponent={ArrowDown2}
@@ -108,7 +111,8 @@ export default function PublicHeader() {
               >
                 {LANGUAGES.map((lang) => (
                   <MenuItem key={lang.value} value={lang.value}>
-                    {lang.label}
+                    <Box component="span" sx={{ mr: 1, fontSize: '1.1rem' }}>{lang.flag}</Box>
+                    {intl.formatMessage({ id: lang.labelId, defaultMessage: lang.defaultMessage })}
                   </MenuItem>
                 ))}
               </Select>
