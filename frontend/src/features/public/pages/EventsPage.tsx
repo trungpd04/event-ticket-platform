@@ -173,6 +173,15 @@ export default function EventsPage() {
     setSearchParams(nextParams);
   };
 
+  const handleProvinceChange = (value: string) => {
+    setSearchProvinceId(value);
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (value) nextParams.set('provinceId', value);
+    else nextParams.delete('provinceId');
+    setSearchParams(nextParams);
+  };
+
   return (
     <Box sx={{ bgcolor: '#0b0b0c', color: 'common.white', minHeight: '100%' }}>
       <Container maxWidth="xl" sx={{ pt: { xs: 12, md: 19 }, pb: { xs: 8, md: 18 } }}>
@@ -210,7 +219,7 @@ export default function EventsPage() {
               <TextField
                 select
                 value={searchProvinceId}
-                onChange={(event) => setSearchProvinceId(event.target.value)}
+                onChange={(event) => handleProvinceChange(event.target.value)}
                 label={intl.formatMessage({ id: 'events.where', defaultMessage: 'Where' })}
                 sx={{ flex: 1 }}
                 SelectProps={{ IconComponent: ArrowDown2 }}
