@@ -40,79 +40,80 @@ export default function PublicHeader() {
           width: '100%',
           minHeight: { xs: 68, md: 77 },
           px: { xs: 2.5, md: 13.5 },
-          justifyContent: 'space-between'
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr auto', md: '1fr auto 1fr' },
+          alignItems: 'center'
         }}
       >
-        <Stack direction="row" spacing={{ xs: 2, md: 10 }} alignItems="center">
+        <Typography
+          component={RouterLink}
+          to="/"
+          variant="h4"
+          sx={{
+            fontFamily: "'Lobster', cursive",
+            fontSize: { xs: '2rem', md: '2.25rem' },
+            fontWeight: 400,
+            letterSpacing: 0,
+            color: '#c14fe6',
+            textDecoration: 'none',
+            justifySelf: 'start'
+          }}
+        >
+          Evenjo
+        </Typography>
+
+        <Stack direction="row" spacing={5} sx={{ display: { xs: 'none', md: 'flex' }, justifySelf: 'center' }}>
           <Typography
             component={RouterLink}
             to="/"
-            variant="h4"
-            sx={{
-              fontFamily: "'Lobster', cursive",
-              fontSize: { xs: '2rem', md: '2.25rem' },
-              fontWeight: 400,
-              letterSpacing: 0,
-              color: '#c14fe6',
-              textDecoration: 'none'
-            }}
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
           >
-            Evenjo
+            {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
           </Typography>
-
-          <Stack direction="row" spacing={5} sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Typography
-              component={RouterLink}
-              to="/"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.home', defaultMessage: 'Home' })}
-            </Typography>
-            <Typography
-              component={RouterLink}
-              to="/events"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
-            </Typography>
-            <Typography
-              component={RouterLink}
-              to="/events?category=concerts"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.concerts', defaultMessage: 'Concerts' })}
-            </Typography>
-            <Typography
-              component={RouterLink}
-              to="/events?category=shows"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.shows', defaultMessage: 'Shows' })}
-            </Typography>
-            <Typography
-              component={RouterLink}
-              to="/events?category=sports"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.sports', defaultMessage: 'Sports' })}
-            </Typography>
-            <Typography
-              component={RouterLink}
-              to="/events?category=festivals"
-              color="common.white"
-              sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
-            >
-              {intl.formatMessage({ id: 'header.festivals', defaultMessage: 'Festivals' })}
-            </Typography>
-          </Stack>
+          <Typography
+            component={RouterLink}
+            to="/events"
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+          >
+            {intl.formatMessage({ id: 'header.events', defaultMessage: 'Events' })}
+          </Typography>
+          <Typography
+            component={RouterLink}
+            to="/events?categoryId=1"
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+          >
+            {intl.formatMessage({ id: 'header.sports', defaultMessage: 'Sports' })}
+          </Typography>
+          <Typography
+            component={RouterLink}
+            to="/events?categoryId=2"
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+          >
+            {intl.formatMessage({ id: 'header.music', defaultMessage: 'Music' })}
+          </Typography>
+          <Typography
+            component={RouterLink}
+            to="/events?categoryId=3"
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+          >
+            {intl.formatMessage({ id: 'header.theater', defaultMessage: 'Theater' })}
+          </Typography>
+          <Typography
+            component={RouterLink}
+            to="/events?categoryId=5"
+            color="common.white"
+            sx={{ textDecoration: 'none', fontSize: 18, fontWeight: 400, '&:hover': { color: '#c14fe6' } }}
+          >
+            {intl.formatMessage({ id: 'header.exhibitions', defaultMessage: 'Exhibitions' })}
+          </Typography>
         </Stack>
 
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ justifySelf: 'end' }}>
           <FormControl size="small" sx={{ minWidth: 89 }}>
             <Select
               value={i18n}
