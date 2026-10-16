@@ -45,7 +45,18 @@ const AuthInput = forwardRef<HTMLInputElement, TextFieldProps>(({ InputProps, sx
         pb: 1,
         px: 0,
         fontSize: '1rem',
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        '&:-webkit-autofill': {
+          WebkitTextFillColor: '#FFFFFF',
+          WebkitBoxShadow: '0 0 0 1000px #1F1F1F inset',
+          caretColor: '#FFFFFF',
+          borderRadius: 1
+        },
+        '&:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active': {
+          WebkitTextFillColor: '#FFFFFF',
+          WebkitBoxShadow: '0 0 0 1000px #1F1F1F inset',
+          caretColor: '#FFFFFF'
+        }
       },
       ...sx
     }}
