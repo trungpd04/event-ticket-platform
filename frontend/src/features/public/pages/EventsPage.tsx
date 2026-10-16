@@ -22,9 +22,9 @@ import { ArrowDown2, Calendar1, Location, SearchNormal1 } from 'iconsax-reactjs'
 import { useIntl } from 'react-intl';
 
 // project-imports
-import { getPublicTicketTypes, searchEvents } from 'api/events';
+import { getProvinces, getPublicTicketTypes, searchEvents } from 'api/events';
 import EventCard from 'components/event/EventCard';
-import { Event } from 'types/organizer';
+import { Event, Province } from 'types/organizer';
 import heroImage from 'assets/images/home/hero.jpeg';
 
 const CATEGORY_LABELS = {
@@ -50,27 +50,47 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [pricesByEvent, setPricesByEvent] = useState<Record<number, number | null>>({});
+  const [provinces, setProvinces] = useState<Province[]>([]);
 
   const title = searchParams.get('title') || '';
-  const location = searchParams.get('location') || '';
+  const provinceIdParam = searchParams.get('provinceId');
+  const parsedProvinceId = provinceIdParam ? Number(provinceIdParam) : undefined;
+  const provinceId = parsedProvinceId && Number.isInteger(parsedProvinceId) ? parsedProvinceId : undefined;
   const when = searchParams.get('when') || '';
   const price = searchParams.get('price') || '';
   const categoryIdParam = searchParams.get('categoryId');
   const parsedCategoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
   const categoryId = parsedCategoryId && Number.isInteger(parsedCategoryId) ? parsedCategoryId : undefined;
   const categoryLabel = getCategoryLabel(categoryId, intl.locale);
+  const provinceLabel = provinces.find((province) => province.id === provinceId)?.name;
 
   const [searchTitle, setSearchTitle] = useState(title);
-  const [searchLocation, setSearchLocation] = useState(location);
+  const [searchProvinceId, setSearchProvinceId] = useState(provinceId ? String(provinceId) : '');
   const [searchWhen, setSearchWhen] = useState(when);
   const [searchPrice, setSearchPrice] = useState(price);
 
   useEffect(() => {
+    let cancelled = false;
+
+    getProvinces()
+      .then((items) => {
+        if (!cancelled) setProvinces(items);
+      })
+      .catch(() => {
+        if (!cancelled) setProvinces([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     setSearchTitle(title);
-    setSearchLocation(location);
+    setSearchProvinceId(provinceId ? String(provinceId) : '');
     setSearchWhen(when);
     setSearchPrice(price);
-  }, [title, location, when, price]);
+  }, [title, provinceId, when, price]);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,9 +98,9 @@ export default function EventsPage() {
     setLoading(true);
     searchEvents({
       title: title || undefined,
-      location: location || undefined,
       when: when || undefined,
       categoryId,
+      provinceId,
       status: 'PUBLISHED',
       page: 0,
       size: 20
@@ -115,17 +135,17 @@ export default function EventsPage() {
     return () => {
       cancelled = true;
     };
-  }, [title, location, when, categoryId]);
+  }, [title, provinceId, when, categoryId]);
 
   const activeFilters = useMemo(
     () =>
       [
         title && { label: title, key: 'title' },
         when && { label: when, key: 'when' },
-        location && { label: location, key: 'location' },
+        provinceLabel && { label: provinceLabel, key: 'provinceId' },
         categoryLabel && { label: categoryLabel, key: 'categoryId' }
       ].filter(Boolean) as Array<{ label: string; key: string }>,
-    [title, when, location, categoryLabel]
+    [title, when, provinceLabel, categoryLabel]
   );
 
   const handleSearch = (event: FormEvent) => {
@@ -134,7 +154,6 @@ export default function EventsPage() {
 
     const values = [
       ['title', searchTitle],
-      ['location', searchLocation],
       ['when', searchWhen],
       ['price', searchPrice]
     ];
@@ -143,6 +162,8 @@ export default function EventsPage() {
       if (value) nextParams.set(key, value);
       else nextParams.delete(key);
     });
+    if (searchProvinceId) nextParams.set('provinceId', searchProvinceId);
+    else nextParams.delete('provinceId');
     setSearchParams(nextParams);
   };
 
@@ -187,18 +208,25 @@ export default function EventsPage() {
                 }}
               />
               <TextField
-                value={searchLocation}
-                onChange={(event) => setSearchLocation(event.target.value)}
-                placeholder={intl.formatMessage({ id: 'events.where', defaultMessage: 'Where' })}
+                select
+                value={searchProvinceId}
+                onChange={(event) => setSearchProvinceId(event.target.value)}
+                label={intl.formatMessage({ id: 'events.where', defaultMessage: 'Where' })}
                 sx={{ flex: 1 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Location size={18} />
-                    </InputAdornment>
-                  )
-                }}
-              />
+                SelectProps={{ IconComponent: ArrowDown2 }}
+              >
+                <MenuItem value="">
+                  {intl.formatMessage({ id: 'events.anyProvince', defaultMessage: 'All locations' })}
+                </MenuItem>
+                {provinces.map((province) => (
+                  <MenuItem key={province.id} value={province.id}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Location size={16} />
+                      <span>{province.name}</span>
+                    </Stack>
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 select
                 value={searchPrice}
