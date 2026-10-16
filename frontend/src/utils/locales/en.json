@@ -240,6 +240,7 @@
   "events.search": "What are you looking for?",
   "events.when": "When",
   "events.where": "Where",
+  "events.anyProvince": "All locations",
   "events.price": "Price",
   "events.anyPrice": "Any price",
   "events.price.low": "Under 500,000 VND",
