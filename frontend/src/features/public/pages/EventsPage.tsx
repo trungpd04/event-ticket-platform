@@ -1,48 +1,85 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 // material-ui
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-import { SearchNormal1, Calendar1, Location } from 'iconsax-reactjs';
-import EventButton from 'components/event/EventButton';
-import EventCard from 'components/event/EventCard';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ArrowDown2, Calendar1, Location, SearchNormal1 } from 'iconsax-reactjs';
 
 // third-party
 import { useIntl } from 'react-intl';
 
 // project-imports
 import { getPublicTicketTypes, searchEvents } from 'api/events';
+import EventCard from 'components/event/EventCard';
 import { Event } from 'types/organizer';
+import heroImage from 'assets/images/home/hero.jpeg';
+
+const CATEGORY_LABELS = {
+  1: { en: 'Sports', vi: 'Thể thao' },
+  2: { en: 'Music', vi: 'Ca nhạc' },
+  3: { en: 'Theater', vi: 'Kịch' },
+  5: { en: 'Exhibitions', vi: 'Triển lãm' }
+} as const;
+
+const FAQ_ITEMS = [1, 2, 3, 4, 5, 6];
+
+function getCategoryLabel(categoryId: number | undefined, locale: string) {
+  if (!categoryId || !(categoryId in CATEGORY_LABELS)) return undefined;
+  const labels = CATEGORY_LABELS[categoryId as keyof typeof CATEGORY_LABELS];
+  return locale.startsWith('vi') ? labels.vi : labels.en;
+}
 
 // ==============================|| EVENTS PAGE ||============================== //
 
 export default function EventsPage() {
   const intl = useIntl();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [pricesByEvent, setPricesByEvent] = useState<Record<number, number | null>>({});
 
-  const title = searchParams.get('title') || undefined;
-  const location = searchParams.get('location') || undefined;
-  const when = searchParams.get('when') || undefined;
+  const title = searchParams.get('title') || '';
+  const location = searchParams.get('location') || '';
+  const when = searchParams.get('when') || '';
+  const price = searchParams.get('price') || '';
   const categoryIdParam = searchParams.get('categoryId');
   const parsedCategoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
   const categoryId = parsedCategoryId && Number.isInteger(parsedCategoryId) ? parsedCategoryId : undefined;
+  const categoryLabel = getCategoryLabel(categoryId, intl.locale);
+
+  const [searchTitle, setSearchTitle] = useState(title);
+  const [searchLocation, setSearchLocation] = useState(location);
+  const [searchWhen, setSearchWhen] = useState(when);
+  const [searchPrice, setSearchPrice] = useState(price);
+
+  useEffect(() => {
+    setSearchTitle(title);
+    setSearchLocation(location);
+    setSearchWhen(when);
+    setSearchPrice(price);
+  }, [title, location, when, price]);
 
   useEffect(() => {
     let cancelled = false;
 
     setLoading(true);
     searchEvents({
-      title,
-      location,
-      when,
+      title: title || undefined,
+      location: location || undefined,
+      when: when || undefined,
       categoryId,
       status: 'PUBLISHED',
       page: 0,
@@ -56,7 +93,7 @@ export default function EventsPage() {
           data.content.map(async (event) => {
             try {
               const ticketTypes = (await getPublicTicketTypes(event.id)) as Array<{ price?: number }>;
-              const availablePrices = ticketTypes.map((ticket) => Number(ticket.price)).filter((price) => Number.isFinite(price));
+              const availablePrices = ticketTypes.map((ticket) => Number(ticket.price)).filter((value) => Number.isFinite(value));
               return [event.id, availablePrices.length ? Math.min(...availablePrices) : null] as const;
             } catch {
               return [event.id, null] as const;
@@ -80,69 +117,231 @@ export default function EventsPage() {
     };
   }, [title, location, when, categoryId]);
 
-  return (
-    <Container maxWidth="xl" sx={{ py: { xs: 5, md: 9 } }}>
-      <Typography variant="h2" mb={1} sx={{ fontWeight: 800, letterSpacing: '-0.06em' }}>
-        {intl.formatMessage({ id: 'events.title', defaultMessage: 'Events' })}
-      </Typography>
-      <Typography color="text.secondary" mb={4}>Find your next unforgettable experience.</Typography>
-      <Paper sx={{ p: 1.5, mb: 5, borderRadius: 3, display: 'flex', gap: 1.5, flexWrap: 'wrap', bgcolor: 'background.paper' }}>
-        <TextField
-          defaultValue={title}
-          placeholder="Search event"
-          size="small"
-          sx={{ flex: 2, minWidth: 220 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchNormal1 size={18} />
-              </InputAdornment>
-            )
-          }}
-        />
-        <TextField
-          defaultValue={location}
-          placeholder="Location"
-          size="small"
-          sx={{ flex: 1, minWidth: 160 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Location size={18} />
-              </InputAdornment>
-            )
-          }}
-        />
-        <TextField
-          defaultValue={when}
-          type="date"
-          size="small"
-          sx={{ flex: 1, minWidth: 160 }}
-          InputLabelProps={{ shrink: true }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Calendar1 size={18} />
-              </InputAdornment>
-            )
-          }}
-        />
-        <EventButton variant="contained">Search</EventButton>
-      </Paper>
+  const activeFilters = useMemo(
+    () =>
+      [
+        title && { label: title, key: 'title' },
+        when && { label: when, key: 'when' },
+        location && { label: location, key: 'location' },
+        categoryLabel && { label: categoryLabel, key: 'categoryId' }
+      ].filter(Boolean) as Array<{ label: string; key: string }>,
+    [title, when, location, categoryLabel]
+  );
 
-      {loading ? (
-        <Typography color="text.secondary">{intl.formatMessage({ id: 'events.loading', defaultMessage: 'Loading...' })}</Typography>
-      ) : events.length === 0 ? (
-        <Typography color="text.secondary">{intl.formatMessage({ id: 'events.empty', defaultMessage: 'No events found.' })}</Typography>
-      ) : (
-        <Grid container spacing={3}>
-          {events.map((event) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={event.id}>
-              <EventCard event={event} price={pricesByEvent[event.id]} />
+  const handleSearch = (event: FormEvent) => {
+    event.preventDefault();
+    const nextParams = new URLSearchParams(searchParams);
+
+    const values = [
+      ['title', searchTitle],
+      ['location', searchLocation],
+      ['when', searchWhen],
+      ['price', searchPrice]
+    ];
+
+    values.forEach(([key, value]) => {
+      if (value) nextParams.set(key, value);
+      else nextParams.delete(key);
+    });
+    setSearchParams(nextParams);
+  };
+
+  const clearFilter = (key: string) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete(key);
+    setSearchParams(nextParams);
+  };
+
+  return (
+    <Box sx={{ bgcolor: '#0b0b0c', color: 'common.white', minHeight: '100%' }}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 12, md: 19 }, pb: { xs: 8, md: 18 } }}>
+        <Box component="form" onSubmit={handleSearch}>
+          <Stack spacing={3}>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+              <TextField
+                value={searchTitle}
+                onChange={(event) => setSearchTitle(event.target.value)}
+                placeholder={intl.formatMessage({ id: 'events.search', defaultMessage: 'What are you looking for?' })}
+                sx={{ flex: 1 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchNormal1 size={18} />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <TextField
+                value={searchWhen}
+                onChange={(event) => setSearchWhen(event.target.value)}
+                type="date"
+                label={intl.formatMessage({ id: 'events.when', defaultMessage: 'When' })}
+                sx={{ flex: 1 }}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Calendar1 size={18} />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <TextField
+                value={searchLocation}
+                onChange={(event) => setSearchLocation(event.target.value)}
+                placeholder={intl.formatMessage({ id: 'events.where', defaultMessage: 'Where' })}
+                sx={{ flex: 1 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Location size={18} />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <TextField
+                select
+                value={searchPrice}
+                onChange={(event) => setSearchPrice(event.target.value)}
+                label={intl.formatMessage({ id: 'events.price', defaultMessage: 'Price' })}
+                sx={{ flex: 1 }}
+                SelectProps={{ IconComponent: ArrowDown2 }}
+              >
+                <MenuItem value="">{intl.formatMessage({ id: 'events.anyPrice', defaultMessage: 'Any price' })}</MenuItem>
+                <MenuItem value="low">{intl.formatMessage({ id: 'events.price.low', defaultMessage: 'Under 500,000 VND' })}</MenuItem>
+                <MenuItem value="mid">{intl.formatMessage({ id: 'events.price.mid', defaultMessage: '500,000 - 1,000,000 VND' })}</MenuItem>
+                <MenuItem value="high">{intl.formatMessage({ id: 'events.price.high', defaultMessage: 'Over 1,000,000 VND' })}</MenuItem>
+              </TextField>
+            </Stack>
+
+            <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
+              <Typography color="rgba(255,255,255,.82)" sx={{ mr: 1 }}>
+                {intl.formatMessage({ id: 'events.yourSearch', defaultMessage: 'Your search:' })}
+              </Typography>
+              {activeFilters.map((filter) => (
+                <Chip
+                  key={filter.key}
+                  label={filter.label}
+                  onDelete={() => clearFilter(filter.key)}
+                  sx={{ color: 'white', bgcolor: '#252329', border: '1px solid #3b3540' }}
+                />
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
+
+        <Box sx={{ mt: 6 }}>
+          {loading ? (
+            <Typography color="rgba(255,255,255,.6)">
+              {intl.formatMessage({ id: 'events.loading', defaultMessage: 'Loading...' })}
+            </Typography>
+          ) : events.length === 0 ? (
+            <Typography color="rgba(255,255,255,.6)">
+              {intl.formatMessage({ id: 'events.empty', defaultMessage: 'No events found.' })}
+            </Typography>
+          ) : (
+            <Grid container columnSpacing={3} rowSpacing={{ xs: 3, md: 7.25 }}>
+              {events.map((event) => (
+                <Grid size={{ xs: 12, sm: 6, md: 3 }} key={event.id}>
+                  <EventCard event={event} price={pricesByEvent[event.id]} />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      )}
-    </Container>
+          )}
+        </Box>
+
+        {!loading && events.length > 0 && (
+          <Stack alignItems="center" sx={{ mt: 7 }}>
+            <Button
+              variant="contained"
+              sx={{
+                minWidth: 184,
+                height: 48,
+                borderRadius: 1,
+                bgcolor: '#d580f2',
+                color: '#17131b',
+                '&:hover': { bgcolor: '#c14fe6' }
+              }}
+            >
+              {intl.formatMessage({ id: 'events.viewMore', defaultMessage: 'View more events' })}
+            </Button>
+          </Stack>
+        )}
+      </Container>
+
+      <Box
+        sx={{
+          minHeight: 263,
+          display: 'flex',
+          alignItems: 'center',
+          background:
+            `linear-gradient(90deg, rgba(37, 12, 51, .96), rgba(88, 26, 112, .65)), url(${heroImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          px: { xs: 3, md: 13.5 },
+          py: 6
+        }}
+      >
+        <Stack spacing={1.5} maxWidth={545}>
+          <Typography variant="h3" fontWeight={800} color="white">
+            {intl.formatMessage({ id: 'events.cta.title', defaultMessage: 'Start exploring event today!' })}
+          </Typography>
+          <Typography color="rgba(255,255,255,.72)">
+            {intl.formatMessage({ id: 'events.cta.description', defaultMessage: 'Find concerts, shows, and more near you.' })}
+          </Typography>
+          <Button variant="contained" sx={{ alignSelf: 'flex-start', mt: 1, bgcolor: '#d580f2', color: '#17131b' }}>
+            {intl.formatMessage({ id: 'events.cta.button', defaultMessage: 'Start' })}
+          </Button>
+        </Stack>
+      </Box>
+
+      <Box sx={{ bgcolor: '#0f0f10', py: { xs: 8, md: 14 } }}>
+        <Container maxWidth="md">
+          <Stack alignItems="center" textAlign="center" spacing={1}>
+            <Typography variant="h4" fontWeight={800} color="white">
+              {intl.formatMessage({ id: 'events.faq.title', defaultMessage: 'Frequently Asked Questions' })}
+            </Typography>
+            <Typography color="rgba(255,255,255,.56)" maxWidth={584}>
+              {intl.formatMessage({
+                id: 'events.faq.description',
+                defaultMessage: 'Explore the most common questions and detailed answers about our events, concerts, and security.'
+              })}
+            </Typography>
+          </Stack>
+          <Stack spacing={2} sx={{ mt: 7 }}>
+            {FAQ_ITEMS.map((item) => (
+              <Accordion
+                key={item}
+                disableGutters
+                sx={{
+                  bgcolor: '#19191a',
+                  color: 'white',
+                  border: '1px solid #2b2b2d',
+                  borderRadius: '6px !important',
+                  '&:before': { display: 'none' }
+                }}
+              >
+                <AccordionSummary expandIcon={<ArrowDown2 size={18} color="#fff" />}>
+                  <Typography variant="body2">
+                    {intl.formatMessage({
+                      id: `home.faq.${item}.question`,
+                      defaultMessage: 'How can I get more information about this event?'
+                    })}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2" color="rgba(255,255,255,.62)">
+                    {intl.formatMessage({
+                      id: `home.faq.${item}.answer`,
+                      defaultMessage: 'Please review the event details or contact the organizer for more information.'
+                    })}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Stack>
+        </Container>
+      </Box>
+    </Box>
   );
 }
