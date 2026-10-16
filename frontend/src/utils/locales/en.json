@@ -12,10 +12,10 @@
   "header.register": "Register",
   "header.logout": "Logout",
   "header.addEvent": "Create Event",
-  "header.concerts": "Concerts",
-  "header.shows": "Shows",
   "header.sports": "Sports",
-  "header.festivals": "Festivals",
+  "header.music": "Music",
+  "header.theater": "Theater",
+  "header.exhibitions": "Exhibitions",
 
   "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
   "footer.description": "Find the moments worth remembering. Discover, book and share your next experience.",

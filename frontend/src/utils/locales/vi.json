@@ -22,10 +22,10 @@
   "header.register": "Đăng ký",
   "header.logout": "Đăng xuất",
   "header.addEvent": "Tạo sự kiện",
-  "header.concerts": "Âm nhạc",
-  "header.shows": "Chương trình",
   "header.sports": "Thể thao",
-  "header.festivals": "Lễ hội",
+  "header.music": "Ca nhạc",
+  "header.theater": "Kịch",
+  "header.exhibitions": "Triển lãm",
 
   "footer.copyright": "© 2026 Event Ticket Platform. Mọi quyền được bảo lưu.",
   "footer.description": "Tìm kiếm những khoảnh khắc đáng nhớ. Khám phá, đặt vé và chia sẻ trải nghiệm tiếp theo của bạn.",

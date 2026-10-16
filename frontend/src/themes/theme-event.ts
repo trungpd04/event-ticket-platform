@@ -33,7 +33,7 @@ export const eventTheme = createTheme({
     info: { main: '#2196F3' }
   },
   typography: {
-    fontFamily: `"Inter", sans-serif`,
+    fontFamily: `"Inter var", "Inter", sans-serif`,
     h1: {
       fontWeight: 700,
       fontSize: '3rem',
