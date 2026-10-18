@@ -57,6 +57,8 @@ interface SearchEventsParams {
   title?: string;
   location?: string;
   when?: string;
+  fromDate?: string;
+  toDate?: string;
   status?: string;
   timeFilter?: string;
   categoryId?: number;
@@ -69,7 +71,9 @@ export const searchEvents = async (params: SearchEventsParams = {}): Promise<Pag
   const searchParams = new URLSearchParams();
   if (params.title) searchParams.set('title', params.title);
   if (params.location) searchParams.set('location', params.location);
-  if (params.when) searchParams.set('fromDate', `${params.when}T00:00:00`);
+  if (params.fromDate) searchParams.set('fromDate', `${params.fromDate}T00:00:00`);
+  else if (params.when) searchParams.set('fromDate', `${params.when}T00:00:00`);
+  if (params.toDate) searchParams.set('toDate', `${params.toDate}T23:59:59`);
   if (params.status) searchParams.set('status', params.status);
   if (params.timeFilter) searchParams.set('timeFilter', params.timeFilter);
   if (params.categoryId) searchParams.set('categoryId', String(params.categoryId));

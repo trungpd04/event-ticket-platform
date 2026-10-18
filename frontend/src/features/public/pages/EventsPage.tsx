@@ -1,5 +1,10 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { format, isValid, parseISO } from 'date-fns';
+import { enUS, vi } from 'date-fns/locale';
+import { DateRange as DateRangePicker, RangeKeyDict } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 
 // material-ui
 import Accordion from '@mui/material/Accordion';
@@ -7,16 +12,17 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import ButtonBase from '@mui/material/ButtonBase';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
+import Popover from '@mui/material/Popover';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { ArrowDown2, Calendar1, Location, SearchNormal1 } from 'iconsax-reactjs';
+import { ArrowDown2, Location, SearchNormal1 } from 'iconsax-reactjs';
 
 // third-party
 import { useIntl } from 'react-intl';
@@ -42,6 +48,13 @@ function getCategoryLabel(categoryId: number | undefined, locale: string) {
   return locale.startsWith('vi') ? labels.vi : labels.en;
 }
 
+function getPriceLabel(price: string, intl: ReturnType<typeof useIntl>) {
+  if (price === 'low') return intl.formatMessage({ id: 'events.price.low', defaultMessage: 'Under 500,000 VND' });
+  if (price === 'mid') return intl.formatMessage({ id: 'events.price.mid', defaultMessage: '500,000 - 1,000,000 VND' });
+  if (price === 'high') return intl.formatMessage({ id: 'events.price.high', defaultMessage: 'Over 1,000,000 VND' });
+  return undefined;
+}
+
 // ==============================|| EVENTS PAGE ||============================== //
 
 export default function EventsPage() {
@@ -56,18 +69,22 @@ export default function EventsPage() {
   const provinceIdParam = searchParams.get('provinceId');
   const parsedProvinceId = provinceIdParam ? Number(provinceIdParam) : undefined;
   const provinceId = parsedProvinceId && Number.isInteger(parsedProvinceId) ? parsedProvinceId : undefined;
-  const when = searchParams.get('when') || '';
+  const fromDate = searchParams.get('fromDate') || searchParams.get('when') || '';
+  const toDate = searchParams.get('toDate') || '';
   const price = searchParams.get('price') || '';
   const categoryIdParam = searchParams.get('categoryId');
   const parsedCategoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
   const categoryId = parsedCategoryId && Number.isInteger(parsedCategoryId) ? parsedCategoryId : undefined;
   const categoryLabel = getCategoryLabel(categoryId, intl.locale);
   const provinceLabel = provinces.find((province) => province.id === provinceId)?.name;
+  const priceLabel = getPriceLabel(price, intl);
 
   const [searchTitle, setSearchTitle] = useState(title);
   const [searchProvinceId, setSearchProvinceId] = useState(provinceId ? String(provinceId) : '');
-  const [searchWhen, setSearchWhen] = useState(when);
+  const [searchFromDate, setSearchFromDate] = useState(fromDate);
+  const [searchToDate, setSearchToDate] = useState(toDate);
   const [searchPrice, setSearchPrice] = useState(price);
+  const [datePickerAnchorEl, setDatePickerAnchorEl] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,9 +105,10 @@ export default function EventsPage() {
   useEffect(() => {
     setSearchTitle(title);
     setSearchProvinceId(provinceId ? String(provinceId) : '');
-    setSearchWhen(when);
+    setSearchFromDate(fromDate);
+    setSearchToDate(toDate);
     setSearchPrice(price);
-  }, [title, provinceId, when, price]);
+  }, [title, provinceId, fromDate, toDate, price]);
 
   useEffect(() => {
     let cancelled = false;
@@ -98,7 +116,8 @@ export default function EventsPage() {
     setLoading(true);
     searchEvents({
       title: title || undefined,
-      when: when || undefined,
+      fromDate: fromDate || undefined,
+      toDate: toDate || undefined,
       categoryId,
       provinceId,
       status: 'PUBLISHED',
@@ -135,17 +154,21 @@ export default function EventsPage() {
     return () => {
       cancelled = true;
     };
-  }, [title, provinceId, when, categoryId]);
+  }, [title, provinceId, fromDate, toDate, categoryId]);
 
   const activeFilters = useMemo(
     () =>
       [
         title && { label: title, key: 'title' },
-        when && { label: when, key: 'when' },
+        (fromDate || toDate) && {
+          label: fromDate && toDate ? `${fromDate} - ${toDate}` : fromDate || toDate,
+          key: 'dateRange'
+        },
         provinceLabel && { label: provinceLabel, key: 'provinceId' },
-        categoryLabel && { label: categoryLabel, key: 'categoryId' }
+        categoryLabel && { label: categoryLabel, key: 'categoryId' },
+        priceLabel && { label: priceLabel, key: 'price' }
       ].filter(Boolean) as Array<{ label: string; key: string }>,
-    [title, when, provinceLabel, categoryLabel]
+    [title, fromDate, toDate, provinceLabel, categoryLabel, priceLabel]
   );
 
   const handleSearch = (event: FormEvent) => {
@@ -154,7 +177,6 @@ export default function EventsPage() {
 
     const values = [
       ['title', searchTitle],
-      ['when', searchWhen],
       ['price', searchPrice]
     ];
 
@@ -162,6 +184,11 @@ export default function EventsPage() {
       if (value) nextParams.set(key, value);
       else nextParams.delete(key);
     });
+    if (searchFromDate) nextParams.set('fromDate', searchFromDate);
+    else nextParams.delete('fromDate');
+    if (searchToDate) nextParams.set('toDate', searchToDate);
+    else nextParams.delete('toDate');
+    nextParams.delete('when');
     if (searchProvinceId) nextParams.set('provinceId', searchProvinceId);
     else nextParams.delete('provinceId');
     setSearchParams(nextParams);
@@ -169,7 +196,13 @@ export default function EventsPage() {
 
   const clearFilter = (key: string) => {
     const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete(key);
+    if (key === 'dateRange') {
+      nextParams.delete('fromDate');
+      nextParams.delete('toDate');
+      nextParams.delete('when');
+    } else {
+      nextParams.delete(key);
+    }
     setSearchParams(nextParams);
   };
 
@@ -181,6 +214,41 @@ export default function EventsPage() {
     else nextParams.delete('provinceId');
     setSearchParams(nextParams);
   };
+
+  const handleDateRangeChange = (ranges: RangeKeyDict) => {
+    const selection = ranges.selection;
+    const nextFromDate = selection.startDate && isValid(selection.startDate) ? format(selection.startDate, 'yyyy-MM-dd') : '';
+    const nextToDate = selection.endDate && isValid(selection.endDate) ? format(selection.endDate, 'yyyy-MM-dd') : '';
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (nextFromDate) nextParams.set('fromDate', nextFromDate);
+    else nextParams.delete('fromDate');
+    if (nextToDate) nextParams.set('toDate', nextToDate);
+    else nextParams.delete('toDate');
+    nextParams.delete('when');
+
+    setSearchFromDate(nextFromDate);
+    setSearchToDate(nextToDate);
+    setSearchParams(nextParams);
+  };
+
+  const selectedDateRange = {
+    startDate: searchFromDate && isValid(parseISO(searchFromDate)) ? parseISO(searchFromDate) : new Date(),
+    endDate:
+      searchToDate && isValid(parseISO(searchToDate))
+        ? parseISO(searchToDate)
+        : searchFromDate && isValid(parseISO(searchFromDate))
+          ? parseISO(searchFromDate)
+          : new Date(),
+    key: 'selection'
+  };
+
+  const dateRangeLabel =
+    searchFromDate && searchToDate
+      ? `${format(parseISO(searchFromDate), 'dd/MM/yyyy')} - ${format(parseISO(searchToDate), 'dd/MM/yyyy')}`
+      : '';
+  const dateFieldHasValue = Boolean(searchFromDate || searchToDate);
+  const dateFieldLabelFloating = dateFieldHasValue || Boolean(datePickerAnchorEl);
 
   return (
     <Box sx={{ bgcolor: '#0b0b0c', color: 'common.white', minHeight: '100%' }}>
@@ -201,32 +269,93 @@ export default function EventsPage() {
                   )
                 }}
               />
-              <TextField
-                value={searchWhen}
-                onChange={(event) => setSearchWhen(event.target.value)}
-                type="date"
-                label={intl.formatMessage({ id: 'events.when', defaultMessage: 'When' })}
-                sx={{ flex: 1 }}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Calendar1 size={18} />
-                    </InputAdornment>
-                  )
-                }}
-              />
+              <Box sx={{ flex: 2, minWidth: 280 }}>
+                <Box sx={{ position: 'relative' }}>
+                  <Typography
+                    component="span"
+                    sx={{
+                      position: 'absolute',
+                      zIndex: 1,
+                      top: dateFieldLabelFloating ? 0 : '50%',
+                      left: dateFieldLabelFloating ? 12 : 16,
+                      transform: 'translateY(-50%)',
+                      px: dateFieldLabelFloating ? 0.5 : 0,
+                      bgcolor: '#0b0b0c',
+                      color: datePickerAnchorEl ? '#c14fe6' : 'rgba(255,255,255,.38)',
+                      fontFamily: '"Inter var", "Inter", sans-serif',
+                      fontSize: dateFieldLabelFloating ? 12 : 14,
+                      fontWeight: 400,
+                      lineHeight: 1,
+                      pointerEvents: 'none',
+                      transition: 'all .2s ease'
+                    }}
+                  >
+                    {intl.formatMessage({ id: 'events.when', defaultMessage: 'When' })}
+                  </Typography>
+                  <ButtonBase
+                    onClick={(event) => setDatePickerAnchorEl(event.currentTarget)}
+                    sx={{
+                      width: '100%',
+                      height: 48,
+                      justifyContent: 'flex-start',
+                      px: 2,
+                      pt: dateFieldLabelFloating ? 1 : 0,
+                      border: '1px solid',
+                      borderColor: datePickerAnchorEl ? '#c14fe6' : 'rgba(255,255,255,.12)',
+                      borderRadius: 1,
+                      color: dateFieldHasValue ? 'rgba(255,255,255,.72)' : 'rgba(255,255,255,.38)',
+                      textAlign: 'left',
+                      fontFamily: '"Inter var", "Inter", sans-serif',
+                      fontSize: 14,
+                      fontWeight: 400,
+                      letterSpacing: 'normal',
+                      lineHeight: 1.4,
+                      '&:hover': { borderColor: 'rgba(255,255,255,.24)' }
+                    }}
+                  >
+                    {dateRangeLabel}
+                  </ButtonBase>
+                </Box>
+                <Popover
+                  open={Boolean(datePickerAnchorEl)}
+                  anchorEl={datePickerAnchorEl}
+                  disableScrollLock
+                  onClose={() => setDatePickerAnchorEl(null)}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        mt: 1,
+                        overflow: 'hidden',
+                        fontFamily: '"Inter var", "Inter", sans-serif',
+                        '& .rdrCalendarWrapper, & .rdrDateDisplayWrapper, & .rdrMonthAndYearWrapper, & .rdrWeekDay, & .rdrDayNumber, & .rdrMonthName, & .rdrYearPicker, & .rdrMonthPicker':
+                          { fontFamily: '"Inter var", "Inter", sans-serif' }
+                      }
+                    }
+                  }}
+                >
+                  <DateRangePicker
+                    ranges={[selectedDateRange]}
+                    onChange={handleDateRangeChange}
+                    locale={intl.locale.startsWith('vi') ? vi : enUS}
+                    moveRangeOnFirstSelection={false}
+                    editableDateInputs
+                    rangeColors={['#c14fe6']}
+                    months={1}
+                    direction="horizontal"
+                  />
+                </Popover>
+              </Box>
               <TextField
                 select
                 value={searchProvinceId}
                 onChange={(event) => handleProvinceChange(event.target.value)}
                 label={intl.formatMessage({ id: 'events.where', defaultMessage: 'Where' })}
                 sx={{ flex: 1 }}
-                SelectProps={{ IconComponent: ArrowDown2 }}
+                SelectProps={{ IconComponent: ArrowDown2, MenuProps: { disableScrollLock: true } }}
               >
-                <MenuItem value="">
-                  {intl.formatMessage({ id: 'events.anyProvince', defaultMessage: 'All locations' })}
-                </MenuItem>
+                <MenuItem value="">{intl.formatMessage({ id: 'events.anyProvince', defaultMessage: 'All locations' })}</MenuItem>
                 {provinces.map((province) => (
                   <MenuItem key={province.id} value={province.id}>
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -242,7 +371,7 @@ export default function EventsPage() {
                 onChange={(event) => setSearchPrice(event.target.value)}
                 label={intl.formatMessage({ id: 'events.price', defaultMessage: 'Price' })}
                 sx={{ flex: 1 }}
-                SelectProps={{ IconComponent: ArrowDown2 }}
+                SelectProps={{ IconComponent: ArrowDown2, MenuProps: { disableScrollLock: true } }}
               >
                 <MenuItem value="">{intl.formatMessage({ id: 'events.anyPrice', defaultMessage: 'Any price' })}</MenuItem>
                 <MenuItem value="low">{intl.formatMessage({ id: 'events.price.low', defaultMessage: 'Under 500,000 VND' })}</MenuItem>
@@ -251,7 +380,14 @@ export default function EventsPage() {
               </TextField>
             </Stack>
 
-            <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" useFlexGap>
+            <Stack
+              direction="row"
+              spacing={1.5}
+              alignItems="center"
+              flexWrap="nowrap"
+              useFlexGap
+              sx={{ overflowX: 'auto', pb: 0.5, '&::-webkit-scrollbar': { height: 4 } }}
+            >
               <Typography color="rgba(255,255,255,.82)" sx={{ mr: 1 }}>
                 {intl.formatMessage({ id: 'events.yourSearch', defaultMessage: 'Your search:' })}
               </Typography>
@@ -311,8 +447,7 @@ export default function EventsPage() {
           minHeight: 263,
           display: 'flex',
           alignItems: 'center',
-          background:
-            `linear-gradient(90deg, rgba(37, 12, 51, .96), rgba(88, 26, 112, .65)), url(${heroImage})`,
+          background: `linear-gradient(90deg, rgba(37, 12, 51, .96), rgba(88, 26, 112, .65)), url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           px: { xs: 3, md: 13.5 },
