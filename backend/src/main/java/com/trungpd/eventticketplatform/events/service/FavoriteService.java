@@ -27,6 +27,7 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final EventService eventService;
     private final UserService userService;
     private final PaginationMapper paginationMapper;
 
@@ -58,7 +59,9 @@ public class FavoriteService {
         User user = userService.findByEmail(email);
         Pageable pageable = PageRequest.of(page, size, Sort.by("f.createdAt").descending());
         Page<Event> events = favoriteRepository.findFavoriteEventsByCustomerId(user.getId(), pageable);
-        Page<EventResponse> responsePage = events.map(eventMapper::toResponse);
+        Page<EventResponse> responsePage = events
+                .map(eventMapper::toResponse)
+                .map(eventService::enrichEventResponse);
         return paginationMapper.toPagedResponse(responsePage);
     }
 
