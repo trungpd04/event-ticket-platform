@@ -23,6 +23,7 @@ export interface TicketType {
   name: string;
   price: number;
   totalQuantity: number;
+  availableQuantity?: number;
   description?: string;
   minPerOrder: number;
   maxPerOrder: number;
@@ -77,6 +78,21 @@ export interface Event {
   province?: Province;
   ticketSaleStartTime: string;
   ticketSaleEndTime: string;
+}
+
+export interface EventDetail extends Event {
+  ward?: {
+    id: number;
+    name: string;
+  };
+  ticketTypes: TicketType[];
+  activePromotions?: Array<{
+    id: number;
+    code?: string;
+    name?: string;
+    discountPercent?: number;
+    maxDiscount?: number;
+  }>;
 }
 
 export interface PagedResponse<T> {

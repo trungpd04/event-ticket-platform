@@ -7,6 +7,7 @@ import PublicLayout from 'features/public/layout/PublicLayout';
 // render - public pages
 const HomePage = Loadable(lazy(() => import('features/public/pages/HomePage')));
 const EventsPage = Loadable(lazy(() => import('features/public/pages/EventsPage')));
+const EventDetailPage = Loadable(lazy(() => import('features/public/pages/EventDetailPage')));
 
 // ==============================|| PUBLIC ROUTES ||============================== //
 
@@ -19,8 +20,12 @@ const PublicRoutes = {
       element: <HomePage />
     },
     {
-      path: '/events',
+      path: 'events',
       element: <EventsPage />
+    },
+    {
+      path: 'events/:id',
+      element: <EventDetailPage />
     }
   ]
 };
