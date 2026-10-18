@@ -11,11 +11,7 @@ import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
-import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
-import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
-import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
-import com.trungpd.eventticketplatform.events.dto.response.ProvinceResponse;
-import com.trungpd.eventticketplatform.events.dto.response.PromotionResponse;
+import com.trungpd.eventticketplatform.events.dto.response.*;
 import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventPayoutInfo;
 import com.trungpd.eventticketplatform.events.entity.EventSetting;
@@ -498,7 +494,7 @@ public class EventService {
                 .toList();
     }
 
-    private EventResponse enrichEventResponse(EventResponse response) {
+    EventResponse enrichEventResponse(EventResponse response) {
         if (response == null) {
             return null;
         }
@@ -509,6 +505,10 @@ public class EventService {
         if (response.getProvince() != null && response.getProvince().getId() != null) {
             ProvinceResponse province = locationMapper.toProvinceResponse(provinceService.findById(response.getProvince().getId()));
             response.setProvince(province);
+        }
+        if (response.getWard() != null && response.getWard().getId() != null) {
+            WardResponse ward = locationMapper.toWardResponse(wardService.findById(response.getWard().getId()));
+            response.setWard(ward);
         }
 
         Long thumbnailFileId = findEventImageFileId(response.getId(), FileType.EVENT_THUMBNAIL);
@@ -542,6 +542,10 @@ public class EventService {
         if (response.getProvince() != null && response.getProvince().getId() != null) {
             ProvinceResponse province = locationMapper.toProvinceResponse(provinceService.findById(response.getProvince().getId()));
             response.setProvince(province);
+        }
+        if (response.getWard() != null && response.getWard().getId() != null) {
+            WardResponse ward = locationMapper.toWardResponse(wardService.findById(response.getWard().getId()));
+            response.setWard(ward);
         }
 
         Long thumbnailFileId = findEventImageFileId(response.getId(), FileType.EVENT_THUMBNAIL);
