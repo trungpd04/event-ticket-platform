@@ -172,10 +172,6 @@ export default function EventDetailPage() {
                               {ticket.description ||
                                 intl.formatMessage({ id: 'eventDetail.ticketDescription', defaultMessage: 'Admission ticket' })}
                             </Typography>
-                            <Typography variant="body2" color="rgba(255,255,255,.55)" sx={{ mt: 1 }}>
-                              {ticket.availableQuantity ?? ticket.totalQuantity}{' '}
-                              {intl.formatMessage({ id: 'eventDetail.remaining', defaultMessage: 'tickets remaining' })}
-                            </Typography>
                           </Box>
                           <Typography sx={{ color: '#d580f2', fontSize: 20, fontWeight: 800 }}>
                             {formatMoney(Number(ticket.price), intl.locale)}
