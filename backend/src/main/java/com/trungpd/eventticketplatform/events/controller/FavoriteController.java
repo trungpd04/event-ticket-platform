@@ -2,6 +2,8 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
+import com.trungpd.eventticketplatform.common.response.ResponseViews;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.service.FavoriteService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -42,6 +44,7 @@ public class FavoriteController {
     @GetMapping("/api/v1/users/me/favorites")
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")
+    @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> getFavorites(
             @AuthenticationPrincipal String email,
             @RequestParam(defaultValue = "0") int page,
