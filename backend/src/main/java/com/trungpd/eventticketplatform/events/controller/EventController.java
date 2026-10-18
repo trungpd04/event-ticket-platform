@@ -2,6 +2,7 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
+import com.trungpd.eventticketplatform.common.response.ResponseViews;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
@@ -10,6 +11,7 @@ import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import com.trungpd.eventticketplatform.events.service.EventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,7 @@ public class EventController {
     }
 
     @GetMapping
+    @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> searchEvents(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String location,
@@ -61,6 +64,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
+    @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<EventDetailResponse>> getEventDetail(@PathVariable Long id) {
         EventDetailResponse response = eventService.getEventDetail(id);
         return ResponseEntity.ok(ApiResponse.success(response));

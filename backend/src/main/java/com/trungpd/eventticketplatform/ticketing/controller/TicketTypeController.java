@@ -1,6 +1,8 @@
 package com.trungpd.eventticketplatform.ticketing.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
+import com.trungpd.eventticketplatform.common.response.ResponseViews;
 import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
 import com.trungpd.eventticketplatform.ticketing.dto.response.TicketTypeResponse;
 import com.trungpd.eventticketplatform.ticketing.service.TicketTypeService;
@@ -36,6 +38,7 @@ public class TicketTypeController {
     }
 
     @GetMapping
+    @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<List<TicketTypeResponse>>> getTicketTypes(
             @PathVariable Long eventId) {
         List<TicketTypeResponse> response = ticketTypeService.findPublicByEventId(eventId);
