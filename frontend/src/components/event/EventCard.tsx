@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -52,6 +53,8 @@ export default function EventCard({ event, price }: EventCardProps) {
 
   return (
     <Box
+      component={RouterLink}
+      to={`/events/${event.id}`}
       sx={{
         position: 'relative',
         width: '100%',
@@ -59,7 +62,8 @@ export default function EventCard({ event, price }: EventCardProps) {
         borderRadius: 2.5,
         overflow: 'hidden',
         bgcolor: '#1b1b1b',
-        '&:hover img': { transform: 'scale(1.04)' }
+        '&:hover img': { transform: 'scale(1.04)' },
+        textDecoration: 'none'
       }}
     >
       <Box

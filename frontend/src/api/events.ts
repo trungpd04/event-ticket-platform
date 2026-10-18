@@ -1,5 +1,5 @@
 import axios from 'utils/axios';
-import { Category, CreateEventPayload, Event, PagedResponse, Province, Ward } from 'types/organizer';
+import { Category, CreateEventPayload, Event, EventDetail, PagedResponse, Province, Ward } from 'types/organizer';
 
 // ==============================|| EVENTS API ||============================== //
 
@@ -46,6 +46,11 @@ export const requestPublishEvent = async (eventId: number) => {
 export const getPublicTicketTypes = async (eventId: number) => {
   const response = await axios.get(`/api/v1/events/${eventId}/ticket-types`);
   return response.data;
+};
+
+export const getEventDetail = async (eventId: number): Promise<EventDetail> => {
+  const response = await axios.get(`/api/v1/events/${eventId}`);
+  return response.data as EventDetail;
 };
 
 export const getOrganizerTicketTypes = async (eventId: number) => {
