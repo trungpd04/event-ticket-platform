@@ -11,8 +11,6 @@ public class TicketTypeResponse {
     private String name;
     private String description;
     private Long price;
-    private Integer totalQuantity;
-    private Integer availableQuantity;
     private Integer minPerOrder;
     private Integer maxPerOrder;
 
