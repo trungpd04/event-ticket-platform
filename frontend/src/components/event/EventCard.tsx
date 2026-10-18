@@ -57,6 +57,7 @@ export default function EventCard({ event, price }: EventCardProps) {
       to={`/events/${event.id}`}
       sx={{
         position: 'relative',
+        display: 'block',
         width: '100%',
         height: 416,
         borderRadius: 2.5,
