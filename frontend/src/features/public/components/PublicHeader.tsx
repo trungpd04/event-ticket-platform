@@ -125,6 +125,7 @@ export default function PublicHeader() {
               variant="outlined"
               inputProps={{ 'aria-label': 'Language' }}
               IconComponent={ArrowDown2}
+              MenuProps={{ disableScrollLock: true }}
               sx={{
                 color: 'common.white',
                 borderRadius: 0,
