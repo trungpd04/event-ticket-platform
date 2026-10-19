@@ -30,6 +30,7 @@ import { useIntl } from 'react-intl';
 // project-imports
 import { getProvinces, getPublicTicketTypes, searchEvents } from 'api/events';
 import EventCard from 'components/event/EventCard';
+import EventCardSkeleton from 'components/event/EventCardSkeleton';
 import { Event, Province } from 'types/organizer';
 import heroImage from 'assets/images/home/hero.jpeg';
 
@@ -249,6 +250,7 @@ export default function EventsPage() {
       : '';
   const dateFieldHasValue = Boolean(searchFromDate || searchToDate);
   const dateFieldLabelFloating = dateFieldHasValue || Boolean(datePickerAnchorEl);
+  const showInitialSkeletons = loading && events.length === 0;
 
   return (
     <Box sx={{ bgcolor: '#0b0b0c', color: 'common.white', minHeight: '100%' }}>
@@ -404,10 +406,14 @@ export default function EventsPage() {
         </Box>
 
         <Box sx={{ mt: 6 }}>
-          {loading ? (
-            <Typography color="rgba(255,255,255,.6)">
-              {intl.formatMessage({ id: 'events.loading', defaultMessage: 'Loading...' })}
-            </Typography>
+          {showInitialSkeletons ? (
+            <Grid container columnSpacing={3} rowSpacing={{ xs: 3, md: 7.25 }}>
+              {Array.from({ length: 8 }, (_, index) => (
+                <Grid size={{ xs: 12, sm: 6, md: 3 }} key={`event-skeleton-${index}`}>
+                  <EventCardSkeleton />
+                </Grid>
+              ))}
+            </Grid>
           ) : events.length === 0 ? (
             <Typography color="rgba(255,255,255,.6)">
               {intl.formatMessage({ id: 'events.empty', defaultMessage: 'No events found.' })}
