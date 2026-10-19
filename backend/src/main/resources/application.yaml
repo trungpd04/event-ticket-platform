@@ -3,3 +3,8 @@ spring:
     name: event-ticket-platform
   profiles:
     active: test
+
+ticket:
+  pool:
+    batch-size: 500
+    warm-size: 100

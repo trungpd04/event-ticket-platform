@@ -53,4 +53,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     long countByTicketTypeIdAndStatus(Long ticketTypeId, com.trungpd.eventticketplatform.ticketing.enums.TicketStatus status);
 
+    @Query(value = """
+            SELECT COUNT(*) FROM tickets
+            WHERE ticket_type_id = :ticketTypeId
+              AND event_id = :eventId
+              AND (status = 'AVAILABLE' OR (status = 'RESERVED' AND reserved_until < NOW()))
+            """, nativeQuery = true)
+    int countTakeable(@Param("ticketTypeId") Long ticketTypeId, @Param("eventId") Long eventId);
+
 }

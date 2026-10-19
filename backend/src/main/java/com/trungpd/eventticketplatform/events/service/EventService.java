@@ -348,7 +348,7 @@ public class EventService {
         }
 
         validateHasTicketTypes(id);
-        ticketService.preAllocateTickets(id);
+        ticketService.materializeWarmBatch(id);
 
         FeePolicy feePolicy = feePolicyService.findActiveById(event.getFeePolicyId());
         event.setOrganizerCommissionRateSnapshot(feePolicy.getOrganizerCommissionRate());
