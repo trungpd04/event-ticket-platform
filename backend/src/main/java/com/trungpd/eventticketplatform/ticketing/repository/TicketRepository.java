@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
+    @Modifying
     @Query(value = """
             UPDATE tickets
             SET status = 'RESERVED',
