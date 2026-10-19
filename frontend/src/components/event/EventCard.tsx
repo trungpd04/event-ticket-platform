@@ -8,28 +8,12 @@ import { Calendar1, Location, Timer1 } from 'iconsax-reactjs';
 import { useIntl } from 'react-intl';
 
 import { Event } from 'types/organizer';
+import { formatCurrency, formatRemainingTime, formatShortDate, isWithinNextDay } from 'utils/format';
 
 type EventCardProps = {
   event: Event;
   price?: number | null;
 };
-
-function formatRemainingTime(saleEndTime: string, now: number) {
-  const remaining = Math.max(0, new Date(saleEndTime).getTime() - now);
-  const totalSeconds = Math.floor(remaining / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return [hours, minutes, seconds].map((value) => String(value).padStart(2, '0')).join(':');
-}
-
-function shouldShowRemainingTime(saleEndTime: string, now: number) {
-  const remaining = new Date(saleEndTime).getTime() - now;
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  return remaining > 0 && remaining <= oneDay;
-}
 
 export default function EventCard({ event, price }: EventCardProps) {
   const intl = useIntl();
@@ -40,16 +24,12 @@ export default function EventCard({ event, price }: EventCardProps) {
     return () => window.clearInterval(timer);
   }, []);
 
-  const formattedDate = new Intl.DateTimeFormat(intl.locale, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  }).format(new Date(event.startTime));
+  const formattedDate = formatShortDate(event.startTime, intl.locale);
   const formattedPrice =
     price === null || price === undefined
       ? intl.formatMessage({ id: 'home.card.priceUnavailable', defaultMessage: 'Contact for price' })
-      : `${price.toLocaleString(intl.locale)} VND`;
-  const showRemainingTime = shouldShowRemainingTime(event.ticketSaleEndTime, now);
+      : formatCurrency(price, intl.locale);
+  const showRemainingTime = isWithinNextDay(event.ticketSaleEndTime, now);
 
   return (
     <Box

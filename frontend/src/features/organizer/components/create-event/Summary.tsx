@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl';
 
 // project-imports
 import { BankAccount, CreateEventPayload, EventSettings, TicketType } from 'types/organizer';
+import { formatCurrency, formatDateTime } from 'utils/format';
 
 interface SummaryProps {
   event: CreateEventPayload;
@@ -22,8 +23,6 @@ interface SummaryProps {
 
 export default function Summary({ event, ticketTypes, settings, bankAccount, createdEvent }: SummaryProps) {
   const intl = useIntl();
-  const toDate = (value: string) => (value ? new Date(value).toLocaleString(intl.locale) : '-');
-
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
@@ -59,16 +58,16 @@ export default function Summary({ event, ticketTypes, settings, bankAccount, cre
       <Grid size={12}>
         <Typography variant="h6">{intl.formatMessage({ id: 'createEvent.summary.dateAndSale' })}</Typography>
         <Typography>
-          {intl.formatMessage({ id: 'createEvent.summary.start' })}: {toDate(event.startTime)}
+          {intl.formatMessage({ id: 'createEvent.summary.start' })}: {formatDateTime(event.startTime, intl.locale)}
         </Typography>
         <Typography>
-          {intl.formatMessage({ id: 'createEvent.summary.end' })}: {toDate(event.endTime)}
+          {intl.formatMessage({ id: 'createEvent.summary.end' })}: {formatDateTime(event.endTime, intl.locale)}
         </Typography>
         <Typography>
-          {intl.formatMessage({ id: 'createEvent.summary.saleStart' })}: {toDate(event.ticketSaleStartTime)}
+          {intl.formatMessage({ id: 'createEvent.summary.saleStart' })}: {formatDateTime(event.ticketSaleStartTime, intl.locale)}
         </Typography>
         <Typography>
-          {intl.formatMessage({ id: 'createEvent.summary.saleEnd' })}: {toDate(event.ticketSaleEndTime)}
+          {intl.formatMessage({ id: 'createEvent.summary.saleEnd' })}: {formatDateTime(event.ticketSaleEndTime, intl.locale)}
         </Typography>
       </Grid>
 
@@ -83,7 +82,7 @@ export default function Summary({ event, ticketTypes, settings, bankAccount, cre
                 { id: 'createEvent.summary.ticketFormat' },
                 {
                   name: t.name,
-                  price: t.price.toLocaleString(intl.locale),
+                  price: formatCurrency(t.price, intl.locale),
                   quantity: t.totalQuantity,
                   min: t.minPerOrder,
                   max: t.maxPerOrder

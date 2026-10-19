@@ -23,6 +23,7 @@ import { getEventDetail, getFeePolicies, updateEventFeePolicy, updateEventStatus
 
 // types
 import { AdminEventDetail, EventStatus, FeePolicy } from 'features/admin/types/admin';
+import { formatDateTime } from 'utils/format';
 
 // ==============================|| EVENT APPROVAL DETAIL PAGE ||============================== //
 
@@ -131,10 +132,10 @@ export default function EventApprovalDetailPage() {
             </Typography>
             <Typography>
               <strong>{intl.formatMessage({ id: 'admin.events.startTime' })}:</strong>{' '}
-              {new Date(event.startTime).toLocaleString(intl.locale)}
+              {formatDateTime(event.startTime, intl.locale)}
             </Typography>
             <Typography>
-              <strong>{intl.formatMessage({ id: 'admin.events.endTime' })}:</strong> {new Date(event.endTime).toLocaleString(intl.locale)}
+              <strong>{intl.formatMessage({ id: 'admin.events.endTime' })}:</strong> {formatDateTime(event.endTime, intl.locale)}
             </Typography>
             <Typography>
               <strong>{intl.formatMessage({ id: 'admin.events.category' })}:</strong> {event.category?.name || '-'}
