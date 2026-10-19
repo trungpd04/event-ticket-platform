@@ -15,6 +15,7 @@ import { useIntl } from 'react-intl';
 // project-imports
 import { getCategories, getPublicTicketTypes, searchEvents } from 'api/events';
 import EventCard from 'components/event/EventCard';
+import EventCardSkeleton from 'components/event/EventCardSkeleton';
 import SearchWidget from 'components/event/SearchWidget';
 import { Category, Event } from 'types/organizer';
 import heroImage from 'assets/images/home/hero.jpeg';
@@ -30,6 +31,7 @@ export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [eventsByCategory, setEventsByCategory] = useState<Record<number, Event[]>>({});
   const [pricesByEvent, setPricesByEvent] = useState<Record<number, number | null>>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getCategories()
@@ -68,7 +70,8 @@ export default function HomePage() {
         );
         setPricesByEvent(Object.fromEntries(prices));
       })
-      .catch(() => setCategories([]));
+      .catch(() => setCategories([]))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -106,11 +109,32 @@ export default function HomePage() {
 
       <Container maxWidth="xl" sx={{ py: { xs: 7, md: 10 } }}>
         <Stack spacing={{ xs: 8, md: 12 }}>
-          {categories.slice(0, 4).map((category) => (
+          {loading
+            ? Array.from({ length: 4 }, (_, sectionIndex) => (
+                <Box key={`home-skeleton-section-${sectionIndex}`}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="end" mb={3}>
+                    <Box sx={{ width: { xs: '65%', sm: 320 } }}>
+                      <Box sx={{ width: 180, height: 36, bgcolor: 'rgba(255,255,255,.08)', borderRadius: 1 }} />
+                      <Box sx={{ width: 280, maxWidth: '100%', height: 18, mt: 1, bgcolor: 'rgba(255,255,255,.05)', borderRadius: 1 }} />
+                    </Box>
+                    <Box sx={{ width: 80, height: 24, bgcolor: 'rgba(213,128,242,.12)', borderRadius: 1 }} />
+                  </Stack>
+                  <Grid container spacing={3}>
+                    {Array.from({ length: 4 }, (_, cardIndex) => (
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }} key={`home-card-skeleton-${sectionIndex}-${cardIndex}`}>
+                        <EventCardSkeleton />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              ))
+            : categories.slice(0, 4).map((category) => (
             <Box key={category.id}>
               <Stack direction="row" justifyContent="space-between" alignItems="end" mb={3}>
                 <Box>
-                  <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.05em' }}>{category.name}</Typography>
+                      <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.05em' }}>
+                        {category.name}
+                      </Typography>
                   <Typography color="text.secondary" sx={{ mt: 0.5 }}>
                     {intl.formatMessage(
                       { id: 'home.category.description', defaultMessage: 'Discover the best {category} events.' },
@@ -124,11 +148,11 @@ export default function HomePage() {
               </Stack>
               <Grid container spacing={3}>
                 {(eventsByCategory[category.id] || []).map((event) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 3 }} key={event.id}>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }} key={event.id}>
                     <EventCard event={event} price={pricesByEvent[event.id]} />
                   </Grid>
                 ))}
-              </Grid>
+                  </Grid>
             </Box>
           ))}
         </Stack>
