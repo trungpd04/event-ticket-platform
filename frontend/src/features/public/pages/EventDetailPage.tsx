@@ -16,17 +16,7 @@ import { useIntl } from 'react-intl';
 
 import { getEventDetail } from 'api/events';
 import { EventDetail } from 'types/organizer';
-
-function formatDate(value: string, locale: string, withTime = false) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    ...(withTime ? { timeStyle: 'short' } : {})
-  }).format(new Date(value));
-}
-
-function formatMoney(value: number, locale: string) {
-  return `${value.toLocaleString(locale)} VND`;
-}
+import { formatCurrency, formatDateTime, formatLocation } from 'utils/format';
 
 export default function EventDetailPage() {
   const intl = useIntl();
@@ -94,7 +84,7 @@ export default function EventDetailPage() {
   }
 
   const eventImage = event.bannerUrl || event.thumbnailUrl;
-  const venue = [event.location, event.ward?.name, event.province?.name].filter(Boolean).join(', ');
+  const venue = formatLocation(event.location, event.ward?.name, event.province?.name);
 
   return (
     <Box sx={{ bgcolor: '#0b0b0c', color: 'common.white', pb: { xs: 8, md: 14 } }}>
@@ -130,8 +120,8 @@ export default function EventDetailPage() {
                     <Typography variant="caption" color="rgba(255,255,255,.55)">
                       {intl.formatMessage({ id: 'eventDetail.date', defaultMessage: 'Date and time' })}
                     </Typography>
-                    <Typography>{formatDate(event.startTime, intl.locale, true)}</Typography>
-                    <Typography color="rgba(255,255,255,.62)">→ {formatDate(event.endTime, intl.locale, true)}</Typography>
+                    <Typography>{formatDateTime(event.startTime, intl.locale)}</Typography>
+                    <Typography color="rgba(255,255,255,.62)">→ {formatDateTime(event.endTime, intl.locale)}</Typography>
                   </Box>
                 </Stack>
                 <Stack direction="row" spacing={1.2} alignItems="center">
@@ -174,7 +164,7 @@ export default function EventDetailPage() {
                             </Typography>
                           </Box>
                           <Typography sx={{ color: '#d580f2', fontSize: 20, fontWeight: 800 }}>
-                            {formatMoney(Number(ticket.price), intl.locale)}
+                            {formatCurrency(Number(ticket.price), intl.locale)}
                           </Typography>
                         </Stack>
                       </CardContent>
@@ -195,7 +185,7 @@ export default function EventDetailPage() {
                       <Typography variant="caption" color="rgba(255,255,255,.55)">
                         {intl.formatMessage({ id: 'eventDetail.ticketSale', defaultMessage: 'Ticket sale' })}
                       </Typography>
-                      <Typography>{formatDate(event.ticketSaleEndTime, intl.locale, true)}</Typography>
+                      <Typography>{formatDateTime(event.ticketSaleEndTime, intl.locale)}</Typography>
                     </Box>
                   </Stack>
                   <Divider sx={{ borderColor: '#302c32' }} />

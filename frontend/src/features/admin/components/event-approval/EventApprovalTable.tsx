@@ -9,6 +9,7 @@ import { ArrowRight2, Calendar, Location, Tag } from 'iconsax-reactjs';
 import AdminCard from 'features/admin/components/AdminCard';
 import StatusBadge from 'features/admin/components/StatusBadge';
 import { AdminEvent } from 'features/admin/types/admin';
+import { formatDateTime } from 'utils/format';
 
 interface EventApprovalTableProps {
   events: AdminEvent[];
@@ -47,7 +48,7 @@ export default function EventApprovalTable({ events }: EventApprovalTableProps) 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} color="secondary.800">
               <Stack direction="row" spacing={1} alignItems="center">
                 <Calendar size={18} />
-                <Typography variant="body2">{new Date(event.startTime).toLocaleString(intl.locale)}</Typography>
+                <Typography variant="body2">{formatDateTime(event.startTime, intl.locale)}</Typography>
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center">
                 <Location size={18} />
