@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,6 +25,12 @@ public class Order extends BaseEntity {
 
     @Column(name = "promotion_id")
     private Long promotionId;
+
+    @Column(name = "promotion_discount_percent", precision = 5, scale = 2)
+    private BigDecimal promotionDiscountPercent;
+
+    @Column(name = "promotion_max_discount")
+    private Long promotionMaxDiscount;
 
     @Column(name = "order_code", nullable = false, unique = true, length = 50)
     private String orderCode;
