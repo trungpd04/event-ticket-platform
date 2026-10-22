@@ -1,8 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 
-// third-party
-import { jwtDecode } from 'jwt-decode';
-
 // reducer - state management
 import { LOGIN, LOGOUT } from 'contexts/auth-reducer/actions';
 import authReducer from 'contexts/auth-reducer/auth';
@@ -13,7 +10,6 @@ import axios, { redirectWithBasePath } from 'utils/axios';
 
 // types
 import { AuthProps, JWTContextType } from 'types/auth';
-import { KeyedObject } from 'types/root';
 
 // constant
 const initialState: AuthProps = {
@@ -24,14 +20,6 @@ const initialState: AuthProps = {
 
 const ACCESS_TOKEN_KEY = 'serviceToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
-
-const verifyToken: (st: string) => boolean = (serviceToken) => {
-  if (!serviceToken) {
-    return false;
-  }
-  const decoded: KeyedObject = jwtDecode(serviceToken);
-  return decoded.exp > Date.now() / 1000;
-};
 
 const setSession = (accessToken?: string | null, refreshToken?: string | null) => {
   if (accessToken) {
@@ -60,7 +48,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const init = async () => {
       try {
         const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
-        if (accessToken && verifyToken(accessToken)) {
+        const refreshToken = window.localStorage.getItem(REFRESH_TOKEN_KEY);
+
+        if (accessToken || refreshToken) {
           setSession(accessToken);
           const response = await axios.get('/api/v1/users/me');
           const user = response.data;

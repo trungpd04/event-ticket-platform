@@ -55,7 +55,10 @@ axiosServices.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest.headers.get('X-Retry')) {
+    const requestUrl = originalRequest.url || '';
+    const isAuthRequest = requestUrl.includes('/api/v1/auth/');
+
+    if (error.response?.status === 401 && !isAuthRequest && !originalRequest.headers.get('X-Retry')) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject, config: originalRequest });
@@ -68,6 +71,7 @@ axiosServices.interceptors.response.use(
       const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 
       if (!refreshToken) {
+        isRefreshing = false;
         redirectWithBasePath('/login');
         return Promise.reject(error);
       }
@@ -76,12 +80,16 @@ axiosServices.interceptors.response.use(
         const response = await refreshClient.post('/api/v1/auth/refresh', { refreshToken });
         const data = response.data?.data ?? response.data;
         const accessToken = data?.accessToken;
+        const nextRefreshToken = data?.refreshToken;
 
         if (!accessToken) {
           throw new Error('Refresh token response did not contain accessToken');
         }
 
         localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+        if (nextRefreshToken) {
+          localStorage.setItem(REFRESH_TOKEN_KEY, nextRefreshToken);
+        }
         originalRequest.headers.set('Authorization', `Bearer ${accessToken}`);
         processQueue(null, accessToken);
         return axiosServices(originalRequest);
