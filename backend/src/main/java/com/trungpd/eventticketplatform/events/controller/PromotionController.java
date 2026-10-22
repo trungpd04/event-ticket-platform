@@ -29,10 +29,10 @@ public class PromotionController {
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<PromotionResponse>> createPromotion(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long eventId,
             @Valid @RequestBody PromotionRequest request) {
-        PromotionResponse response = promotionService.createPromotion(email, eventId, request);
+        PromotionResponse response = promotionService.createPromotion(userId, eventId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 

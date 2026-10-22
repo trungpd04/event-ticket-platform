@@ -32,8 +32,8 @@ public class FavoriteService {
     private final PaginationMapper paginationMapper;
 
     @Transactional
-    public void addFavorite(String email, Long eventId) {
-        User user = userService.findByEmail(email);
+    public void addFavorite(Long userId, Long eventId) {
+        User user = userService.findById(userId);
         validateEventExists(eventId);
 
         if (favoriteRepository.existsByCustomerIdAndEventId(user.getId(), eventId)) {
@@ -47,16 +47,16 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void removeFavorite(String email, Long eventId) {
-        User user = userService.findByEmail(email);
+    public void removeFavorite(Long userId, Long eventId) {
+        User user = userService.findById(userId);
         Favorite favorite = favoriteRepository.findByCustomerIdAndEventId(user.getId(), eventId)
                 .orElseThrow(() -> new NotFoundException("error.favorite.not-found"));
         favoriteRepository.delete(favorite);
     }
 
     @Transactional(readOnly = true)
-    public PagedResponse<EventResponse> getFavorites(String email, int page, int size) {
-        User user = userService.findByEmail(email);
+    public PagedResponse<EventResponse> getFavorites(Long userId, int page, int size) {
+        User user = userService.findById(userId);
         Pageable pageable = PageRequest.of(page, size, Sort.by("f.createdAt").descending());
         Page<Event> events = favoriteRepository.findFavoriteEventsByCustomerId(user.getId(), pageable);
         Page<EventResponse> responsePage = events

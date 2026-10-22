@@ -30,8 +30,8 @@ public class PromotionService {
     private final UserService userService;
 
     @Transactional
-    public PromotionResponse createPromotion(String email, Long eventId, PromotionRequest request) {
-        User user = userService.findByEmail(email);
+    public PromotionResponse createPromotion(Long userId, Long eventId, PromotionRequest request) {
+        User user = userService.findById(userId);
         Event event = eventService.findEventById(eventId);
 
         validateEventOwnership(event, user.getId());

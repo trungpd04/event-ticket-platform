@@ -62,4 +62,14 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             """, nativeQuery = true)
     int countTakeable(@Param("ticketTypeId") Long ticketTypeId, @Param("eventId") Long eventId);
 
+    List<Ticket> findByOrderDetailIdIn(List<Long> orderDetailIds);
+
+    @Modifying
+    @Query("UPDATE Ticket t SET t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.PAID, t.reservedUntil = NULL WHERE t.orderDetailId IN :ids AND t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.RESERVED")
+    int markPaidByOrderDetailIds(@Param("ids") List<Long> ids);
+
+    @Modifying
+    @Query("UPDATE Ticket t SET t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.AVAILABLE, t.reservedUntil = NULL, t.orderDetailId = NULL WHERE t.orderDetailId IN :ids AND t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.RESERVED")
+    int releaseTicketsByOrderDetailIds(@Param("ids") List<Long> ids);
+
 }

@@ -38,9 +38,9 @@ public class EventController {
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<EventResponse>> createEvent(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody CreateEventRequest request) {
-        EventResponse response = eventService.createEvent(email, request);
+        EventResponse response = eventService.createEvent(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 
@@ -74,10 +74,10 @@ public class EventController {
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<EventResponse>> updateEvent(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long id,
             @Valid @RequestBody UpdateEventRequest request) {
-        EventResponse response = eventService.updateEvent(email, id, request);
+        EventResponse response = eventService.updateEvent(userId, id, request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -85,9 +85,9 @@ public class EventController {
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<EventResponse>> requestPublish(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long id) {
-        EventResponse response = eventService.requestPublish(email, id);
+        EventResponse response = eventService.requestPublish(userId, id);
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", response));
     }
 
@@ -95,11 +95,11 @@ public class EventController {
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> getOrganizerEvents(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        PagedResponse<EventResponse> response = eventService.getOrganizerEvents(email, pageable);
+        PagedResponse<EventResponse> response = eventService.getOrganizerEvents(userId, pageable);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

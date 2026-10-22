@@ -22,16 +22,16 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(@AuthenticationPrincipal String email) {
-        UserResponse response = userService.getCurrentUser(email);
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(@AuthenticationPrincipal Long userId) {
+        UserResponse response = userService.getCurrentUser(userId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PutMapping("/me")
     public ResponseEntity<ApiResponse<UserResponse>> updateProfile(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody UpdateProfileRequest request) {
-        UserResponse response = userService.updateProfile(email, request);
+        UserResponse response = userService.updateProfile(userId, request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

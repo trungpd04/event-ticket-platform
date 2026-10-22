@@ -78,8 +78,8 @@ public class EventService {
     private final FileUploadService fileUploadService;
 
     @Transactional
-    public EventResponse createEvent(String email, CreateEventRequest request) {
-        User user = userService.findByEmail(email);
+    public EventResponse createEvent(Long userId, CreateEventRequest request) {
+        User user = userService.findById(userId);
 
         validateEventTimes(request.getStartTime(), request.getEndTime());
         validateTicketSalePeriod(
@@ -227,8 +227,8 @@ public class EventService {
 
     @CacheEvict(value = "events", key = "#id")
     @Transactional
-    public EventResponse updateEvent(String email, Long id, UpdateEventRequest request) {
-        User user = userService.findByEmail(email);
+    public EventResponse updateEvent(Long userId, Long id, UpdateEventRequest request) {
+        User user = userService.findById(userId);
         Event event = findEventById(id);
 
         validateEventOwnership(event, user.getId());
@@ -310,8 +310,8 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponse requestPublish(String email, Long id) {
-        User user = userService.findByEmail(email);
+    public EventResponse requestPublish(Long userId, Long id) {
+        User user = userService.findById(userId);
         Event event = findEventById(id);
 
         validateEventOwnership(event, user.getId());
@@ -409,8 +409,8 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public PagedResponse<EventResponse> getOrganizerEvents(String email, Pageable pageable) {
-        User user = userService.findByEmail(email);
+    public PagedResponse<EventResponse> getOrganizerEvents(Long userId, Pageable pageable) {
+        User user = userService.findById(userId);
         Page<Event> page = eventRepository.findByOrganizerId(user.getId(), pageable);
         Page<EventResponse> responsePage = page.map(eventMapper::toResponse).map(this::enrichEventResponse);
         return paginationMapper.toPagedResponse(responsePage);

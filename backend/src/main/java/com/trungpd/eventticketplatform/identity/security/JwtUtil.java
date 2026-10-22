@@ -3,20 +3,19 @@ package com.trungpd.eventticketplatform.identity.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class JwtUtil {
 
     private final SecretKey secretKey;
+    @Getter
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
 
@@ -29,20 +28,21 @@ public class JwtUtil {
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public String generateAccessToken(String email, Collection<String> roles) {
-        return buildToken(email, roles, accessTokenExpiration);
+    public String generateAccessToken(Long userId, Collection<String> roles) {
+        return buildToken(userId, roles, accessTokenExpiration);
     }
 
-    public String generateRefreshToken(String email) {
-        return buildToken(email, Collections.emptyList(), refreshTokenExpiration);
+    public String generateRefreshToken(Long userId) {
+        return buildToken(userId, Collections.emptyList(), refreshTokenExpiration);
     }
 
-    private String buildToken(String email, Collection<String> roles, long expiration) {
+    private String buildToken(Long userId, Collection<String> roles, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         var builder = Jwts.builder()
-                .subject(email)
+                .id(UUID.randomUUID().toString())
+                .subject(String.valueOf(userId))
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .claim("roles", roles)
@@ -59,8 +59,8 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
+    public Long extractSubject(String token) {
+        return Long.valueOf(extractClaims(token).getSubject());
     }
 
     @SuppressWarnings("unchecked")
@@ -75,10 +75,6 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public long getAccessTokenExpiration() {
-        return accessTokenExpiration;
     }
 
 }

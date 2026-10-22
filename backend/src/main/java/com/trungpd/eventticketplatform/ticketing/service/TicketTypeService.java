@@ -28,8 +28,8 @@ public class TicketTypeService {
     private final UserService userService;
 
     @Transactional
-    public TicketTypeResponse createTicketType(String email, Long eventId, CreateTicketTypeRequest request) {
-        User user = userService.findByEmail(email);
+    public TicketTypeResponse createTicketType(Long userId, Long eventId, CreateTicketTypeRequest request) {
+        User user = userService.findById(userId);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
 
@@ -73,8 +73,8 @@ public class TicketTypeService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketTypeResponse> findOrganizerTicketTypes(String email, Long eventId) {
-        User user = userService.findByEmail(email);
+    public List<TicketTypeResponse> findOrganizerTicketTypes(Long userId, Long eventId) {
+        User user = userService.findById(userId);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
         if (!event.getOrganizerId().equals(user.getId())) {

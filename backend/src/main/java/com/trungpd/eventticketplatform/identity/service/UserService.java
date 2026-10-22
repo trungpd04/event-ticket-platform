@@ -24,14 +24,20 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getCurrentUser(String email) {
-        User user = findByEmail(email);
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("error.user.not-found"));
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser(Long userId) {
+        User user = findById(userId);
         return userMapper.toResponse(user);
     }
 
     @Transactional
-    public UserResponse updateProfile(String email, UpdateProfileRequest request) {
-        User user = findByEmail(email);
+    public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
+        User user = findById(userId);
         userMapper.updateEntityFromRequest(request, user);
         User savedUser = userRepository.save(user);
         return userMapper.toResponse(savedUser);

@@ -26,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final CustomAccessTokenEntryPoint customAccessTokenEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,6 +50,7 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandler -> exceptionHandler.authenticationEntryPoint(customAccessTokenEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
