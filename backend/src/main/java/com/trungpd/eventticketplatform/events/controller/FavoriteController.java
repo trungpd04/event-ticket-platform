@@ -25,9 +25,9 @@ public class FavoriteController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Void>> addFavorite(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long id) {
-        favoriteService.addFavorite(email, id);
+        favoriteService.addFavorite(userId, id);
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
     }
 
@@ -35,9 +35,9 @@ public class FavoriteController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Void>> removeFavorite(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long id) {
-        favoriteService.removeFavorite(email, id);
+        favoriteService.removeFavorite(userId, id);
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
     }
 
@@ -46,10 +46,10 @@ public class FavoriteController {
     @SecurityRequirement(name = "bearerAuth")
     @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> getFavorites(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PagedResponse<EventResponse> response = favoriteService.getFavorites(email, page, size);
+        PagedResponse<EventResponse> response = favoriteService.getFavorites(userId, page, size);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

@@ -28,9 +28,9 @@ public class TicketReservationController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<ReserveTicketResponse>> reserveTickets(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody ReserveTicketRequest request) {
-        ReserveTicketResponse response = ticketService.reserveTickets(email, request);
+        ReserveTicketResponse response = ticketService.reserveTickets(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 
@@ -38,9 +38,9 @@ public class TicketReservationController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Void>> releaseTickets(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody ReleaseTicketRequest request) {
-        ticketService.releaseTickets(email, request.getReservationId());
+        ticketService.releaseTickets(userId, request.getReservationId());
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
     }
 

@@ -21,15 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 
     private final FileUploadService fileUploadService;
+    private final com.trungpd.eventticketplatform.identity.service.UserService userService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ORGANIZER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<FileUploadResponse>> upload(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @RequestParam("file") MultipartFile file,
             @RequestParam("type") Integer type) {
-        FileUploadResponse response = fileUploadService.upload(file, type, email);
+        FileUploadResponse response = fileUploadService.upload(file, type, userService.findById(userId).getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 }

@@ -30,42 +30,42 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiResponse<OrderResponse>> create(
-            @AuthenticationPrincipal String email, @Valid @RequestBody CreateOrderRequest request) {
+            @AuthenticationPrincipal Long userId, @Valid @RequestBody CreateOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(orderService.createFromReservation(email, request)));
+                .body(ApiResponse.success(orderService.createFromReservation(userId, request)));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ORGANIZER', 'ADMIN')")
     public ResponseEntity<ApiResponse<OrderResponse>> get(
-            @AuthenticationPrincipal String email, @PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(orderService.get(email, id)));
+            @AuthenticationPrincipal Long userId, @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(orderService.get(userId, id)));
     }
 
     @GetMapping("/my-orders")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiResponse<PagedResponse<OrderResponse>>> mine(
-            @AuthenticationPrincipal String email,
+            @AuthenticationPrincipal Long userId,
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(ApiResponse.success(orderService.myOrders(email, status, page, size)));
+        return ResponseEntity.ok(ApiResponse.success(orderService.myOrders(userId, status, page, size)));
     }
 
     @PostMapping("/{id}/mock-pay")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiResponse<MockPaymentResponse>> pay(
-            @AuthenticationPrincipal String email, @PathVariable Long id,
+            @AuthenticationPrincipal Long userId, @PathVariable Long id,
             @RequestBody(required = false) MockPaymentRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(orderService.mockPay(email, id,
+        return ResponseEntity.ok(ApiResponse.success(orderService.mockPay(userId, id,
                 request == null ? new MockPaymentRequest() : request)));
     }
 
     @PostMapping("/{id}/cancel")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiResponse<Void>> cancel(
-            @AuthenticationPrincipal String email, @PathVariable Long id) {
-        orderService.cancel(email, id);
+            @AuthenticationPrincipal Long userId, @PathVariable Long id) {
+        orderService.cancel(userId, id);
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
     }
 }

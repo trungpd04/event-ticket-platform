@@ -71,11 +71,11 @@ public class AuthService {
             throw new BusinessException("error.auth.invalid-token");
         }
 
-        String email = jwtUtil.extractEmail(refreshToken);
-        User user = userRepository.findByEmail(email)
+        Long userId = jwtUtil.extractSubject(refreshToken);
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("error.auth.invalid-token"));
 
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), extractRoleNames(user));
+        String accessToken = jwtUtil.generateAccessToken(user.getId(), extractRoleNames(user));
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
@@ -111,8 +111,8 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), extractRoleNames(user));
-        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+        String accessToken = jwtUtil.generateAccessToken(user.getId(), extractRoleNames(user));
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
         return AuthResponse.builder()
                 .accessToken(accessToken)

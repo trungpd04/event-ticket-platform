@@ -82,8 +82,8 @@ public class TicketService {
     }
 
     @Transactional
-    public ReserveTicketResponse reserveTickets(String email, ReserveTicketRequest request) {
-        User user = userService.findByEmail(email);
+    public ReserveTicketResponse reserveTickets(Long userId, ReserveTicketRequest request) {
+        User user = userService.findById(userId);
         Event event = eventRepository.findById(request.getEventId())
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
 
@@ -221,8 +221,8 @@ public class TicketService {
     }
 
     @Transactional
-    public void releaseTickets(String email, String reservationId) {
-        User user = userService.findByEmail(email);
+    public void releaseTickets(Long userId, String reservationId) {
+        User user = userService.findById(userId);
         Order order = orderRepository.findByOrderCode(reservationId)
                 .orElseThrow(() -> new NotFoundException("error.order.not-found"));
 

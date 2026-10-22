@@ -19,21 +19,21 @@ class JwtUtilTest {
 
     @Test
     void shouldGenerateAndValidateAccessToken() {
-        String token = jwtUtil.generateAccessToken("test@example.com", Set.of("CUSTOMER", "ORGANIZER"));
+        String token = jwtUtil.generateAccessToken(1L, Set.of("CUSTOMER", "ORGANIZER"));
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
-        assertThat(jwtUtil.extractEmail(token)).isEqualTo("test@example.com");
+        assertThat(jwtUtil.extractSubject(token)).isEqualTo("1");
         assertThat(jwtUtil.extractRoles(token)).containsExactlyInAnyOrder("CUSTOMER", "ORGANIZER");
     }
 
     @Test
     void shouldGenerateAndValidateRefreshToken() {
-        String token = jwtUtil.generateRefreshToken("test@example.com");
+        String token = jwtUtil.generateRefreshToken(1L);
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
-        assertThat(jwtUtil.extractEmail(token)).isEqualTo("test@example.com");
+        assertThat(jwtUtil.extractSubject(token)).isEqualTo("1");
         assertThat(jwtUtil.extractRoles(token)).isEmpty();
     }
 

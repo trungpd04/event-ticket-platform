@@ -61,8 +61,8 @@ public class OrderService {
     private final PaginationMapper paginationMapper;
 
     @Transactional
-    public OrderResponse createFromReservation(String email, CreateOrderRequest request) {
-        User user = userService.findByEmail(email);
+    public OrderResponse createFromReservation(Long userId, CreateOrderRequest request) {
+        User user = userService.findById(userId);
         Order order = orderRepository.findByOrderCode(request.getReservationId())
                 .orElseThrow(() -> new NotFoundException("error.order.not-found"));
         validateOwner(order, user.getId());
@@ -74,8 +74,8 @@ public class OrderService {
     }
 
     @Transactional
-    public MockPaymentResponse mockPay(String email, Long orderId, MockPaymentRequest request) {
-        User user = userService.findByEmail(email);
+    public MockPaymentResponse mockPay(Long userId, Long orderId, MockPaymentRequest request) {
+        User user = userService.findById(userId);
         Order order = findOwned(orderId, user.getId());
         validatePending(order);
         validateNotExpired(order);
@@ -130,8 +130,8 @@ public class OrderService {
     }
 
     @Transactional
-    public void cancel(String email, Long orderId) {
-        User user = userService.findByEmail(email);
+    public void cancel(Long userId, Long orderId) {
+        User user = userService.findById(userId);
         Order order = findOwned(orderId, user.getId());
         validatePending(order);
         validateNotExpired(order);
@@ -141,15 +141,15 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderResponse get(String email, Long orderId) {
-        User user = userService.findByEmail(email);
+    public OrderResponse get(Long userId, Long orderId) {
+        User user = userService.findById(userId);
         Order order = findAccessible(orderId, user);
         return toResponse(order);
     }
 
     @Transactional(readOnly = true)
-    public PagedResponse<OrderResponse> myOrders(String email, OrderStatus status, int page, int size) {
-        User user = userService.findByEmail(email);
+    public PagedResponse<OrderResponse> myOrders(Long userId, OrderStatus status, int page, int size) {
+        User user = userService.findById(userId);
         Pageable pageable = PageRequest.of(page, size);
         Page<Order> orders = status == null
                 ? orderRepository.findByCustomerId(user.getId(), pageable)
