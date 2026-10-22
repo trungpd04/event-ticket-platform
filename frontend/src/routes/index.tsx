@@ -5,9 +5,12 @@ import MainRoutes from './MainRoutes';
 import LoginRoutes from './LoginRoutes';
 import OrganizerRoutes from './OrganizerRoutes';
 import PublicRoutes from './PublicRoutes';
+import AdminRoutes from './AdminRoutes';
 
 // ==============================|| ROUTES RENDER ||============================== //
 
-const router = createBrowserRouter([PublicRoutes, LoginRoutes, OrganizerRoutes, MainRoutes], { basename: import.meta.env.VITE_APP_BASE_NAME });
+const router = createBrowserRouter([PublicRoutes, LoginRoutes, OrganizerRoutes, AdminRoutes, MainRoutes], {
+  basename: import.meta.env.VITE_APP_BASE_NAME
+});
 
 export default router;
