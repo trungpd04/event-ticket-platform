@@ -142,13 +142,13 @@ class TicketServiceRefillTest {
 
     @Test
     void reserveTickets_poolSufficient_noLockNoInsert() {
-        when(userService.findByEmail("a@b.c")).thenReturn(user);
+        when(userService.findById(1L)).thenReturn(user);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(ticketTypeRepository.findById(10L)).thenReturn(Optional.of(ticketType));
         stubOrderFlow();
         stubPoolSufficient(2);
 
-        ReserveTicketResponse response = ticketService.reserveTickets("a@b.c", request(2));
+        ReserveTicketResponse response = ticketService.reserveTickets(1L, request(2));
 
         assertEquals(2, response.getItems().get(0).getQuantity());
         assertEquals(200000L, response.getTotalAmount());
@@ -159,7 +159,7 @@ class TicketServiceRefillTest {
 
     @Test
     void reserveTickets_poolEmpty_refillsThenTakes() {
-        when(userService.findByEmail("a@b.c")).thenReturn(user);
+        when(userService.findById(1L)).thenReturn(user);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(ticketTypeRepository.findById(10L)).thenReturn(Optional.of(ticketType));
         stubOrderFlow();
@@ -171,7 +171,7 @@ class TicketServiceRefillTest {
         when(ticketTypeRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(ticketType));
         when(ticketTypeRepository.decrementAvailableQuantity(10L, 500)).thenReturn(1);
 
-        ReserveTicketResponse response = ticketService.reserveTickets("a@b.c", request(2));
+        ReserveTicketResponse response = ticketService.reserveTickets(1L, request(2));
 
         assertEquals(2, response.getItems().get(0).getQuantity());
         verify(ticketPoolJdbcDao).insertAvailableBatch(10L, 1L, 500);
@@ -180,7 +180,7 @@ class TicketServiceRefillTest {
 
     @Test
     void reserveTickets_afterLockTakeableEnough_skipsInsert() {
-        when(userService.findByEmail("a@b.c")).thenReturn(user);
+        when(userService.findById(1L)).thenReturn(user);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(ticketTypeRepository.findById(10L)).thenReturn(Optional.of(ticketType));
         stubOrderFlow();
@@ -191,7 +191,7 @@ class TicketServiceRefillTest {
         when(ticketRepository.countTakeable(10L, 1L)).thenReturn(2);
         when(ticketTypeRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(ticketType));
 
-        ReserveTicketResponse response = ticketService.reserveTickets("a@b.c", request(2));
+        ReserveTicketResponse response = ticketService.reserveTickets(1L, request(2));
 
         assertEquals(2, response.getItems().get(0).getQuantity());
         verify(ticketPoolJdbcDao, never()).insertAvailableBatch(anyLong(), anyLong(), anyInt());
@@ -200,7 +200,7 @@ class TicketServiceRefillTest {
 
     @Test
     void reserveTickets_ledgerZero_throwsNotEnough() {
-        when(userService.findByEmail("a@b.c")).thenReturn(user);
+        when(userService.findById(1L)).thenReturn(user);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(ticketTypeRepository.findById(10L)).thenReturn(Optional.of(ticketType));
         stubOrderFlow();
@@ -212,7 +212,7 @@ class TicketServiceRefillTest {
         when(ticketTypeRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(ticketType));
 
         BusinessException ex = assertThrows(BusinessException.class,
-                () -> ticketService.reserveTickets("a@b.c", request(2)));
+                () -> ticketService.reserveTickets(1L, request(2)));
 
         assertEquals("error.ticket.not-enough", ex.getMessageKey());
         verify(ticketPoolJdbcDao, never()).insertAvailableBatch(anyLong(), anyLong(), anyInt());
