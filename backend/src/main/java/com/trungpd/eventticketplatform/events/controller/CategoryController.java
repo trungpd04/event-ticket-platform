@@ -2,7 +2,7 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
-import com.trungpd.eventticketplatform.events.service.CategoryService;
+import com.trungpd.eventticketplatform.events.service.ICategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @Tag(name = "Category", description = "API danh mục sự kiện công khai")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryResponse>>> getActiveCategories() {

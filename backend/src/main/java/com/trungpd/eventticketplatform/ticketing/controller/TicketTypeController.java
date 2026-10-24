@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.response.ResponseViews;
 import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
 import com.trungpd.eventticketplatform.ticketing.dto.response.TicketTypeResponse;
-import com.trungpd.eventticketplatform.ticketing.service.TicketTypeService;
+import com.trungpd.eventticketplatform.ticketing.service.ITicketTypeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ import java.util.List;
 @Tag(name = "Ticket Type", description = "API quản lý hạng vé")
 public class TicketTypeController {
 
-    private final TicketTypeService ticketTypeService;
+    private final ITicketTypeService ticketTypeService;
 
     @PostMapping
     @PreAuthorize("hasRole('ORGANIZER')")

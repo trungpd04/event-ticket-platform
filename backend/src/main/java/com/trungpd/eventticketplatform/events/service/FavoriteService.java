@@ -11,7 +11,7 @@ import com.trungpd.eventticketplatform.events.mapper.EventMapper;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.events.repository.FavoriteRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,13 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FavoriteService {
+public class FavoriteService implements IFavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final EventService eventService;
-    private final UserService userService;
+    private final IEventService eventService;
+    private final IUserService userService;
     private final PaginationMapper paginationMapper;
 
     @Transactional

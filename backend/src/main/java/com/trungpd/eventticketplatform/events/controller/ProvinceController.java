@@ -3,8 +3,8 @@ package com.trungpd.eventticketplatform.events.controller;
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.response.ProvinceResponse;
 import com.trungpd.eventticketplatform.events.dto.response.WardResponse;
-import com.trungpd.eventticketplatform.events.service.ProvinceService;
-import com.trungpd.eventticketplatform.events.service.WardService;
+import com.trungpd.eventticketplatform.events.service.IProvinceService;
+import com.trungpd.eventticketplatform.events.service.IWardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import java.util.List;
 @Tag(name = "Location", description = "API địa điểm tỉnh/thành và quận/huyện")
 public class ProvinceController {
 
-    private final ProvinceService provinceService;
-    private final WardService wardService;
+    private final IProvinceService provinceService;
+    private final IWardService wardService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProvinceResponse>>> getAllProvinces() {

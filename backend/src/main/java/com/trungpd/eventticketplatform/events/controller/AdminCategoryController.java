@@ -3,7 +3,7 @@ package com.trungpd.eventticketplatform.events.controller;
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CategoryRequest;
 import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
-import com.trungpd.eventticketplatform.events.service.CategoryService;
+import com.trungpd.eventticketplatform.events.service.ICategoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Admin Category", description = "API quản lý danh mục sự kiện")
 public class AdminCategoryController {
 
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {

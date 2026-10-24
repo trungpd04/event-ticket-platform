@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.ticketing.dto.request.ReleaseTicketReques
 import com.trungpd.eventticketplatform.ticketing.dto.request.ReserveTicketRequest;
 import com.trungpd.eventticketplatform.ticketing.dto.response.ReserveTicketResponse;
 import com.trungpd.eventticketplatform.ticketing.dto.response.TicketStatusResponse;
-import com.trungpd.eventticketplatform.ticketing.service.TicketService;
+import com.trungpd.eventticketplatform.ticketing.service.ITicketService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Ticket Reservation", description = "API giữ chỗ và hủy giữ vé")
 public class TicketReservationController {
 
-    private final TicketService ticketService;
+    private final ITicketService ticketService;
 
     @PostMapping("/reserve")
     @PreAuthorize("hasRole('CUSTOMER')")

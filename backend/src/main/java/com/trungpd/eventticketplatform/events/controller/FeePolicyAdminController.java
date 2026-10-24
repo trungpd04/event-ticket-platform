@@ -3,7 +3,7 @@ package com.trungpd.eventticketplatform.events.controller;
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.request.FeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.response.FeePolicyResponse;
-import com.trungpd.eventticketplatform.events.service.FeePolicyService;
+import com.trungpd.eventticketplatform.events.service.IFeePolicyService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Fee Policy", description = "API quản lý gói cước")
 public class FeePolicyAdminController {
 
-    private final FeePolicyService feePolicyService;
+    private final IFeePolicyService feePolicyService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<FeePolicyResponse>>> getAllFeePolicies() {

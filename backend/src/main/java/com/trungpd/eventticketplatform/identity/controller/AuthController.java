@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.identity.dto.request.*;
 import com.trungpd.eventticketplatform.identity.dto.response.AuthResponse;
 import com.trungpd.eventticketplatform.identity.dto.response.TokenResponse;
 import com.trungpd.eventticketplatform.identity.dto.response.UserResponse;
-import com.trungpd.eventticketplatform.identity.service.AuthService;
+import com.trungpd.eventticketplatform.identity.service.IAuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth", description = "API xác thực ngưởi dùng")
 public class AuthController {
 
-    private final AuthService authService;
+    private final IAuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {

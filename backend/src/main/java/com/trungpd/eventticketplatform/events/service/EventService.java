@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.common.mapper.PaginationMapper;
 import com.trungpd.eventticketplatform.common.storage.entity.FileEntity;
 import com.trungpd.eventticketplatform.common.storage.enums.FileType;
-import com.trungpd.eventticketplatform.common.storage.service.FileUploadService;
+import com.trungpd.eventticketplatform.common.storage.service.IFileUploadService;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
@@ -31,12 +31,12 @@ import com.trungpd.eventticketplatform.events.repository.EventSettingRepository;
 import com.trungpd.eventticketplatform.events.repository.PromotionRepository;
 import com.trungpd.eventticketplatform.events.specification.EventSpecification;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
 import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
 import com.trungpd.eventticketplatform.ticketing.mapper.TicketTypeMapper;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
-import com.trungpd.eventticketplatform.ticketing.service.TicketService;
+import com.trungpd.eventticketplatform.ticketing.service.ITicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -54,7 +54,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class EventService {
+public class EventService implements IEventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
@@ -62,20 +62,20 @@ public class EventService {
     private final EventSettingMapper eventSettingMapper;
     private final EventPayoutInfoRepository eventPayoutInfoRepository;
     private final EventPayoutInfoMapper eventPayoutInfoMapper;
-    private final FeePolicyService feePolicyService;
-    private final CategoryService categoryService;
-    private final ProvinceService provinceService;
-    private final WardService wardService;
+    private final IFeePolicyService feePolicyService;
+    private final ICategoryService categoryService;
+    private final IProvinceService provinceService;
+    private final IWardService wardService;
     private final CategoryMapper categoryMapper;
     private final LocationMapper locationMapper;
     private final TicketTypeRepository ticketTypeRepository;
     private final TicketTypeMapper ticketTypeMapper;
     private final PromotionRepository promotionRepository;
     private final PromotionMapper promotionMapper;
-    private final UserService userService;
-    private final TicketService ticketService;
+    private final IUserService userService;
+    private final ITicketService ticketService;
     private final PaginationMapper paginationMapper;
-    private final FileUploadService fileUploadService;
+    private final IFileUploadService fileUploadService;
 
     @Transactional
     public EventResponse createEvent(Long userId, CreateEventRequest request) {
@@ -494,7 +494,7 @@ public class EventService {
                 .toList();
     }
 
-    EventResponse enrichEventResponse(EventResponse response) {
+    public EventResponse enrichEventResponse(EventResponse response) {
         if (response == null) {
             return null;
         }

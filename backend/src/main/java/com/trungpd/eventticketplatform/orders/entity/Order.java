@@ -60,4 +60,13 @@ public class Order extends BaseEntity {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
+    @Column(name = "payment_code")
+    private String paymentCode;
+
+    @Column(name = "payment_provider")
+    private String paymentProvider;
+
+    @Column(name = "payment_transaction_id")
+    private Long paymentTransactionId;
+
 }

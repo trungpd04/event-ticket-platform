@@ -12,7 +12,7 @@ import com.trungpd.eventticketplatform.events.entity.Promotion;
 import com.trungpd.eventticketplatform.events.mapper.PromotionMapper;
 import com.trungpd.eventticketplatform.events.repository.PromotionRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +22,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PromotionService {
+public class PromotionService implements IPromotionService {
 
     private final PromotionRepository promotionRepository;
-    private final EventService eventService;
+    private final IEventService eventService;
     private final PromotionMapper promotionMapper;
-    private final UserService userService;
+    private final IUserService userService;
 
     @Transactional
     public PromotionResponse createPromotion(Long userId, Long eventId, PromotionRequest request) {

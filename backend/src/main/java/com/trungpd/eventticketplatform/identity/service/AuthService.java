@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final OtpService otpService;
-    private final EmailService emailService;
+    private final IOtpService otpService;
+    private final IEmailService emailService;
 
     @Transactional
     public UserResponse register(RegisterRequest request) {

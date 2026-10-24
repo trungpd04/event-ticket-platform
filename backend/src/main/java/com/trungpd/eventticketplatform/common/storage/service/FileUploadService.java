@@ -23,9 +23,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileUploadService {
+public class FileUploadService implements IFileUploadService {
 
-    private final FileValidationService fileValidationService;
+    private final IFileValidationService fileValidationService;
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
     private final StorageProperties storageProperties;

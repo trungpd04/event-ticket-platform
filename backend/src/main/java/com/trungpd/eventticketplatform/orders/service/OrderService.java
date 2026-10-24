@@ -10,8 +10,8 @@ import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.events.repository.PromotionRepository;
 import com.trungpd.eventticketplatform.identity.entity.Role;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.EmailService;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IEmailService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.orders.dto.request.CreateOrderRequest;
 import com.trungpd.eventticketplatform.orders.dto.request.MockPaymentRequest;
 import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
@@ -48,16 +48,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class OrderService implements IOrderService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final TicketRepository ticketRepository;
     private final TicketTypeRepository ticketTypeRepository;
-    private final UserService userService;
+    private final IUserService userService;
     private final EventRepository eventRepository;
     private final PromotionRepository promotionRepository;
-    private final EmailService emailService;
+    private final IEmailService emailService;
     private final PaginationMapper paginationMapper;
 
     @Transactional
