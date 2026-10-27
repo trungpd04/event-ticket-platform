@@ -72,3 +72,13 @@ storage:
     api-key: ${CLOUDINARY_API_KEY:}
     api-secret: ${CLOUDINARY_API_SECRET:}
     folder: event-ticket-platform-test
+
+payment:
+  provider: ${PAYMENT_PROVIDER:MOCK}
+  sepay:
+    enabled: ${SEPAY_ENABLED:false}
+    api-key: ${SEPAY_API_KEY:}
+    webhook-secret: ${SEPAY_WEBHOOK_SECRET:}
+    account-number: ${SEPAY_ACCOUNT_NUMBER:}
+    bank-code: ${SEPAY_BANK_CODE:Vietcombank}
+    payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}

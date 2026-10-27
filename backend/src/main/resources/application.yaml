@@ -8,3 +8,13 @@ ticket:
   pool:
     batch-size: 500
     warm-size: 100
+
+payment:
+  provider: ${PAYMENT_PROVIDER:MOCK}
+  sepay:
+    enabled: ${SEPAY_ENABLED:false}
+    api-key: ${SEPAY_API_KEY:}
+    webhook-secret: ${SEPAY_WEBHOOK_SECRET:}
+    account-number: ${SEPAY_ACCOUNT_NUMBER:}
+    bank-code: ${SEPAY_BANK_CODE:Vietcombank}
+    payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}

@@ -157,17 +157,6 @@ public class OrderService implements IOrderService {
         return paginationMapper.toPagedResponse(orders.map(this::toResponse));
     }
 
-    @Scheduled(fixedRate = 60000)
-    @Transactional
-    public void expirePendingOrders() {
-        orderRepository.findByStatusAndExpiredAtBefore(OrderStatus.PENDING_PAYMENT, LocalDateTime.now())
-                .forEach(order -> {
-                    release(order);
-                    order.setStatus(OrderStatus.EXPIRED);
-                    orderRepository.save(order);
-                });
-    }
-
     private void ensureFeesSnapshot(Order order) {
         if (order.getPlatformFee() != null && order.getPlatformFee() > 0
                 && order.getCommissionFee() != null && order.getCommissionFee() > 0) {

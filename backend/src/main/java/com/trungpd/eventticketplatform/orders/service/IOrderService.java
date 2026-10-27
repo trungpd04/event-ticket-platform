@@ -18,6 +18,4 @@ public interface IOrderService {
     OrderResponse get(Long userId, Long orderId);
 
     PagedResponse<OrderResponse> myOrders(Long userId, OrderStatus status, int page, int size);
-
-    void expirePendingOrders();
 }
