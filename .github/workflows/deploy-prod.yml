@@ -64,7 +64,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/trungpd/event-ticket-be:prod
+          tags: ghcr.io/${{ github.actor }}/event-ticket-be:prod
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -93,7 +93,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/trungpd/event-ticket-fe:prod
+          tags: ghcr.io/${{ github.actor }}/event-ticket-fe:prod
           build-args: |
             VITE_APP_API_URL=https://letticket.live
           cache-from: type=gha
@@ -157,13 +157,13 @@ jobs:
             # Restart only the services whose image changed
             if [ "$BACKEND_CHANGED" = "true" ]; then
               echo "Backend changed: pulling and restarting backend-prod"
-              docker pull ghcr.io/trungpd/event-ticket-be:prod
+              docker pull ghcr.io/${{ github.actor }}/event-ticket-be:prod
               docker compose up -d backend-prod
             fi
 
             if [ "$FRONTEND_CHANGED" = "true" ]; then
               echo "Frontend changed: pulling and restarting frontend-prod"
-              docker pull ghcr.io/trungpd/event-ticket-fe:prod
+              docker pull ghcr.io/${{ github.actor }}/event-ticket-fe:prod
               docker compose up -d frontend-prod
             fi
 

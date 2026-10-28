@@ -64,7 +64,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/trungpd/event-ticket-be:test
+          tags: ghcr.io/${{ github.actor }}/event-ticket-be:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -93,7 +93,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/trungpd/event-ticket-fe:test
+          tags: ghcr.io/${{ github.actor }}/event-ticket-fe:test
           build-args: |
             VITE_APP_API_URL=https://test.letticket.live
           cache-from: type=gha
@@ -157,13 +157,13 @@ jobs:
             # Restart only the services whose image changed
             if [ "$BACKEND_CHANGED" = "true" ]; then
               echo "Backend changed: pulling and restarting backend-test"
-              docker pull ghcr.io/trungpd/event-ticket-be:test
+              docker pull ghcr.io/${{ github.actor }}/event-ticket-be:test
               docker compose up -d backend-test
             fi
 
             if [ "$FRONTEND_CHANGED" = "true" ]; then
               echo "Frontend changed: pulling and restarting frontend-test"
-              docker pull ghcr.io/trungpd/event-ticket-fe:test
+              docker pull ghcr.io/${{ github.actor }}/event-ticket-fe:test
               docker compose up -d frontend-test
             fi
 
