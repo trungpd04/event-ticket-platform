@@ -20,14 +20,14 @@ services:
       - event-ticket-network
 
   frontend-test:
-    image: ghcr.io/trungpd/event-ticket-fe:test
+    image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:test
     container_name: event-ticket-frontend-test
     restart: unless-stopped
     networks:
       - event-ticket-network
 
   backend-test:
-    image: ghcr.io/trungpd/event-ticket-be:test
+    image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:test
     container_name: event-ticket-backend-test
     restart: unless-stopped
     environment:
@@ -67,14 +67,14 @@ services:
       retries: 5
 
   frontend-prod:
-    image: ghcr.io/trungpd/event-ticket-fe:prod
+    image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:prod
     container_name: event-ticket-frontend-prod
     restart: unless-stopped
     networks:
       - event-ticket-network
 
   backend-prod:
-    image: ghcr.io/trungpd/event-ticket-be:prod
+    image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:prod
     container_name: event-ticket-backend-prod
     restart: unless-stopped
     environment:
