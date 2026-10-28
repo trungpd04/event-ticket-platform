@@ -53,7 +53,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -100,9 +100,8 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy test services to server
+    name: Deploy test stack to server
     needs: [changes, build-backend, build-frontend]
-    # Run when at least one path changed and no triggered build failed.
     if: |
       always() &&
       needs.changes.result == 'success' &&
@@ -135,16 +134,17 @@ jobs:
             set -e
             cd /opt/event-ticket
 
-            # Create env file with all secrets
+            # Create env file with all secrets (single-quoted values to preserve $ characters)
             cat > .env << 'EOF'
-            DB_PASSWORD_TEST=${{ secrets.DB_PASSWORD_TEST }}
-            DB_PASSWORD_PROD=${{ secrets.DB_PASSWORD_PROD }}
-            JWT_SECRET_TEST=${{ secrets.JWT_SECRET_TEST }}
-            JWT_SECRET_PROD=${{ secrets.JWT_SECRET_PROD }}
-            MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-            ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
-            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+            DB_PASSWORD_TEST='${{ secrets.DB_PASSWORD_TEST }}'
+            DB_PASSWORD_PROD='${{ secrets.DB_PASSWORD_PROD }}'
+            JWT_SECRET_TEST='${{ secrets.JWT_SECRET_TEST }}'
+            JWT_SECRET_PROD='${{ secrets.JWT_SECRET_PROD }}'
+            MAIL_USERNAME='${{ secrets.MAIL_USERNAME }}'
+            MAIL_PASSWORD='${{ secrets.MAIL_PASSWORD }}'
+            ADMIN_EMAIL='${{ secrets.ADMIN_EMAIL }}'
+            ADMIN_PASSWORD='${{ secrets.ADMIN_PASSWORD }}'
+            GHCR_OWNER='${{ github.actor }}'
             EOF
 
             # Login GitHub Container Registry on the server
@@ -154,24 +154,33 @@ jobs:
             FRONTEND_CHANGED="${{ needs.changes.outputs.frontend }}"
             INFRA_CHANGED="${{ needs.changes.outputs.infra }}"
 
-            # Restart only the services whose image changed
-            if [ "$BACKEND_CHANGED" = "true" ]; then
-              echo "Backend changed: pulling and restarting backend-test"
-              docker pull ghcr.io/${{ github.actor }}/event-ticket-be:test
-              docker compose up -d backend-test
-            fi
-
-            if [ "$FRONTEND_CHANGED" = "true" ]; then
-              echo "Frontend changed: pulling and restarting frontend-test"
-              docker pull ghcr.io/${{ github.actor }}/event-ticket-fe:test
-              docker compose up -d frontend-test
-            fi
-
-            # Compose or nginx config changed: apply the whole stack and reload nginx
             if [ "$INFRA_CHANGED" = "true" ]; then
-              echo "Infra changed: applying compose and reloading nginx"
-              docker compose up -d
-              docker compose exec -T nginx nginx -s reload || true
+              # Infra changed: pull all test images first, then apply the whole test stack
+              docker compose pull frontend-test backend-test postgres-test
+              docker compose up -d nginx frontend-test backend-test postgres-test
+            else
+              PULL_SERVICES=""
+              UP_SERVICES="nginx"
+
+              if [ "$BACKEND_CHANGED" = "true" ]; then
+                PULL_SERVICES="$PULL_SERVICES backend-test"
+                UP_SERVICES="$UP_SERVICES backend-test postgres-test"
+              fi
+
+              if [ "$FRONTEND_CHANGED" = "true" ]; then
+                PULL_SERVICES="$PULL_SERVICES frontend-test"
+                UP_SERVICES="$UP_SERVICES frontend-test"
+              fi
+
+              # Pull only changed images first; fail here before touching running containers
+              if [ -n "$PULL_SERVICES" ]; then
+                docker compose pull $PULL_SERVICES
+              fi
+
+              # Apply updated services
+              if [ -n "$UP_SERVICES" ]; then
+                docker compose up -d $UP_SERVICES
+              fi
             fi
 
             # Cleanup unused images
