@@ -157,10 +157,11 @@ jobs:
             if [ "$INFRA_CHANGED" = "true" ]; then
               # Infra changed: pull all production images first, then apply the whole production stack
               docker compose pull frontend-prod backend-prod postgres-prod
-              docker compose up -d nginx frontend-prod backend-prod postgres-prod
+              docker compose up -d frontend-prod backend-prod postgres-prod
+              docker compose up -d --no-deps nginx
             else
               PULL_SERVICES=""
-              UP_SERVICES="nginx"
+              UP_SERVICES=""
 
               if [ "$BACKEND_CHANGED" = "true" ]; then
                 PULL_SERVICES="$PULL_SERVICES backend-prod"
@@ -181,6 +182,9 @@ jobs:
               if [ -n "$UP_SERVICES" ]; then
                 docker compose up -d $UP_SERVICES
               fi
+
+              # Reload nginx config without pulling unrelated test services
+              docker compose up -d --no-deps nginx
             fi
 
             # Cleanup unused images
