@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.common.response.ResponseViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
-import com.trungpd.eventticketplatform.events.service.FavoriteService;
+import com.trungpd.eventticketplatform.events.service.IFavoriteService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Favorite", description = "API quản lý sự kiện yêu thích")
 public class FavoriteController {
 
-    private final FavoriteService favoriteService;
+    private final IFavoriteService favoriteService;
 
     @PostMapping("/api/v1/events/{id}/favorites")
     @PreAuthorize("hasRole('CUSTOMER')")

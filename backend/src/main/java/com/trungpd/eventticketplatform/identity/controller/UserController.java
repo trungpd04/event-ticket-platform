@@ -3,7 +3,7 @@ package com.trungpd.eventticketplatform.identity.controller;
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.identity.dto.request.UpdateProfileRequest;
 import com.trungpd.eventticketplatform.identity.dto.response.UserResponse;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User", description = "API quản lý thông tin cá nhân")
 public class UserController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(@AuthenticationPrincipal Long userId) {

@@ -8,7 +8,7 @@ import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
-import com.trungpd.eventticketplatform.events.service.EventService;
+import com.trungpd.eventticketplatform.events.service.IEventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Admin Event", description = "API quản trị sự kiện")
 public class AdminEventController {
 
-    private final EventService eventService;
+    private final IEventService eventService;
 
     @PutMapping("/{id}/fee-policy")
     public ResponseEntity<ApiResponse<EventResponse>> updateEventFeePolicy(

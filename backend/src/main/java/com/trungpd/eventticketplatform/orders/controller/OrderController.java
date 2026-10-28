@@ -7,7 +7,7 @@ import com.trungpd.eventticketplatform.orders.dto.request.MockPaymentRequest;
 import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderResponse;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
-import com.trungpd.eventticketplatform.orders.service.OrderService;
+import com.trungpd.eventticketplatform.orders.service.IOrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Order")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")

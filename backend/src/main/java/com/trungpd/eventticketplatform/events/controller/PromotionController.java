@@ -5,7 +5,7 @@ import com.trungpd.eventticketplatform.events.dto.request.PromotionRequest;
 import com.trungpd.eventticketplatform.events.dto.request.ValidatePromotionRequest;
 import com.trungpd.eventticketplatform.events.dto.response.PromotionResponse;
 import com.trungpd.eventticketplatform.events.dto.response.PromotionValidationResponse;
-import com.trungpd.eventticketplatform.events.service.PromotionService;
+import com.trungpd.eventticketplatform.events.service.IPromotionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Promotion", description = "API quản lý mã giảm giá")
 public class PromotionController {
 
-    private final PromotionService promotionService;
+    private final IPromotionService promotionService;
 
     @PostMapping("/api/v1/events/{eventId}/promotions")
     @PreAuthorize("hasRole('ORGANIZER')")

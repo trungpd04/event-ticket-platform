@@ -6,7 +6,7 @@ import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.entity.OptionSetValue;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.orders.entity.Order;
 import com.trungpd.eventticketplatform.orders.entity.OrderDetail;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
@@ -63,7 +63,7 @@ class TicketServiceRefillTest {
     @Mock
     private OrderDetailRepository orderDetailRepository;
     @Mock
-    private UserService userService;
+    private IUserService userService;
     @Mock
     private OptionSetValueRepository optionSetValueRepository;
 

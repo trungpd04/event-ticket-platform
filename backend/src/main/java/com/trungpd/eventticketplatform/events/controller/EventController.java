@@ -9,7 +9,7 @@ import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
-import com.trungpd.eventticketplatform.events.service.EventService;
+import com.trungpd.eventticketplatform.events.service.IEventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 @Tag(name = "Event", description = "API quản lý sự kiện")
 public class EventController {
 
-    private final EventService eventService;
+    private final IEventService eventService;
 
     @PostMapping
     @PreAuthorize("hasRole('ORGANIZER')")

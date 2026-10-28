@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 @Slf4j
 @Service
-public class FileValidationService {
+public class FileValidationService implements IFileValidationService {
 
     public void validate(MultipartFile file, FileType fileType) {
         validateNotEmpty(file);

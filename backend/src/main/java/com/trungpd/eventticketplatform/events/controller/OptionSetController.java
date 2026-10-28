@@ -2,7 +2,7 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetValueResponse;
-import com.trungpd.eventticketplatform.events.service.OptionSetService;
+import com.trungpd.eventticketplatform.events.service.IOptionSetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "Option Set", description = "API lấy cấu hình động công khai")
 public class OptionSetController {
 
-    private final OptionSetService optionSetService;
+    private final IOptionSetService optionSetService;
 
     @GetMapping("/{code}/values")
     public ResponseEntity<ApiResponse<List<OptionSetValueResponse>>> getValuesByCode(@PathVariable String code) {

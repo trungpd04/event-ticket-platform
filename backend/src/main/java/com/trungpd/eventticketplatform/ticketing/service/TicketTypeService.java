@@ -6,7 +6,7 @@ import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
 import com.trungpd.eventticketplatform.ticketing.dto.response.TicketTypeResponse;
 import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
@@ -20,12 +20,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TicketTypeService {
+public class TicketTypeService implements ITicketTypeService {
 
     private final TicketTypeRepository ticketTypeRepository;
     private final TicketTypeMapper ticketTypeMapper;
     private final EventRepository eventRepository;
-    private final UserService userService;
+    private final IUserService userService;
 
     @Transactional
     public TicketTypeResponse createTicketType(Long userId, Long eventId, CreateTicketTypeRequest request) {

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AdminDashboardService {
+public class AdminDashboardService implements IAdminDashboardService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;

@@ -2,7 +2,7 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.events.dto.response.AdminDashboardStatsResponse;
-import com.trungpd.eventticketplatform.events.service.AdminDashboardService;
+import com.trungpd.eventticketplatform.events.service.IAdminDashboardService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Admin Dashboard", description = "API thống kê dashboard admin")
 public class AdminDashboardController {
 
-    private final AdminDashboardService adminDashboardService;
+    private final IAdminDashboardService adminDashboardService;
 
     @GetMapping("/stats")
     public ResponseEntity<ApiResponse<AdminDashboardStatsResponse>> getStats() {

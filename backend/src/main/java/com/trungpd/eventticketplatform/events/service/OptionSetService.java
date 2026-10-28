@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OptionSetService {
+public class OptionSetService implements IOptionSetService {
 
     private final OptionSetRepository optionSetRepository;
     private final OptionSetValueRepository optionSetValueRepository;

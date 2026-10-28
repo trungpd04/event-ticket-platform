@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FeePolicyService {
+public class FeePolicyService implements IFeePolicyService {
 
     private final FeePolicyRepository feePolicyRepository;
     private final FeePolicyMapper feePolicyMapper;

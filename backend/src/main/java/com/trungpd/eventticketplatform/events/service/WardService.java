@@ -13,10 +13,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WardService {
+public class WardService implements IWardService {
 
     private final WardRepository wardRepository;
-    private final ProvinceService provinceService;
+    private final IProvinceService provinceService;
     private final LocationMapper locationMapper;
 
     @Transactional(readOnly = true)

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProvinceService {
+public class ProvinceService implements IProvinceService {
 
     private final ProvinceRepository provinceRepository;
     private final LocationMapper locationMapper;

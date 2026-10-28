@@ -8,7 +8,7 @@ import com.trungpd.eventticketplatform.events.entity.OptionSetValue;
 import com.trungpd.eventticketplatform.events.repository.OptionSetValueRepository;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.identity.entity.User;
-import com.trungpd.eventticketplatform.identity.service.UserService;
+import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.orders.entity.Order;
 import com.trungpd.eventticketplatform.orders.entity.OrderDetail;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
@@ -38,7 +38,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TicketService {
+public class TicketService implements ITicketService {
 
     private final TicketRepository ticketRepository;
     private final TicketTypeRepository ticketTypeRepository;
@@ -46,7 +46,7 @@ public class TicketService {
     private final EventRepository eventRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final UserService userService;
+    private final IUserService userService;
     private final OptionSetValueRepository optionSetValueRepository;
 
     @Value("${ticket.pool.batch-size:500}")

@@ -6,7 +6,7 @@ import com.trungpd.eventticketplatform.events.dto.request.OptionSetValueRequest;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetResponse;
 import com.trungpd.eventticketplatform.events.dto.response.OptionSetValueResponse;
-import com.trungpd.eventticketplatform.events.service.OptionSetService;
+import com.trungpd.eventticketplatform.events.service.IOptionSetService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ import java.util.List;
 @Tag(name = "Admin Option Set", description = "API quản lý cấu hình động")
 public class OptionSetAdminController {
 
-    private final OptionSetService optionSetService;
+    private final IOptionSetService optionSetService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<OptionSetResponse>>> getAllOptionSets() {

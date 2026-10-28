@@ -2,7 +2,7 @@ package com.trungpd.eventticketplatform.common.storage.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.storage.dto.response.FileUploadResponse;
-import com.trungpd.eventticketplatform.common.storage.service.FileUploadService;
+import com.trungpd.eventticketplatform.common.storage.service.IFileUploadService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "File Upload", description = "API upload file lên cloud storage")
 public class FileUploadController {
 
-    private final FileUploadService fileUploadService;
-    private final com.trungpd.eventticketplatform.identity.service.UserService userService;
+    private final IFileUploadService fileUploadService;
+    private final com.trungpd.eventticketplatform.identity.service.IUserService userService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ORGANIZER')")
