@@ -16,6 +16,11 @@ services:
 
   frontend-test:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:test
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_API_URL: https://test.letticket.live
     container_name: event-ticket-frontend-test
     restart: unless-stopped
     networks:
@@ -63,6 +68,11 @@ services:
 
   frontend-prod:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_API_URL: https://letticket.live
     container_name: event-ticket-frontend-prod
     restart: unless-stopped
     networks:
