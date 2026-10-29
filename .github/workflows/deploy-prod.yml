@@ -122,7 +122,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "docker-compose.yml,nginx/nginx.conf"
-          target: "/home/${{ secrets.SSH_USER }}/event-ticket/event-ticket-configuration"
+          target: "/home/${{ secrets.SSH_USER }}/event-ticket-configuration"
 
       - name: Deploy production stack on server
         uses: appleboy/ssh-action@v1
@@ -132,7 +132,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             set -e
-            cd /home/${{ secrets.SSH_USER }}/event-ticket/event-ticket-configuration
+            cd /home/${{ secrets.SSH_USER }}/event-ticket-configuration
 
             # Create env file with all secrets (single-quoted values to preserve $ characters)
             cat > .env << 'EOF'
