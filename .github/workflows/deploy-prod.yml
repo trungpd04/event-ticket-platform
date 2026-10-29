@@ -132,7 +132,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             set -e
-            cd /opt/event-ticket
+            cd /home/${{ secrets.SSH_USER }}/event-ticket/event-ticket-configuration
 
             # Create env file with all secrets (single-quoted values to preserve $ characters)
             cat > .env << 'EOF'
