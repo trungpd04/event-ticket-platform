@@ -122,7 +122,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "docker-compose.yml,nginx/nginx.conf"
-          target: "/opt/event-ticket"
+          target: "/home/${{ secrets.SSH_USER }}/event-ticket/event-ticket-configuration"
 
       - name: Deploy production stack on server
         uses: appleboy/ssh-action@v1

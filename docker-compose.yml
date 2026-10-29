@@ -10,7 +10,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - /opt/event-ticket/ssl:/etc/nginx/ssl:ro
+      - /home/event-ticket/event-ticket-configuration/ssl:/etc/nginx/ssl:ro
     networks:
       - event-ticket-network
 
