@@ -24,7 +24,7 @@ public class JobReleaseTicketWhenOrderExpired {
     private final TicketRepository ticketRepository;
     private final PromotionRepository promotionRepository;
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     @Transactional
     public void expirePendingOrders() {
         orderRepository.findByStatusAndExpiredAtBefore(OrderStatus.PENDING_PAYMENT, LocalDateTime.now())
