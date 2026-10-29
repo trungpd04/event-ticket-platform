@@ -158,7 +158,7 @@ jobs:
               # Infra changed: pull all test images first, then apply the whole test stack
               docker compose pull frontend-test backend-test postgres-test
               docker compose up -d frontend-test backend-test postgres-test
-              docker compose up -d --no-deps nginx
+              docker compose up -d --force-recreate --no-deps nginx
             else
               PULL_SERVICES=""
               UP_SERVICES=""
@@ -184,7 +184,7 @@ jobs:
               fi
 
               # Reload nginx config without pulling unrelated prod services
-              docker compose up -d --no-deps nginx
+              docker compose up -d --force-recreate --no-deps nginx
             fi
 
             # Cleanup unused images
