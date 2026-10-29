@@ -89,7 +89,7 @@ export default function HomePage() {
         }}
       >
         <Box sx={{ position: 'absolute', width: 382, height: 382, borderRadius: '50%', bgcolor: 'primary.main', opacity: 0.22, filter: 'blur(80px)', top: -165, left: '37%' }} />
-        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, pt: { xs: 8, sm: 9, md: 10 } }}>
           <Stack alignItems="center" textAlign="center" spacing={3}>
             <Typography variant="h1" color="common.white" sx={{ maxWidth: 760, fontSize: { xs: '3rem', md: '4.5rem' }, lineHeight: 1.08, fontWeight: 800, letterSpacing: '-0.06em' }}>
               {intl.formatMessage({ id: 'home.hero.title', defaultMessage: 'What event would you like to go to?' })}
