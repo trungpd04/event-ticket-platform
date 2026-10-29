@@ -16,6 +16,7 @@ services:
 
   frontend-test:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:test
+    pull_policy: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -28,6 +29,7 @@ services:
 
   backend-test:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:test
+    pull_policy: always
     container_name: event-ticket-backend-test
     restart: unless-stopped
     environment:
@@ -68,6 +70,7 @@ services:
 
   frontend-prod:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:prod
+    pull_policy: missing
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -80,6 +83,7 @@ services:
 
   backend-prod:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:prod
+    pull_policy: missing
     container_name: event-ticket-backend-prod
     restart: unless-stopped
     environment:
