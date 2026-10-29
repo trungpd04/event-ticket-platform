@@ -5,7 +5,8 @@ WORKDIR /app
 
 # Install dependencies using npm
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 # Copy source and build
 COPY . .
