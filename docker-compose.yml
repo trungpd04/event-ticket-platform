@@ -16,6 +16,7 @@ services:
 
   frontend-test:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:test
+    pull_policy: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -28,6 +29,7 @@ services:
 
   backend-test:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:test
+    pull_policy: always
     container_name: event-ticket-backend-test
     restart: unless-stopped
     environment:
@@ -40,6 +42,9 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
     depends_on:
       postgres-test:
         condition: service_healthy
@@ -68,6 +73,7 @@ services:
 
   frontend-prod:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-fe:prod
+    pull_policy: missing
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -80,6 +86,7 @@ services:
 
   backend-prod:
     image: ghcr.io/${GHCR_OWNER:-trungpd}/event-ticket-be:prod
+    pull_policy: missing
     container_name: event-ticket-backend-prod
     restart: unless-stopped
     environment:
@@ -92,6 +99,9 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
     depends_on:
       postgres-prod:
         condition: service_healthy

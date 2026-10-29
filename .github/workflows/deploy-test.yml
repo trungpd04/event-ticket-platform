@@ -145,6 +145,9 @@ jobs:
             ADMIN_EMAIL='${{ secrets.ADMIN_EMAIL }}'
             ADMIN_PASSWORD='${{ secrets.ADMIN_PASSWORD }}'
             GHCR_OWNER='${{ github.actor }}'
+            CLOUDINARY_CLOUD_NAME='${{ secrets.CLOUDINARY_CLOUD_NAME }}'
+            CLOUDINARY_API_KEY='${{ secrets.CLOUDINARY_API_KEY }}'
+            CLOUDINARY_API_SECRET='${{ secrets.CLOUDINARY_API_SECRET }}'
             EOF
 
             # Login GitHub Container Registry on the server
