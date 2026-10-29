@@ -112,7 +112,14 @@ export default function AuthForgotPassword() {
                 </Grid>
               )}
               <Grid size={12}>
-                <EventButton disabled={isSubmitting} fullWidth type="submit" variant="contained" color="primary" sx={{ height: 56, borderRadius: 1 }}>
+                <EventButton
+                  disabled={isSubmitting}
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ height: 56, borderRadius: 1 }}
+                >
                   {intl.formatMessage({ id: 'auth.forgotPassword.button' })}
                 </EventButton>
               </Grid>

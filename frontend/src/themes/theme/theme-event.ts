@@ -21,7 +21,7 @@ export default function EventTheme(mode: ThemeMode): PaletteThemeProps {
     '#A62FCA', // dark
     '#721D88', // 700
     '#551666', // darker
-    '#390E44'  // 900
+    '#390E44' // 900
   ];
 
   // Neutral scale 100 (#B3B3B3) -> 1000 (#121212). Will be reversed in dark mode.

@@ -16,7 +16,10 @@ ENV VITE_APP_API_URL=${VITE_APP_API_URL}
 
 # Serve app at root path instead of /react
 # Override .env because build script uses `env-cmd -f .env`
-RUN grep -v '^VITE_APP_BASE_NAME' .env > .env.tmp && mv .env.tmp .env && echo 'VITE_APP_BASE_NAME=/' >> .env
+RUN grep -v -e '^VITE_APP_BASE_NAME' -e '^VITE_APP_API_URL' .env > .env.tmp && \
+    mv .env.tmp .env && \
+    echo 'VITE_APP_BASE_NAME=/' >> .env && \
+    echo "VITE_APP_API_URL=${VITE_APP_API_URL}" >> .env
 
 RUN npm run build
 

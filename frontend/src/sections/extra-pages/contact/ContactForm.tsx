@@ -66,7 +66,13 @@ export default function ContactForm() {
               </Stack>
             </Grid>
             <Grid size={12}>
-              <TextField select fullWidth placeholder={intl.formatMessage({ id: 'contact.companySize' })} value={size} onChange={handleCompanySize}>
+              <TextField
+                select
+                fullWidth
+                placeholder={intl.formatMessage({ id: 'contact.companySize' })}
+                value={size}
+                onChange={handleCompanySize}
+              >
                 {sizes.map((option, index) => (
                   <MenuItem key={index} value={option.value}>
                     {option.label}

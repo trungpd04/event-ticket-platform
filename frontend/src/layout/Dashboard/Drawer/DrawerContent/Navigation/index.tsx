@@ -11,6 +11,7 @@ import NavGroup from './NavGroup';
 import NavItem from './NavItem';
 import { useGetMenuMaster } from 'api/menu';
 import { MenuOrientation, HORIZONTAL_MAX_ITEM } from 'config';
+import useAuth from 'hooks/useAuth';
 import useConfig from 'hooks/useConfig';
 import menuItems from 'menu-items';
 
@@ -19,12 +20,26 @@ import { NavItemType } from 'types/menu';
 
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
+const filterByRole = (items: NavItemType[], userRoles: string[] = []): NavItemType[] => {
+  return items
+    .filter((item) => !item.roles || item.roles.length === 0 || item.roles.some((role) => userRoles.includes(role)))
+    .map((item) => ({
+      ...item,
+      children: item.children ? filterByRole(item.children, userRoles) : undefined,
+      elements: item.elements ? filterByRole(item.elements, userRoles) : undefined
+    }));
+};
+
 export default function Navigation() {
   const downLG = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
   const { menuOrientation } = useConfig();
   const { menuMaster } = useGetMenuMaster();
+  const { user } = useAuth();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
+
+  const userRoles = user?.roles || [];
+  const visibleItems = filterByRole(menuItems.items, userRoles);
 
   const [selectedID, setSelectedID] = useState<string | undefined>('');
   const [selectedItems, setSelectedItems] = useState<string | undefined>('');
@@ -33,14 +48,14 @@ export default function Navigation() {
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
   const lastItem = isHorizontal ? HORIZONTAL_MAX_ITEM : null;
-  let lastItemIndex = menuItems.items.length - 1;
+  let lastItemIndex = visibleItems.length - 1;
   let remItems: NavItemType[] = [];
   let lastItemId: string;
 
-  if (lastItem && lastItem < menuItems.items.length) {
-    lastItemId = menuItems.items[lastItem - 1].id!;
+  if (lastItem && lastItem < visibleItems.length) {
+    lastItemId = visibleItems[lastItem - 1].id!;
     lastItemIndex = lastItem - 1;
-    remItems = menuItems.items.slice(lastItem - 1, menuItems.items.length).map((item) => ({
+    remItems = visibleItems.slice(lastItem - 1, visibleItems.length).map((item) => ({
       title: item.title,
       elements: item.children,
       icon: item.icon,
@@ -50,7 +65,7 @@ export default function Navigation() {
     }));
   }
 
-  const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+  const navGroups = visibleItems.slice(0, lastItemIndex + 1).map((item) => {
     switch (item.type) {
       case 'group':
         if (item.url && item.id !== lastItemId) {

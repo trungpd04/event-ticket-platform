@@ -94,6 +94,15 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                   borderRadius: 1,
                   '&:hover': { bgcolor: 'secondary.200', ...theme.applyStyles('dark', { bgcolor: 'divider' }) }
                 }),
+              ...(drawerOpen &&
+                level === 1 &&
+                isSelected && {
+                  bgcolor: (theme) => `linear-gradient(90deg, ${theme.palette.primary.main}3D 0%, transparent 100%)`,
+                  borderLeft: (theme) => `4px solid ${theme.palette.primary.main}`,
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                  color: 'primary.main'
+                }),
               ...(!drawerOpen && {
                 px: 2.75,
                 justifyContent: 'center',
