@@ -14,8 +14,7 @@ import java.util.Locale;
 @Configuration
 public class MessageSourceConfig {
 
-    public static final Locale DEFAULT_LOCALE = Locale.forLanguageTag("vi-VN");
-    public static final Locale ENGLISH_LOCALE = Locale.forLanguageTag("en-US");
+    public static final Locale DEFAULT_LOCALE = Locale.of("vi");
 
     @Bean
     public MessageSource messageSource() {
@@ -32,7 +31,10 @@ public class MessageSourceConfig {
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(DEFAULT_LOCALE);
-        localeResolver.setSupportedLocales(List.of(DEFAULT_LOCALE, ENGLISH_LOCALE));
+        localeResolver.setSupportedLocales(List.of(
+                Locale.of("vi"),
+                Locale.of("en")
+        ));
         return localeResolver;
     }
 

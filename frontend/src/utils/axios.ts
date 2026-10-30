@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import useConfig from '../hooks/useConfig';
 
 // ==============================|| AXIOS - BACKEND SERVICES ||============================== //
 
@@ -8,6 +9,26 @@ const refreshClient: AxiosInstance = axios.create({ baseURL: import.meta.env.VIT
 
 const ACCESS_TOKEN_KEY = 'serviceToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
+
+const CONFIG_STORAGE_KEY = 'able-pro-material-react-ts-config';
+
+const LOCALE_HEADERS: Record<string, string> = {
+  en: 'en',
+  vi: 'vi'
+};
+
+// Read the current UI language from the persisted config so every request
+// carries the matching Accept-Language header (backend localizes categories,
+// provinces, wards, ... based on it).
+const getAcceptLanguage = () => {
+  try {
+    const stored = localStorage.getItem(CONFIG_STORAGE_KEY);
+    const locale = stored ? JSON.parse(stored).i18n : undefined;
+    return LOCALE_HEADERS[locale as string] || LOCALE_HEADERS.en;
+  } catch {
+    return LOCALE_HEADERS.en;
+  }
+};
 
 let isRefreshing = false;
 let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void; config: InternalAxiosRequestConfig }[] = [];
@@ -35,6 +56,7 @@ axiosServices.interceptors.request.use(
     if (accessToken) {
       config.headers.set('Authorization', `Bearer ${accessToken}`);
     }
+    config.headers.set('Accept-Language', getAcceptLanguage());
     return config;
   },
   (error) => Promise.reject(error)
