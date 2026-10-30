@@ -6,6 +6,7 @@ import com.trungpd.eventticketplatform.events.entity.Province;
 import com.trungpd.eventticketplatform.events.mapper.LocationMapper;
 import com.trungpd.eventticketplatform.events.repository.ProvinceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,10 @@ public class ProvinceService implements IProvinceService {
     private final ProvinceRepository provinceRepository;
     private final LocationMapper locationMapper;
 
+    @Cacheable(
+            value = "provinces",
+            key = "'all_' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()"
+    )
     @Transactional(readOnly = true)
     public List<ProvinceResponse> getAllProvinces() {
         return provinceRepository.findAll().stream()

@@ -28,7 +28,10 @@ public class CategoryService implements ICategoryService {
                 .toList();
     }
 
-    @Cacheable(value = "categories", key = "'active'")
+    @Cacheable(
+            value = "categories",
+            key = "'active_' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()"
+    )
     @Transactional(readOnly = true)
     public List<CategoryResponse> getActiveCategories() {
         return categoryRepository.findAllByIsActiveTrue().stream()
@@ -48,7 +51,7 @@ public class CategoryService implements ICategoryService {
                 .orElseThrow(() -> new NotFoundException("error.category.not-found"));
     }
 
-    @CacheEvict(value = "categories", key = "'active'")
+    @CacheEvict(value = "categories", allEntries = true)
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
         Category category = categoryMapper.toEntity(request);
@@ -56,7 +59,7 @@ public class CategoryService implements ICategoryService {
         return categoryMapper.toResponse(saved);
     }
 
-    @CacheEvict(value = "categories", key = "'active'")
+    @CacheEvict(value = "categories", allEntries = true)
     @Transactional
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         Category category = findById(id);

@@ -6,6 +6,7 @@ import com.trungpd.eventticketplatform.events.entity.Ward;
 import com.trungpd.eventticketplatform.events.mapper.LocationMapper;
 import com.trungpd.eventticketplatform.events.repository.WardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class WardService implements IWardService {
     private final LocationMapper locationMapper;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "wards", key = "#provinceCode")
     public List<WardResponse> getWardsByProvince(String provinceCode) {
         provinceService.findByProvinceCode(provinceCode);
         return wardRepository.findByProvinceCodeOrderByNameAsc(provinceCode).stream()

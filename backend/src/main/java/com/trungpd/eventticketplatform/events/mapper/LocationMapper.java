@@ -11,13 +11,13 @@ import com.trungpd.eventticketplatform.common.util.LocaleUtils;
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
 
-    @Mapping(target = "name", expression = "java(isVietnamese() ? province.getShortNameVI() : province.getName())")
+    @Mapping(target = "name", expression = "java(isVietnamese() ? province.getShortNameVI() : province.getShortName())")
     ProvinceResponse toProvinceResponse(Province province);
 
     @Mapping(target = "name", expression = "java(isVietnamese() ? ward.getNameVI() : ward.getName())")
     WardResponse toWardResponse(Ward ward);
 
-    default boolean isVietnamese(){
+    default boolean isVietnamese() {
         return LocaleUtils.isVietnamese();
     }
 }

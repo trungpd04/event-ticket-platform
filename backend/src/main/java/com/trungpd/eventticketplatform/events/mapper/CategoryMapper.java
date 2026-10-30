@@ -1,5 +1,6 @@
 package com.trungpd.eventticketplatform.events.mapper;
 
+import com.trungpd.eventticketplatform.common.util.LocaleUtils;
 import com.trungpd.eventticketplatform.events.dto.request.CategoryRequest;
 import com.trungpd.eventticketplatform.events.dto.response.CategoryResponse;
 import com.trungpd.eventticketplatform.events.entity.Category;
@@ -12,6 +13,7 @@ import org.mapstruct.BeanMapping;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
+    @Mapping(target = "name", expression = "java(isVietnamese() ? category.getNameVI() : category.getName())")
     CategoryResponse toResponse(Category category);
 
     @Mapping(target = "id", ignore = true)
@@ -25,4 +27,7 @@ public interface CategoryMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(CategoryRequest request, @MappingTarget Category category);
 
+    default boolean isVietnamese() {
+        return LocaleUtils.isVietnamese();
+    }
 }
