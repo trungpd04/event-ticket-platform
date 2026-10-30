@@ -22,7 +22,7 @@ import { ArrowDown2, CloseCircle, Menu, Ticket2 } from 'iconsax-reactjs';
 // project-imports
 import EventButton from 'components/event/EventButton';
 import useAuth from 'hooks/useAuth';
-import useConfig from 'hooks/useConfig';
+import useI18n from 'hooks/useI18n';
 import { useIntl } from 'react-intl';
 
 // types
@@ -49,7 +49,7 @@ const DRAWER_WIDTH = 300;
 export default function PublicHeader() {
   const theme = useTheme();
   const { isLoggedIn, logout } = useAuth();
-  const { i18n, onChangeLocalization } = useConfig();
+  const { i18n, onChangeLocalization } = useI18n();
   const intl = useIntl();
 
   const [drawerOpen, setDrawerOpen] = useState(false);

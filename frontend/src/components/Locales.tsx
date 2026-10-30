@@ -1,29 +1,29 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 
 // third-party
 import { IntlProvider, MessageFormatElement } from 'react-intl';
 
 // project-imports
-import useConfig from 'hooks/useConfig';
+import useI18n from 'hooks/useI18n';
 
 // types
 import { I18n } from 'types/config';
 
-// load locales files
-const loadLocaleData = (locale: I18n) => {
-  switch (locale) {
-    case 'vi':
-      return import('utils/locales/vi.json');
-    case 'fr':
-      return import('utils/locales/fr.json');
-    case 'ro':
-      return import('utils/locales/ro.json');
-    case 'zh':
-      return import('utils/locales/zh.json');
-    case 'en':
-    default:
-      return import('utils/locales/en.json');
-  }
+// locales
+import enMessages from 'utils/locales/en.json';
+import viMessages from 'utils/locales/vi.json';
+import frMessages from 'utils/locales/fr.json';
+import roMessages from 'utils/locales/ro.json';
+import zhMessages from 'utils/locales/zh.json';
+
+type Messages = Record<string, string> | Record<string, MessageFormatElement[]>;
+
+const localeMessages: Record<I18n, Messages> = {
+  en: enMessages,
+  vi: viMessages,
+  fr: frMessages,
+  ro: roMessages,
+  zh: zhMessages
 };
 
 interface Props {
@@ -33,23 +33,12 @@ interface Props {
 // ==============================|| LOCALIZATION ||============================== //
 
 export default function Locales({ children }: Props) {
-  const { i18n } = useConfig();
-
-  const [messages, setMessages] = useState<Record<string, string> | Record<string, MessageFormatElement[]> | undefined>();
-
-  useEffect(() => {
-    loadLocaleData(i18n).then((d: { default: Record<string, string> | Record<string, MessageFormatElement[]> | undefined }) => {
-      setMessages(d.default);
-    });
-  }, [i18n]);
+  const { i18n } = useI18n();
+  const messages = localeMessages[i18n] ?? localeMessages.en;
 
   return (
-    <>
-      {messages && (
-        <IntlProvider locale={i18n} defaultLocale="en" messages={messages}>
-          {children}
-        </IntlProvider>
-      )}
-    </>
+    <IntlProvider locale={i18n} defaultLocale="en" messages={messages}>
+      {children}
+    </IntlProvider>
   );
 }

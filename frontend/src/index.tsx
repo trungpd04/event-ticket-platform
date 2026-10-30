@@ -6,6 +6,7 @@ import './index.css';
 // project-imports
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
+import { I18nProvider } from 'contexts/I18nContext';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -14,9 +15,11 @@ const root = createRoot(container!);
 // ==============================|| MAIN - REACT DOM RENDER  ||============================== //
 
 root.render(
-  <ConfigProvider>
-    <App />
-  </ConfigProvider>
+  <I18nProvider>
+    <ConfigProvider>
+      <App />
+    </ConfigProvider>
+  </I18nProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

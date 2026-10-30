@@ -1,4 +1,4 @@
-import { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, useMemo } from 'react';
 
 // material-ui
 import { CacheProvider } from '@emotion/react';
@@ -24,11 +24,15 @@ export default function RTLLayout({ children }: Props) {
     document.dir = themeDirection;
   }, [themeDirection]);
 
-  const cacheRtl = createCache({
-    key: themeDirection === ThemeDirection.RTL ? 'rtl' : 'css',
-    prepend: true,
-    stylisPlugins: themeDirection === ThemeDirection.RTL ? [rtlPlugin as StylisPlugin] : []
-  });
+  const cacheRtl = useMemo(
+    () =>
+      createCache({
+        key: themeDirection === ThemeDirection.RTL ? 'rtl' : 'css',
+        prepend: true,
+        stylisPlugins: themeDirection === ThemeDirection.RTL ? [rtlPlugin as StylisPlugin] : []
+      }),
+    [themeDirection]
+  );
 
   return <CacheProvider value={cacheRtl}>{children}</CacheProvider>;
 }

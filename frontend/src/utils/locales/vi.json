@@ -27,6 +27,11 @@
   "header.theater": "Kịch",
   "header.exhibitions": "Triển lãm",
 
+  "category.sports": "Thể thao",
+  "category.music": "Ca nhạc",
+  "category.theater": "Kịch",
+  "category.exhibitions": "Triển lãm",
+
   "footer.copyright": "© 2026 Event Ticket Platform. Mọi quyền được bảo lưu.",
   "footer.description": "Tìm kiếm những khoảnh khắc đáng nhớ. Khám phá, đặt vé và chia sẻ trải nghiệm tiếp theo của bạn.",
   "footer.explore": "Khám phá",

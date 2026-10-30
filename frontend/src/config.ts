@@ -39,7 +39,6 @@ export enum NavActionType {
 
 const config: DefaultConfigProps = {
   fontFamily: `Inter var`,
-  i18n: 'en',
   menuOrientation: MenuOrientation.VERTICAL,
   menuCaption: true,
   miniDrawer: false,

@@ -31,6 +31,7 @@ import { useIntl } from 'react-intl';
 import { getProvinces, getPublicTicketTypes, searchEvents } from 'api/events';
 import EventCard from 'components/event/EventCard';
 import EventCardSkeleton from 'components/event/EventCardSkeleton';
+import useI18n from 'hooks/useI18n';
 import { Event, Province } from 'types/organizer';
 import heroImage from 'assets/images/home/hero.jpeg';
 
@@ -60,6 +61,7 @@ function getPriceLabel(price: string, intl: ReturnType<typeof useIntl>) {
 
 export default function EventsPage() {
   const intl = useIntl();
+  const { i18n } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,7 +103,7 @@ export default function EventsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [i18n]);
 
   useEffect(() => {
     setSearchTitle(title);
@@ -155,7 +157,7 @@ export default function EventsPage() {
     return () => {
       cancelled = true;
     };
-  }, [title, provinceId, fromDate, toDate, categoryId]);
+  }, [title, provinceId, fromDate, toDate, categoryId, i18n]);
 
   const activeFilters = useMemo(
     () =>

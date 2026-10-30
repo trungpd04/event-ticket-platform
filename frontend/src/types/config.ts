@@ -23,16 +23,6 @@ export type DefaultConfigProps = {
   fontFamily: FontFamily;
 
   /**
-   * The props used for display menu-items with multi-language.
-   * We provide static below languages according to 'react-intl' options - https://www.npmjs.com/package/react-intl
-   * 'en' (default)
-   * 'fr'
-   * 'ro'
-   * 'zh'
-   */
-  i18n: I18n;
-
-  /**
    * the props used for menu orientation (diffrent theme layout).
    * we provide static below options -
    * 'vertical' (default)
@@ -106,7 +96,6 @@ export type DefaultConfigProps = {
 
 export type CustomizationProps = {
   fontFamily: FontFamily;
-  i18n: I18n;
   miniDrawer: boolean;
   container: boolean;
   menuOrientation: MenuOrientation;
@@ -116,7 +105,6 @@ export type CustomizationProps = {
   themeDirection: ThemeDirection;
   themeContrast: boolean;
   onChangeContainer: (container: string) => void;
-  onChangeLocalization: (lang: I18n) => void;
   onChangeMode: (mode: ThemeMode) => void;
   onChangePresetColor: (theme: PresetColor) => void;
   onChangeDirection: (direction: ThemeDirection) => void;

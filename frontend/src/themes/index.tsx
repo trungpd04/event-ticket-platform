@@ -73,8 +73,11 @@ export default function ThemeCustomization({ children }: ThemeCustomizationProps
     [themeDirection, theme, themeTypography, themeCustomShadows]
   );
 
-  const themes: Theme = createTheme(themeOptions);
-  themes.components = componentsOverride(themes);
+  const themes: Theme = useMemo<Theme>(() => {
+    const theme = createTheme(themeOptions);
+    theme.components = componentsOverride(theme);
+    return theme;
+  }, [themeOptions]);
 
   return (
     <StyledEngineProvider injectFirst>

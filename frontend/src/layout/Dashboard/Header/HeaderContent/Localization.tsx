@@ -17,7 +17,7 @@ import IconButton from 'components/@extended/IconButton';
 import Transitions from 'components/@extended/Transitions';
 import MainCard from 'components/MainCard';
 
-import useConfig from 'hooks/useConfig';
+import useI18n from 'hooks/useI18n';
 
 // assets
 import { LanguageSquare } from 'iconsax-reactjs';
@@ -30,7 +30,7 @@ import { I18n } from 'types/config';
 export default function Localization() {
   const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
-  const { i18n, onChangeLocalization } = useConfig();
+  const { i18n, onChangeLocalization } = useI18n();
 
   const anchorRef = useRef<any>(null);
   const [open, setOpen] = useState(false);
