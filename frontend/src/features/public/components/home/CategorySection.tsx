@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 // material-ui
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -10,20 +8,12 @@ import Typography from '@mui/material/Typography';
 import { useIntl } from 'react-intl';
 
 // project-imports
-import { getCategories } from 'api/events';
-import { Category } from 'types/organizer';
+import { STATIC_CATEGORIES } from 'features/public/constants/categories';
 
 // ==============================|| CATEGORY SECTION ||============================== //
 
 export default function CategorySection() {
   const intl = useIntl();
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    getCategories()
-      .then(setCategories)
-      .catch(() => setCategories([]));
-  }, []);
 
   return (
     <Box sx={{ py: 6, bgcolor: 'background.default' }}>
@@ -32,7 +22,7 @@ export default function CategorySection() {
           {intl.formatMessage({ id: 'home.categories.title', defaultMessage: 'Browse by category' })}
         </Typography>
         <Grid container spacing={2}>
-          {categories.map((category) => (
+          {STATIC_CATEGORIES.map((category) => (
             <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={category.id}>
               <Box
                 sx={{
@@ -48,7 +38,7 @@ export default function CategorySection() {
                 }}
               >
                 <Typography variant="subtitle1" fontWeight={600}>
-                  {category.name}
+                  {intl.formatMessage({ id: category.nameKey, defaultMessage: category.defaultName })}
                 </Typography>
               </Box>
             </Grid>

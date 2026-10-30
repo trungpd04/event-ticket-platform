@@ -17,6 +17,11 @@
   "header.theater": "Theater",
   "header.exhibitions": "Exhibitions",
 
+  "category.sports": "Sports",
+  "category.music": "Music",
+  "category.theater": "Theater",
+  "category.exhibitions": "Exhibitions",
+
   "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
   "footer.description": "Find the moments worth remembering. Discover, book and share your next experience.",
   "footer.explore": "Explore",
