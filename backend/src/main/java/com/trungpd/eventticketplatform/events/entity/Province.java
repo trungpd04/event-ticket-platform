@@ -24,6 +24,9 @@ public class Province extends BaseEntity {
     @Column(name = "short_name", nullable = false)
     private String shortName;
 
+    @Column(name = "short_name_vi", nullable = false)
+    private String shortNameVI;
+
     @Column(name = "code", nullable = false, length = 5)
     private String code;
 

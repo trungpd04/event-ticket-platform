@@ -21,6 +21,9 @@ public class Ward extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "name_vi", nullable = false)
+    private String nameVI;
+
     @Column(name = "province_code", nullable = false, length = 6)
     private String provinceCode;
 
