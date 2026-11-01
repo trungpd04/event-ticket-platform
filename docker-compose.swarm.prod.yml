@@ -114,6 +114,8 @@ networks:
 
 volumes:
   postgres_prod_data:
+    external: true
+    name: event-ticket-configuration_postgres_prod_data
 
 configs:
   nginx_conf:
