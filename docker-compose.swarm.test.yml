@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - target: 80
+        published: 8080
+        mode: host
+      - target: 443
+        published: 8443
+        mode: host
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/conf.d/default.conf
+    secrets:
+      - source: test_ssl_crt
+        target: /etc/nginx/ssl/test.letticket.live.crt
+      - source: test_ssl_key
+        target: /etc/nginx/ssl/test.letticket.live.key
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - event-ticket-network-test
+
+  frontend:
+    image: ghcr.io/${GHCR_OWNER}/event-ticket-fe:test
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - event-ticket-network-test
+
+  backend:
+    image: ghcr.io/${GHCR_OWNER}/event-ticket-be:test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/event_ticket_test
+    secrets:
+      - db_password
+      - jwt_secret
+      - mail_username
+      - mail_password
+      - admin_email
+      - admin_password
+      - cloudinary_cloud_name
+      - cloudinary_api_key
+      - cloudinary_api_secret
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 30s
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - event-ticket-network-test
+
+  postgres:
+    image: postgres:16-alpine
+    secrets:
+      - db_password
+    environment:
+      POSTGRES_DB: event_ticket_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - type: volume
+        source: postgres_test_data
+        target: /var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - event-ticket-network-test
+
+networks:
+  event-ticket-network-test:
+    driver: overlay
+    attachable: true
+
+volumes:
+  postgres_test_data:
+
+configs:
+  nginx_conf:
+    file: /home/event-ticket/event-ticket-configuration/test/nginx/nginx.swarm.test.conf
+
+secrets:
+  db_password:
+    file: /home/event-ticket/secrets/test/db_password
+  jwt_secret:
+    file: /home/event-ticket/secrets/test/jwt_secret
+  mail_username:
+    file: /home/event-ticket/secrets/test/mail_username
+  mail_password:
+    file: /home/event-ticket/secrets/test/mail_password
+  admin_email:
+    file: /home/event-ticket/secrets/test/admin_email
+  admin_password:
+    file: /home/event-ticket/secrets/test/admin_password
+  cloudinary_cloud_name:
+    file: /home/event-ticket/secrets/test/cloudinary_cloud_name
+  cloudinary_api_key:
+    file: /home/event-ticket/secrets/test/cloudinary_api_key
+  cloudinary_api_secret:
+    file: /home/event-ticket/secrets/test/cloudinary_api_secret
+  test_ssl_crt:
+    file: /home/event-ticket/secrets/test/test.letticket.live.crt
+  test_ssl_key:
+    file: /home/event-ticket/secrets/test/test.letticket.live.key

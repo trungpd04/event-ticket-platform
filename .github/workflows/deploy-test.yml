@@ -1,9 +1,9 @@
 name: Deploy Test
 
-on:
-  push:
-    branches:
-      - test
+#on:
+#  push:
+#    branches:
+#      - test
 
 permissions:
   contents: read
