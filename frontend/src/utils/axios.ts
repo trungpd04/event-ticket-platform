@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import useConfig from '../hooks/useConfig';
 
 // ==============================|| AXIOS - BACKEND SERVICES ||============================== //
 
