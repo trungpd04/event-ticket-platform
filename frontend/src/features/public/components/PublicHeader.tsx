@@ -48,7 +48,7 @@ const DRAWER_WIDTH = 300;
 
 export default function PublicHeader() {
   const theme = useTheme();
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, hasRole } = useAuth();
   const { i18n, onChangeLocalization } = useConfig();
   const intl = useIntl();
 
@@ -153,6 +153,17 @@ export default function PublicHeader() {
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>{languageSelect()}</Box>
             {isLoggedIn ? (
               <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
+                {hasRole('ORGANIZER') && (
+                  <EventButton
+                    component={RouterLink}
+                    to="/organizer/events"
+                    variant="outlined"
+                    color="primary"
+                    sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
+                  >
+                    {intl.formatMessage({ id: 'header.myEvents', defaultMessage: 'My events' })}
+                  </EventButton>
+                )}
                 <EventButton
                   component={RouterLink}
                   to="/organizer/events/create"
@@ -284,6 +295,19 @@ export default function PublicHeader() {
           {languageSelect(true)}
           {isLoggedIn ? (
             <>
+              {hasRole('ORGANIZER') && (
+                <EventButton
+                  component={RouterLink}
+                  to="/organizer/events"
+                  onClick={closeDrawer}
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                  sx={{ height: 44, borderRadius: 1, fontSize: 16 }}
+                >
+                  {intl.formatMessage({ id: 'header.myEvents', defaultMessage: 'My events' })}
+                </EventButton>
+              )}
               <EventButton
                 component={RouterLink}
                 to="/organizer/events/create"

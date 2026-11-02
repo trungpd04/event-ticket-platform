@@ -3,12 +3,13 @@ import { Navigate } from 'react-router-dom';
 
 // project-imports
 import Loadable from 'components/Loadable';
-import PublicLayout from 'features/public/layout/PublicLayout';
+import DashboardLayout from 'layout/Dashboard';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 import RoleGuard from 'utils/route-guard/RoleGuard';
 
 // render - organizer pages
 const CreateEventPage = Loadable(lazy(() => import('features/organizer/pages/CreateEventPage')));
+const OrganizerEventsPage = Loadable(lazy(() => import('features/organizer/pages/OrganizerEventsPage')));
 
 // ==============================|| ORGANIZER ROUTES ||============================== //
 
@@ -17,14 +18,18 @@ const OrganizerRoutes = {
   element: (
     <AuthGuard>
       <RoleGuard roles={['ORGANIZER']}>
-        <PublicLayout />
+        <DashboardLayout />
       </RoleGuard>
     </AuthGuard>
   ),
   children: [
     {
       path: '',
-      element: <Navigate to="events/create" replace />
+      element: <Navigate to="events" replace />
+    },
+    {
+      path: 'events',
+      element: <OrganizerEventsPage />
     },
     {
       path: 'events/create',

@@ -38,7 +38,7 @@ export default function DrawerHeader({ open }: Props) {
       {open ? (
         <Box component="img" src={logoEvenjo} alt="Evenjo" sx={{ width: 'auto', height: 32, display: 'block' }} />
       ) : (
-        <Logo isIcon sx={{ width: 52, height: 'auto' }} />
+        <Logo isIcon isOpen={open} sx={{ width: 52, height: 'auto' }} />
       )}
     </DrawerHeaderStyled>
   );

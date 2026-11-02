@@ -154,7 +154,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
               <ListItemText
                 primary={
                   <Typography
-                    variant="h6"
+                    variant="body1"
                     sx={(theme) => ({
                       color: 'secondary.main',
                       ...theme.applyStyles('dark', { color: 'secondary.400' }),

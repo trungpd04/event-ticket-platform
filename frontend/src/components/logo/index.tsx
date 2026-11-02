@@ -15,16 +15,17 @@ interface Props {
   isIcon?: boolean;
   sx?: SxProps;
   to?: To;
+  isOpen?: boolean;
 }
 
 // ==============================|| MAIN LOGO ||============================== //
 
-export default function LogoSection({ isIcon, sx, to }: Props) {
+export default function LogoSection({ isIcon, sx, to, isOpen }: Props) {
   const { isLoggedIn } = useAuth();
 
   return (
     <ButtonBase disableRipple {...(isLoggedIn && { component: Link, to: !to ? APP_DEFAULT_PATH : to, sx })}>
-      {isIcon ? <LogoIcon /> : <Logo />}
+      {isIcon ? <LogoIcon isOpen={!!isOpen} /> : <Logo />}
     </ButtonBase>
   );
 }

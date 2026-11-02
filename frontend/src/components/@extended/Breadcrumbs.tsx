@@ -213,7 +213,7 @@ export default function Breadcrumbs({
           component={Link}
           to="/"
           color="text.secondary"
-          variant="h6"
+          variant="body1"
           sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
         >
           {icons && <Home3 style={iconSX} />}

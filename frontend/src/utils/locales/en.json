@@ -1,4 +1,5 @@
 {
+  "home" : "Home",
   "app.name": "Event Ticket Platform",
   "language.english": "English",
   "language.vietnamese": "Vietnamese",
@@ -12,6 +13,7 @@
   "header.register": "Register",
   "header.logout": "Logout",
   "header.addEvent": "Create Event",
+  "header.myEvents": "My events",
   "header.sports": "Sports",
   "header.music": "Music",
   "header.theater": "Theater",
@@ -347,6 +349,7 @@
   "simpleFooter.youtube": "Youtube",
 
   "admin": "Admin",
+  "organizer": "Organizer",
   "admin.dashboard": "Dashboard",
   "admin.dashboard.title": "Dashboard",
   "admin.dashboard.pendingEvents": "Pending events",
@@ -419,5 +422,16 @@
   "admin.common.delete": "Delete",
   "admin.common.detail": "Detail",
   "admin.common.back": "Back",
-  "admin.common.actions": "Actions"
+  "admin.common.actions": "Actions",
+
+  "organizer.events.title": "My events",
+  "organizer.events.create": "Create event",
+  "organizer.events.search": "Search my events",
+  "organizer.events.empty": "No events found.",
+  "organizer.events.loading": "Loading...",
+  "organizer.events.loadError": "Failed to load events.",
+  "organizer.events.detail": "View event",
+  "organizer.events.requestPublish": "Request review",
+  "organizer.events.requestPublishSuccess": "Review request sent successfully.",
+  "organizer.events.requestPublishError": "Failed to send review request."
 }

@@ -22,6 +22,7 @@
   "header.register": "Đăng ký",
   "header.logout": "Đăng xuất",
   "header.addEvent": "Tạo sự kiện",
+  "header.myEvents": "Sự kiện của tôi",
   "header.sports": "Thể thao",
   "header.music": "Ca nhạc",
   "header.theater": "Kịch",
@@ -357,6 +358,7 @@
   "simpleFooter.youtube": "Youtube",
 
   "admin": "Quản trị",
+  "organizer": "Ban tổ chức",
   "admin.dashboard": "Tổng quan",
   "admin.dashboard.title": "Bảng điều khiển",
   "admin.dashboard.pendingEvents": "Sự kiện chờ duyệt",
@@ -429,5 +431,16 @@
   "admin.common.delete": "Xóa",
   "admin.common.detail": "Chi tiết",
   "admin.common.back": "Quay lại",
-  "admin.common.actions": "Thao tác"
+  "admin.common.actions": "Thao tác",
+
+  "organizer.events.title": "Sự kiện của tôi",
+  "organizer.events.create": "Tạo sự kiện",
+  "organizer.events.search": "Tìm kiếm sự kiện",
+  "organizer.events.empty": "Không tìm thấy sự kiện nào.",
+  "organizer.events.loading": "Đang tải...",
+  "organizer.events.loadError": "Tải sự kiện thất bại.",
+  "organizer.events.detail": "Xem sự kiện",
+  "organizer.events.requestPublish": "Gửi yêu cầu duyệt",
+  "organizer.events.requestPublishSuccess": "Đã gửi yêu cầu duyệt.",
+  "organizer.events.requestPublishError": "Gửi yêu cầu duyệt thất bại."
 }
