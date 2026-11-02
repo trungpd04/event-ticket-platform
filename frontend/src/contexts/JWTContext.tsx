@@ -90,7 +90,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     });
 
     if (user.roles?.includes('ADMIN')) {
-      redirectWithBasePath('/sample-page');
+      redirectWithBasePath('/admin');
     } else {
       redirectWithBasePath('/');
     }
