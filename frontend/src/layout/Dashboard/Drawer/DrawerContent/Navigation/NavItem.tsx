@@ -57,7 +57,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
   );
 
   const { pathname } = useLocation();
-  const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: false }, pathname);
+  const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: item?.end ?? false }, pathname);
 
   const iconSelectedColor = 'primary.main';
 

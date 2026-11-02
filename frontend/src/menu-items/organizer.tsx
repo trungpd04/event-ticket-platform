@@ -17,6 +17,7 @@ const organizer: NavItemType = {
       title: 'organizer.events.title',
       type: 'item',
       url: '/organizer/events',
+      end: true,
       icon: CalendarTick
     },
     {
@@ -24,6 +25,7 @@ const organizer: NavItemType = {
       title: 'organizer.events.create',
       type: 'item',
       url: '/organizer/events/create',
+      end: true,
       icon: Ticket2
     }
   ]

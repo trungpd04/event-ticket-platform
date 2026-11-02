@@ -275,9 +275,9 @@ export default function Breadcrumbs({
             <Grid>{tempContent}</Grid>
             {title && titleBottom && (
               <Grid sx={{ mt: card === false ? 0 : 1 }}>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
-                  <FormattedMessage id={custom ? heading : item?.title} />
-                </Typography>
+                {/*<Typography variant="h1" sx={{ fontWeight: 700 }}>*/}
+                {/*  <FormattedMessage id={custom ? heading : item?.title} />*/}
+                {/*</Typography>*/}
               </Grid>
             )}
           </Grid>

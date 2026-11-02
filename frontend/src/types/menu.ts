@@ -24,6 +24,7 @@ export type NavItemType = {
   chip?: ChipProps;
   color?: 'primary' | 'secondary' | 'default' | undefined;
   disabled?: boolean;
+  end?: boolean;
   external?: boolean;
   isDropdown?: boolean;
   icon?: GenericCardProps['iconPrimary'] | string;
