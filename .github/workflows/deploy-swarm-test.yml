@@ -95,7 +95,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.actor }}/event-ticket-fe:test
           build-args: |
-            VITE_APP_API_URL=https://test.letticket.live
+            VITE_APP_API_URL=https://test.letticket.live:8443
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
