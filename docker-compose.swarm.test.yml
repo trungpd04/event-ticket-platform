@@ -85,6 +85,10 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    ports:
+      - target: 5432
+        published: 5433
+        mode: host
     secrets:
       - db_password
     environment:
