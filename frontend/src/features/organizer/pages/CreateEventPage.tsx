@@ -181,9 +181,11 @@ const getValidation = (intl: ReturnType<typeof useIntl>) => {
     }),
     Yup.object({}),
     Yup.object({
-      bankName: Yup.string().trim().required(required('createEvent.bankName')),
-      accountNumber: Yup.string().trim().required(required('createEvent.accountNumber')),
-      accountHolder: Yup.string().trim().required(required('createEvent.accountHolder'))
+      payoutInfo: Yup.object({
+        bankName: Yup.string().trim().required(required('createEvent.bankName')),
+        accountNumber: Yup.string().trim().required(required('createEvent.accountNumber')),
+        accountHolder: Yup.string().trim().required(required('createEvent.accountHolder'))
+      })
     })
   ];
 };
@@ -325,7 +327,12 @@ export default function CreateEventPage() {
               )}
               {activeStep === 2 && <StepSettings values={values.settings} setValues={(settings) => setFieldValue('settings', settings)} />}
               {activeStep === 3 && (
-                <StepPayout values={values.payoutInfo} setValues={(payoutInfo) => setFieldValue('payoutInfo', payoutInfo)} />
+                <StepPayout
+                  values={values.payoutInfo}
+                  setValues={(payoutInfo) => setFieldValue('payoutInfo', payoutInfo)}
+                  touched={touched}
+                  errors={errors}
+                />
               )}
               {activeStep === steps.length && (
                 <Summary
