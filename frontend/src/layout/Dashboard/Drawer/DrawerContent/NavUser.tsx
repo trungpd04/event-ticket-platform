@@ -13,13 +13,16 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 
+// third-party
+import { useIntl } from 'react-intl';
+
 // project-imports
 import { useGetMenuMaster } from 'api/menu';
 import Avatar from 'components/@extended/Avatar';
 import useAuth from 'hooks/useAuth';
 
 // assets
-import { ArrowRight2 } from 'iconsax-reactjs';
+import { ArrowRight2, CalendarTick, Logout, Profile, Ticket2 } from 'iconsax-reactjs';
 import avatar1 from 'assets/images/users/avatar-6.png';
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -43,11 +46,12 @@ const ExpandMore = styled(IconButton, {
 
 export default function UserList() {
   const navigate = useNavigate();
+  const intl = useIntl();
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { logout, user } = useAuth();
+  const { logout, user, hasRole } = useAuth();
   const handleLogout = async () => {
     try {
       await logout();
@@ -59,6 +63,11 @@ export default function UserList() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleCloseAndLogout = () => {
+    handleClose();
+    handleLogout();
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -110,12 +119,23 @@ export default function UserList() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        <MenuItem component={Link} to="#!" onClick={handleClose}>
-          Profile
+        <MenuItem component={Link} to="/profile" onClick={handleClose}>
+          <Profile variant="Bulk" size={18} style={{ marginRight: 12 }} />
+          {intl.formatMessage({ id: 'header.profile', defaultMessage: 'Profile' })}
         </MenuItem>
-        <MenuItem component={Link} to="#!" onClick={handleClose}>
-          My account
+        {hasRole('ORGANIZER') && (
+          <MenuItem component={Link} to="/organizer/events" onClick={handleClose}>
+            <CalendarTick variant="Bulk" size={18} style={{ marginRight: 12 }} />
+            {intl.formatMessage({ id: 'header.myEvents', defaultMessage: 'My events' })}
+          </MenuItem>
+        )}
+        <MenuItem component={Link} to="/my-orders" onClick={handleClose}>
+          <Ticket2 variant="Bulk" size={18} style={{ marginRight: 12 }} />
+          {intl.formatMessage({ id: 'header.myOrders', defaultMessage: 'My orders' })}
+        </MenuItem>
+        <MenuItem onClick={handleCloseAndLogout}>
+          <Logout variant="Bulk" size={18} style={{ marginRight: 12 }} />
+          {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
         </MenuItem>
       </Menu>
     </Box>

@@ -12,6 +12,8 @@
   "header.login": "Login",
   "header.register": "Register",
   "header.logout": "Logout",
+  "header.profile": "Profile",
+  "header.user": "User",
   "header.addEvent": "Create Event",
   "header.myEvents": "My events",
   "header.myOrders": "My orders",
