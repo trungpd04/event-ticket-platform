@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
-import { ArrowLeft2, Calendar1, Location, People, Timer1 } from 'iconsax-reactjs';
+import { Add, ArrowLeft2, Calendar1, Location, Minus, People, Timer1 } from 'iconsax-reactjs';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -10,20 +10,28 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useIntl } from 'react-intl';
 
 import { getEventDetail } from 'api/events';
+import { openSnackbar } from 'api/snackbar';
+import { reserveTickets } from 'features/booking/api/booking';
+import useAuth from 'hooks/useAuth';
 import { EventDetail } from 'types/organizer';
 import { formatCurrency, formatDateTime, formatLocation } from 'utils/format';
 
 export default function EventDetailPage() {
   const intl = useIntl();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const { isLoggedIn } = useAuth();
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [bookingLoading, setBookingLoading] = useState(false);
 
   useEffect(() => {
     const eventId = Number(id);
@@ -55,6 +63,62 @@ export default function EventDetailPage() {
       cancelled = true;
     };
   }, [id]);
+
+  const handleQuantityChange = (ticketTypeId: string, delta: number) => {
+    setQuantities((prev) => {
+      const current = prev[ticketTypeId] || 0;
+      const next = Math.max(0, current + delta);
+      return { ...prev, [ticketTypeId]: next };
+    });
+  };
+
+  const totalQuantity = useMemo(
+    () => Object.values(quantities).reduce((sum, qty) => sum + qty, 0),
+    [quantities]
+  );
+
+  const totalAmount = useMemo(() => {
+    if (!event) return 0;
+    return event.ticketTypes?.reduce((sum, ticket) => {
+      const qty = quantities[ticket.id] || 0;
+      return sum + qty * Number(ticket.price);
+    }, 0);
+  }, [quantities, event]);
+
+  const handleBook = async () => {
+    if (!isLoggedIn) {
+      navigate('/login', { state: { from: `/events/${id}` } });
+      return;
+    }
+
+    if (!event || totalQuantity === 0) return;
+
+    const items = Object.entries(quantities)
+      .filter(([, qty]) => qty > 0)
+      .map(([ticketTypeId, quantity]) => ({
+        ticketTypeId: Number(ticketTypeId),
+        quantity
+      }));
+
+    setBookingLoading(true);
+    try {
+      const reservation = await reserveTickets({
+        eventId: event.id,
+        items,
+        reservationMinutes: 10
+      });
+      navigate('/checkout', { state: { reservation, event } });
+    } catch {
+      openSnackbar({
+        open: true,
+        message: intl.formatMessage({ id: 'eventDetail.reserveError', defaultMessage: 'Failed to reserve tickets. Please try again.' }),
+        variant: 'alert',
+        alert: { color: 'error' }
+      } as any);
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -153,7 +217,7 @@ export default function EventDetailPage() {
                   {event.ticketTypes?.map((ticket) => (
                     <Card key={ticket.id} sx={{ bgcolor: '#181719', border: '1px solid #2c292e', color: 'white' }}>
                       <CardContent>
-                        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={2}>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems="center" spacing={2}>
                           <Box>
                             <Typography variant="h6" fontWeight={800}>
                               {ticket.name}
@@ -163,9 +227,29 @@ export default function EventDetailPage() {
                                 intl.formatMessage({ id: 'eventDetail.ticketDescription', defaultMessage: 'Admission ticket' })}
                             </Typography>
                           </Box>
-                          <Typography sx={{ color: '#d580f2', fontSize: 20, fontWeight: 800 }}>
-                            {formatCurrency(Number(ticket.price), intl.locale)}
-                          </Typography>
+                          <Stack direction="row" spacing={2} alignItems="center">
+                            <Typography sx={{ color: '#d580f2', fontSize: 18, fontWeight: 800, minWidth: 100, textAlign: 'right' }}>
+                              {formatCurrency(Number(ticket.price), intl.locale)}
+                            </Typography>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleQuantityChange(ticket.id, -1)}
+                                disabled={(quantities[ticket.id] || 0) === 0}
+                                sx={{ color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+                              >
+                                <Minus size={16} />
+                              </IconButton>
+                              <Typography sx={{ minWidth: 24, textAlign: 'center' }}>{quantities[ticket.id] || 0}</Typography>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleQuantityChange(ticket.id, 1)}
+                                sx={{ color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+                              >
+                                <Add size={16} />
+                              </IconButton>
+                            </Stack>
+                          </Stack>
                         </Stack>
                       </CardContent>
                     </Card>
@@ -203,15 +287,28 @@ export default function EventDetailPage() {
                       </Typography>
                     </Box>
                   </Stack>
-                  <Button variant="contained" size="large" disabled sx={{ mt: 1, height: 52 }}>
-                    {intl.formatMessage({ id: 'eventDetail.chooseTicket', defaultMessage: 'Choose tickets' })}
+                  <Button
+                    variant="contained"
+                    size="large"
+                    disabled={totalQuantity === 0 || bookingLoading}
+                    onClick={handleBook}
+                    sx={{ mt: 1, height: 52 }}
+                  >
+                    {bookingLoading
+                      ? intl.formatMessage({ id: 'eventDetail.processing', defaultMessage: 'Processing...' })
+                      : intl.formatMessage(
+                          { id: 'eventDetail.bookNow', defaultMessage: 'Book now — {amount}' },
+                          { amount: formatCurrency(totalAmount, intl.locale) }
+                        )}
                   </Button>
-                  <Typography variant="caption" color="rgba(255,255,255,.45)" textAlign="center">
-                    {intl.formatMessage({
-                      id: 'eventDetail.phaseNote',
-                      defaultMessage: 'Ticket selection will be available in the next phase.'
-                    })}
-                  </Typography>
+                  {!isLoggedIn && (
+                    <Typography variant="caption" color="rgba(255,255,255,.45)" textAlign="center">
+                      {intl.formatMessage({
+                        id: 'eventDetail.loginRequired',
+                        defaultMessage: 'Please log in to book tickets.'
+                      })}
+                    </Typography>
+                  )}
                 </Stack>
               </CardContent>
             </Card>

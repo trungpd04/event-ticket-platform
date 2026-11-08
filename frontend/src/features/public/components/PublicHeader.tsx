@@ -166,14 +166,25 @@ export default function PublicHeader() {
                 )}
                 <EventButton
                   component={RouterLink}
-                  to="/organizer/events/create"
-                  variant="contained"
+                  to="/my-orders"
+                  variant="outlined"
                   color="primary"
-                  startIcon={<Ticket2 size={18} />}
                   sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
                 >
-                  {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+                  {intl.formatMessage({ id: 'header.myOrders', defaultMessage: 'My orders' })}
                 </EventButton>
+                {hasRole('ORGANIZER') && (
+                  <EventButton
+                    component={RouterLink}
+                    to="/organizer/events/create"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Ticket2 size={18} />}
+                    sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
+                  >
+                    {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+                  </EventButton>
+                )}
                 <EventButton
                   variant="outlined"
                   color="primary"
@@ -310,16 +321,29 @@ export default function PublicHeader() {
               )}
               <EventButton
                 component={RouterLink}
-                to="/organizer/events/create"
+                to="/my-orders"
                 onClick={closeDrawer}
-                variant="contained"
+                variant="outlined"
                 color="primary"
-                startIcon={<Ticket2 size={18} />}
                 fullWidth
                 sx={{ height: 44, borderRadius: 1, fontSize: 16 }}
               >
-                {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+                {intl.formatMessage({ id: 'header.myOrders', defaultMessage: 'My orders' })}
               </EventButton>
+              {hasRole('ORGANIZER') && (
+                <EventButton
+                  component={RouterLink}
+                  to="/organizer/events/create"
+                  onClick={closeDrawer}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Ticket2 size={18} />}
+                  fullWidth
+                  sx={{ height: 44, borderRadius: 1, fontSize: 16 }}
+                >
+                  {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
+                </EventButton>
+              )}
               <EventButton
                 variant="outlined"
                 color="primary"
