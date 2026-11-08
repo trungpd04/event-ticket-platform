@@ -34,4 +34,29 @@ if [ -f /run/secrets/cloudinary_api_secret ]; then
   export CLOUDINARY_API_SECRET="$(cat /run/secrets/cloudinary_api_secret)"
 fi
 
+# Disable real SMTP auto-configuration when MAIL_ENABLED is not "true".
+# Spring Boot only creates a real JavaMailSender when spring.mail.host is set.
+if [ "${MAIL_ENABLED}" != "true" ]; then
+  export SPRING_MAIL_HOST=""
+fi
+
+# Wait for PostgreSQL to be reachable before starting the application.
+# This avoids JVM DNS caching failed resolutions during Swarm startup.
+if [ -n "${SPRING_DATASOURCE_URL}" ]; then
+  DB_HOST=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://\([^:]*\):[0-9]*/.*|\1|p')
+  DB_PORT=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://[^:]*:\([0-9]*\)/.*|\1|p')
+
+  if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then
+    echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT ..."
+    for i in $(seq 1 60); do
+      if nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; then
+        echo "PostgreSQL is available at $DB_HOST:$DB_PORT"
+        break
+      fi
+      echo "PostgreSQL not ready yet (attempt $i/60), retrying in 2s ..."
+      sleep 2
+    done
+  fi
+fi
+
 exec "$@"
