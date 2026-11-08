@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -19,11 +20,15 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { ArrowDown2, CloseCircle, Menu, Ticket2 } from 'iconsax-reactjs';
 
+// assets
+import avatar1 from 'assets/images/users/avatar-6.png';
+
 // project-imports
 import EventButton from 'components/event/EventButton';
 import useAuth from 'hooks/useAuth';
 import useConfig from 'hooks/useConfig';
 import { useIntl } from 'react-intl';
+import UserAvatarMenu from 'features/public/components/UserAvatarMenu';
 
 // types
 import { I18n } from 'types/config';
@@ -48,7 +53,7 @@ const DRAWER_WIDTH = 300;
 
 export default function PublicHeader() {
   const theme = useTheme();
-  const { isLoggedIn, logout, hasRole } = useAuth();
+  const { isLoggedIn, logout, hasRole, user } = useAuth();
   const { i18n, onChangeLocalization } = useConfig();
   const intl = useIntl();
 
@@ -152,27 +157,7 @@ export default function PublicHeader() {
           <Stack direction="row" spacing={2} alignItems="center" sx={{ ml: 'auto', flexShrink: 0 }}>
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>{languageSelect()}</Box>
             {isLoggedIn ? (
-              <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
-                {hasRole('ORGANIZER') && (
-                  <EventButton
-                    component={RouterLink}
-                    to="/organizer/events"
-                    variant="outlined"
-                    color="primary"
-                    sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
-                  >
-                    {intl.formatMessage({ id: 'header.myEvents', defaultMessage: 'My events' })}
-                  </EventButton>
-                )}
-                <EventButton
-                  component={RouterLink}
-                  to="/my-orders"
-                  variant="outlined"
-                  color="primary"
-                  sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
-                >
-                  {intl.formatMessage({ id: 'header.myOrders', defaultMessage: 'My orders' })}
-                </EventButton>
+              <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
                 {hasRole('ORGANIZER') && (
                   <EventButton
                     component={RouterLink}
@@ -185,14 +170,7 @@ export default function PublicHeader() {
                     {intl.formatMessage({ id: 'header.addEvent', defaultMessage: 'Add Event' })}
                   </EventButton>
                 )}
-                <EventButton
-                  variant="outlined"
-                  color="primary"
-                  onClick={logout}
-                  sx={{ height: 40, px: 2, borderRadius: 1, fontSize: 16 }}
-                >
-                  {intl.formatMessage({ id: 'header.logout', defaultMessage: 'Logout' })}
-                </EventButton>
+                <UserAvatarMenu />
               </Stack>
             ) : (
               <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -302,10 +280,36 @@ export default function PublicHeader() {
 
         <Divider />
 
+        {isLoggedIn && (
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ px: 2.5, py: 2 }}>
+            <Avatar alt={user?.name || 'User'} src={avatar1} sx={{ width: 48, height: 48 }} />
+            {user?.email && (
+              <Box sx={{ overflow: 'hidden' }}>
+                <Typography variant="body2" fontWeight={600} noWrap>
+                  {user.email}
+                </Typography>
+              </Box>
+            )}
+          </Stack>
+        )}
+
+        {isLoggedIn && <Divider />}
+
         <Stack spacing={2} sx={{ p: 2.5 }}>
           {languageSelect(true)}
           {isLoggedIn ? (
             <>
+              <EventButton
+                component={RouterLink}
+                to="/profile"
+                onClick={closeDrawer}
+                variant="outlined"
+                color="primary"
+                fullWidth
+                sx={{ height: 44, borderRadius: 1, fontSize: 16 }}
+              >
+                {intl.formatMessage({ id: 'header.profile', defaultMessage: 'Profile' })}
+              </EventButton>
               {hasRole('ORGANIZER') && (
                 <EventButton
                   component={RouterLink}
@@ -346,7 +350,7 @@ export default function PublicHeader() {
               )}
               <EventButton
                 variant="outlined"
-                color="primary"
+                color="error"
                 onClick={() => {
                   closeDrawer();
                   logout();

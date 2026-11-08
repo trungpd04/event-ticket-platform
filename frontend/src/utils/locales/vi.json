@@ -23,6 +23,8 @@
   "header.login": "Đăng nhập",
   "header.register": "Đăng ký",
   "header.logout": "Đăng xuất",
+  "header.profile": "Hồ sơ",
+  "header.user": "Người dùng",
   "header.addEvent": "Tạo sự kiện",
   "header.myEvents": "Sự kiện của tôi",
   "header.myOrders": "Đơn hàng của tôi",
