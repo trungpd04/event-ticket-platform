@@ -14,6 +14,9 @@ RUN --mount=type=cache,target=/root/.m2 \
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
+# Install netcat for the entrypoint wait loop
+RUN apk add --no-cache netcat-openbsd
+
 COPY --from=builder /app/target/*.jar app.jar
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
