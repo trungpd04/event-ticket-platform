@@ -1,7 +1,9 @@
 package com.trungpd.eventticketplatform.finance.payment.sepay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.OptionSetValue;
+import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.events.repository.OptionSetValueRepository;
 import com.trungpd.eventticketplatform.events.repository.PromotionRepository;
 import com.trungpd.eventticketplatform.finance.payment.PaymentProvider;
@@ -20,6 +22,7 @@ import com.trungpd.eventticketplatform.orders.repository.OrderDetailRepository;
 import com.trungpd.eventticketplatform.orders.repository.OrderRepository;
 import com.trungpd.eventticketplatform.ticketing.entity.Ticket;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketRepository;
+import com.trungpd.eventticketplatform.ticketing.service.TicketQrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -51,6 +54,8 @@ public class SePayPaymentProvider implements PaymentProvider {
     private final IUserService userService;
     private final IEmailService emailService;
     private final PromotionRepository promotionRepository;
+    private final EventRepository eventRepository;
+    private final TicketQrService ticketQrService;
 
     @Override
     public PaymentProviderType getProviderType() {
@@ -203,10 +208,13 @@ public class SePayPaymentProvider implements PaymentProvider {
             return;
         }
 
+        Event event = eventRepository.findById(order.getEventId())
+                .orElseThrow(() -> new IllegalStateException("Event not found for order " + order.getId()));
+
         List<Ticket> tickets = ticketRepository.findByOrderDetailIdIn(detailIds);
         tickets.forEach(ticket -> {
             if (ticket.getQrCode() == null || ticket.getQrCode().isBlank()) {
-                ticket.setQrCode(generateQrCode(ticket.getId(), order.getId(), order.getEventId()));
+                ticket.setQrCode(ticketQrService.generate(ticket, order, event));
             }
         });
         ticketRepository.saveAll(tickets);
@@ -220,17 +228,6 @@ public class SePayPaymentProvider implements PaymentProvider {
             );
         } catch (Exception e) {
             log.error("Failed to send ticket email for order {}", order.getId(), e);
-        }
-    }
-
-    private String generateQrCode(Long ticketId, Long orderId, Long eventId) {
-        try {
-            byte[] digest = java.security.MessageDigest.getInstance("SHA-256")
-                    .digest(("TICKET:%d:ORDER:%d:EVENT:%d:%d".formatted(
-                            ticketId, orderId, eventId, System.currentTimeMillis())).getBytes());
-            return java.util.HexFormat.of().formatHex(digest);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Unable to generate ticket QR code", exception);
         }
     }
 

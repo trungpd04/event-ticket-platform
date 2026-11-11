@@ -257,6 +257,9 @@ public class TicketService implements ITicketService {
     }
 
     private void validateEventForReservation(Event event) {
+        if (event.getStatus() == EventStatus.ONGOING) {
+            throw new BusinessException("error.event.already-started");
+        }
         if (event.getStatus() != EventStatus.PUBLISHED) {
             throw new BusinessException("error.event.not-published");
         }

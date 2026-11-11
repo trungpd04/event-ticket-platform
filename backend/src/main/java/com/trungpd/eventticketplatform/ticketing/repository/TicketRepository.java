@@ -72,4 +72,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("UPDATE Ticket t SET t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.AVAILABLE, t.reservedUntil = NULL, t.orderDetailId = NULL WHERE t.orderDetailId IN :ids AND t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.RESERVED")
     int releaseTicketsByOrderDetailIds(@Param("ids") List<Long> ids);
 
+    @Modifying
+    @Query("UPDATE Ticket t SET t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.USED WHERE t.id = :id AND t.status = com.trungpd.eventticketplatform.ticketing.enums.TicketStatus.PAID")
+    int markUsed(@Param("id") Long id);
+
+    @Query("SELECT t FROM Ticket t WHERE t.status = :status AND t.qrCode IS NOT NULL AND t.qrCode NOT LIKE :prefix")
+    List<Ticket> findPaidTicketsWithLegacyQr(@Param("status") com.trungpd.eventticketplatform.ticketing.enums.TicketStatus status, @Param("prefix") String prefix);
+
 }

@@ -4,5 +4,6 @@ public enum EventStatus {
     PENDING,
     PENDING_REVIEW,
     PUBLISHED,
+    ONGOING,
     CLOSED
 }

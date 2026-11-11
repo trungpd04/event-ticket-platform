@@ -23,7 +23,7 @@ class JwtUtilTest {
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
-        assertThat(jwtUtil.extractSubject(token)).isEqualTo("1");
+        assertThat(jwtUtil.extractSubject(token)).isEqualTo(1L);
         assertThat(jwtUtil.extractRoles(token)).containsExactlyInAnyOrder("CUSTOMER", "ORGANIZER");
     }
 
@@ -33,7 +33,7 @@ class JwtUtilTest {
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
-        assertThat(jwtUtil.extractSubject(token)).isEqualTo("1");
+        assertThat(jwtUtil.extractSubject(token)).isEqualTo(1L);
         assertThat(jwtUtil.extractRoles(token)).isEmpty();
     }
 

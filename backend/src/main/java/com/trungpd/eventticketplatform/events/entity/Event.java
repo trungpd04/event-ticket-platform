@@ -1,5 +1,6 @@
 package com.trungpd.eventticketplatform.events.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trungpd.eventticketplatform.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -63,6 +64,10 @@ public class Event extends BaseEntity {
 
     @Column(name = "customer_flat_fee_snapshot")
     private Long customerFlatFeeSnapshot;
+
+    @JsonIgnore
+    @Column(name = "secret_key", length = 64)
+    private String secretKey;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
