@@ -33,6 +33,7 @@ public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "organizerId", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "secretKey", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Event toEntity(CreateEventRequest request);
@@ -40,6 +41,7 @@ public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "organizerId", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "secretKey", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -37,7 +37,9 @@ import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
 import com.trungpd.eventticketplatform.ticketing.mapper.TicketTypeMapper;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
 import com.trungpd.eventticketplatform.ticketing.service.ITicketService;
+import com.trungpd.eventticketplatform.ticketing.service.TicketQrService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -52,6 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EventService implements IEventService {
@@ -76,6 +79,7 @@ public class EventService implements IEventService {
     private final ITicketService ticketService;
     private final PaginationMapper paginationMapper;
     private final IFileUploadService fileUploadService;
+    private final TicketQrService ticketQrService;
 
     @Transactional
     public EventResponse createEvent(Long userId, CreateEventRequest request) {
@@ -199,7 +203,7 @@ public class EventService implements IEventService {
     public EventDetailResponse getEventDetail(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
-        if (event.getStatus() != EventStatus.PUBLISHED) {
+        if (event.getStatus() != EventStatus.PUBLISHED && event.getStatus() != EventStatus.ONGOING) {
             throw new BusinessException("error.event.not-published");
         }
 
@@ -355,6 +359,10 @@ public class EventService implements IEventService {
         event.setCustomerFeeRateSnapshot(feePolicy.getCustomerFeeRate());
         event.setCustomerFlatFeeSnapshot(feePolicy.getCustomerFlatFee());
 
+        if (event.getSecretKey() == null || event.getSecretKey().isBlank()) {
+            event.setSecretKey(ticketQrService.generateSecretKey());
+        }
+
         event.setStatus(EventStatus.PUBLISHED);
         Event updated = eventRepository.save(event);
         return enrichEventResponse(eventMapper.toResponse(updated));
@@ -365,7 +373,7 @@ public class EventService implements IEventService {
     public EventResponse closeEvent(Long id) {
         Event event = findEventById(id);
 
-        if (event.getStatus() != EventStatus.PUBLISHED) {
+        if (event.getStatus() != EventStatus.PUBLISHED && event.getStatus() != EventStatus.ONGOING) {
             throw new BusinessException("error.event.invalid-status");
         }
 
@@ -374,6 +382,42 @@ public class EventService implements IEventService {
         event.setStatus(EventStatus.CLOSED);
         Event updated = eventRepository.save(event);
         return enrichEventResponse(eventMapper.toResponse(updated));
+    }
+
+    @CacheEvict(value = "events", allEntries = true)
+    @Transactional
+    public int startOngoingEvents() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Event> events = eventRepository.findByStatusAndStartTimeLessThanEqual(
+                EventStatus.PUBLISHED, now);
+
+        if (events.isEmpty()) {
+            return 0;
+        }
+
+        events.forEach(event -> event.setStatus(EventStatus.ONGOING));
+        eventRepository.saveAll(events);
+
+        log.info("Started {} event(s) to ONGOING status", events.size());
+        return events.size();
+    }
+
+    @CacheEvict(value = "events", allEntries = true)
+    @Transactional
+    public int finishEvents() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Event> events = eventRepository.findByStatusAndEndTimeLessThanEqual(
+                EventStatus.ONGOING, now);
+
+        if (events.isEmpty()) {
+            return 0;
+        }
+
+        events.forEach(event -> event.setStatus(EventStatus.CLOSED));
+        eventRepository.saveAll(events);
+
+        log.info("Closed {} finished event(s)", events.size());
+        return events.size();
     }
 
     @CacheEvict(value = "events", key = "#id")
@@ -402,6 +446,8 @@ public class EventService implements IEventService {
                 }
                 yield closeEvent(id);
             }
+            case ONGOING -> throw new BusinessException("error.event.invalid-status-transition",
+                    new Object[]{currentStatus.name(), targetStatus.name()});
             case PENDING -> throw new BusinessException("error.event.cannot-revert-to-pending");
             case PENDING_REVIEW -> throw new BusinessException("error.event.invalid-status-transition",
                     new Object[]{currentStatus.name(), targetStatus.name()});

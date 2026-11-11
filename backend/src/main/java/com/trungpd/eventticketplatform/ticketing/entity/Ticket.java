@@ -32,7 +32,7 @@ public class Ticket extends BaseEntity {
     @Column(name = "order_detail_id")
     private Long orderDetailId;
 
-    @Column(name = "qr_code", length = 255)
+    @Column(name = "qr_code", length = 1024)
     private String qrCode;
 
 }

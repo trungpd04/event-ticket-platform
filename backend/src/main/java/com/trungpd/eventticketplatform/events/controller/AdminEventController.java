@@ -2,12 +2,15 @@ package com.trungpd.eventticketplatform.events.controller;
 
 import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
+import com.trungpd.eventticketplatform.events.dto.request.AssignCheckerRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
+import com.trungpd.eventticketplatform.events.dto.response.EventCheckerResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
+import com.trungpd.eventticketplatform.events.service.IEventCheckerService;
 import com.trungpd.eventticketplatform.events.service.IEventService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,8 +18,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/events")
@@ -35,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminEventController {
 
     private final IEventService eventService;
+    private final IEventCheckerService eventCheckerService;
 
     @PutMapping("/{id}/fee-policy")
     public ResponseEntity<ApiResponse<EventResponse>> updateEventFeePolicy(
@@ -82,6 +90,29 @@ public class AdminEventController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateEventStatusRequest request) {
         EventResponse response = eventService.updateEventStatus(id, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/{id}/checkers")
+    public ResponseEntity<ApiResponse<EventCheckerResponse>> assignChecker(
+            @PathVariable Long id,
+            @Valid @RequestBody AssignCheckerRequest request) {
+        EventCheckerResponse response = eventCheckerService.assignChecker(id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+    }
+
+    @DeleteMapping("/{id}/checkers/{checkerId}")
+    public ResponseEntity<ApiResponse<Void>> removeChecker(
+            @PathVariable Long id,
+            @PathVariable Long checkerId) {
+        eventCheckerService.removeChecker(id, checkerId);
+        return ResponseEntity.ok(ApiResponse.success("success.operation.completed", null));
+    }
+
+    @GetMapping("/{id}/checkers")
+    public ResponseEntity<ApiResponse<List<EventCheckerResponse>>> getEventCheckers(
+            @PathVariable Long id) {
+        List<EventCheckerResponse> response = eventCheckerService.findCheckersByEvent(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

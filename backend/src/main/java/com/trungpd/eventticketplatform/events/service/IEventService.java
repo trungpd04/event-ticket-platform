@@ -42,6 +42,10 @@ public interface IEventService {
 
     EventResponse closeEvent(Long id);
 
+    int startOngoingEvents();
+
+    int finishEvents();
+
     EventResponse updateEventStatus(Long id, UpdateEventStatusRequest request);
 
     PagedResponse<EventResponse> getOrganizerEvents(Long userId, Pageable pageable);

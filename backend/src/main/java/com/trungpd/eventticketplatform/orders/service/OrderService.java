@@ -27,6 +27,7 @@ import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
 import com.trungpd.eventticketplatform.ticketing.enums.TicketStatus;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketRepository;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
+import com.trungpd.eventticketplatform.ticketing.service.TicketQrService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,9 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,6 +58,7 @@ public class OrderService implements IOrderService {
     private final PromotionRepository promotionRepository;
     private final IEmailService emailService;
     private final PaginationMapper paginationMapper;
+    private final TicketQrService ticketQrService;
 
     @Transactional
     public OrderResponse createFromReservation(Long userId, CreateOrderRequest request) {
@@ -96,11 +96,14 @@ public class OrderService implements IOrderService {
             throw new BusinessException("error.ticket.invalid-status");
         }
 
+        Event event = eventRepository.findById(order.getEventId())
+                .orElseThrow(() -> new NotFoundException("error.event.not-found"));
+
         LocalDateTime paidAt = LocalDateTime.now();
         tickets.forEach(ticket -> {
             ticket.setStatus(TicketStatus.PAID);
             ticket.setReservedUntil(null);
-            ticket.setQrCode(generateQrCode(ticket.getId(), order.getId(), order.getEventId()));
+            ticket.setQrCode(ticketQrService.generate(ticket, order, event));
         });
         ticketRepository.saveAll(tickets);
 
@@ -314,17 +317,6 @@ public class OrderService implements IOrderService {
                 .expiredAt(order.getExpiredAt())
                 .items(items)
                 .build();
-    }
-
-    private String generateQrCode(Long ticketId, Long orderId, Long eventId) {
-        try {
-            byte[] digest = MessageDigest.getInstance("SHA-256")
-                    .digest(("TICKET:%d:ORDER:%d:EVENT:%d:%d".formatted(
-                            ticketId, orderId, eventId, System.currentTimeMillis())).getBytes());
-            return HexFormat.of().formatHex(digest);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Unable to generate ticket QR code", exception);
-        }
     }
 
     private String buildEmailBody(Order order, List<Ticket> tickets) {
