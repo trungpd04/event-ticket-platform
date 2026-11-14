@@ -36,7 +36,8 @@ jobs:
               - 'frontend/**'
             infra:
               - 'nginx/nginx.swarm.prod.conf'
-              - 'docker-compose.swarm.prod.yml'
+              - 'docker-compose.swarm.prod-app.yml'
+              - 'docker-compose.swarm.prod-db.yml'
               - '.github/workflows/deploy-swarm-prod.yml'
 
   build-backend:
@@ -121,7 +122,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.swarm.prod.yml,nginx/nginx.swarm.prod.conf"
+          source: "docker-compose.swarm.prod-app.yml,docker-compose.swarm.prod-db.yml,nginx/nginx.swarm.prod.conf"
           target: "/home/event-ticket/event-ticket-configuration/prod"
 
       - name: Deploy production stack to Docker Swarm
@@ -159,14 +160,50 @@ jobs:
             cp /home/event-ticket/event-ticket-configuration/prod/ssl/letticket.live.crt /home/event-ticket/secrets/prod/
             cp /home/event-ticket/event-ticket-configuration/prod/ssl/letticket.live.key /home/event-ticket/secrets/prod/
 
-            # Render stack file with GHCR owner
-            GHCR_OWNER='${{ github.actor }}' envsubst < docker-compose.swarm.prod.yml > docker-compose.swarm.prod.rendered.yml
+            # One-time migration: remove the old combined stack (nginx + app + db)
+            # if it still exists. Named volumes are external, so the database
+            # data survives this removal.
+            if docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-prod'; then
+              echo "Removing legacy combined stack event-ticket-prod ..."
+              docker stack rm event-ticket-prod
+              for i in $(seq 1 30); do
+                if ! docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-prod'; then
+                  break
+                fi
+                sleep 2
+              done
+              # Give Docker a moment to release the published ports before the
+              # new DB stack binds them.
+              sleep 5
+            fi
 
-            # Deploy stack
-            docker stack deploy -c docker-compose.swarm.prod.rendered.yml event-ticket-prod --with-registry-auth
+            # Ensure the external database volume exists before deploying the DB stack.
+            if ! docker volume inspect event-ticket-configuration_postgres_prod_data >/dev/null 2>&1; then
+              docker volume create event-ticket-configuration_postgres_prod_data
+            fi
 
-            # Clean up temporary rendered stack file
-            rm -f docker-compose.swarm.prod.rendered.yml
+            # Render the database stack and deploy it first so its overlay
+            # network exists before the app stack attaches to it.
+            envsubst < docker-compose.swarm.prod-db.yml > docker-compose.swarm.prod-db.rendered.yml
+            docker stack deploy -c docker-compose.swarm.prod-db.rendered.yml event-ticket-prod-db --with-registry-auth
+            rm -f docker-compose.swarm.prod-db.rendered.yml
+
+            # Wait for the shared overlay network to be created by the DB stack.
+            for i in $(seq 1 30); do
+              if docker network inspect event-ticket-network-prod >/dev/null 2>&1; then
+                break
+              fi
+              echo "Waiting for network event-ticket-network-prod ..."
+              sleep 2
+            done
+
+            # Render and deploy the application stack.
+            GHCR_OWNER='${{ github.actor }}' envsubst < docker-compose.swarm.prod-app.yml > docker-compose.swarm.prod-app.rendered.yml
+            docker stack deploy -c docker-compose.swarm.prod-app.rendered.yml event-ticket-prod-app --with-registry-auth
+            rm -f docker-compose.swarm.prod-app.rendered.yml
+
+            # Force recreate nginx so it re-reads the bind-mounted config.
+            docker service update --force event-ticket-prod-app_nginx
 
             # Show services
             docker service ls

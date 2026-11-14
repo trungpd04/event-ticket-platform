@@ -36,7 +36,8 @@ jobs:
               - 'frontend/**'
             infra:
               - 'nginx/nginx.swarm.test.conf'
-              - 'docker-compose.swarm.test.yml'
+              - 'docker-compose.swarm.test-app.yml'
+              - 'docker-compose.swarm.test-db.yml'
               - '.github/workflows/deploy-swarm-test.yml'
 
   build-backend:
@@ -121,7 +122,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.swarm.test.yml,nginx/nginx.swarm.test.conf"
+          source: "docker-compose.swarm.test-app.yml,docker-compose.swarm.test-db.yml,nginx/nginx.swarm.test.conf"
           target: "/home/event-ticket/event-ticket-configuration/test"
 
       - name: Deploy test stack to Docker Swarm
@@ -159,14 +160,50 @@ jobs:
             cp /home/event-ticket/event-ticket-configuration/test/ssl/test.letticket.live.crt /home/event-ticket/secrets/test/
             cp /home/event-ticket/event-ticket-configuration/test/ssl/test.letticket.live.key /home/event-ticket/secrets/test/
 
-            # Render stack file with GHCR owner
-            GHCR_OWNER='${{ github.actor }}' envsubst < docker-compose.swarm.test.yml > docker-compose.swarm.test.rendered.yml
+            # One-time migration: remove the old combined stack (nginx + app + db)
+            # if it still exists. Named volumes are external, so the database
+            # data survives this removal.
+            if docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-test'; then
+              echo "Removing legacy combined stack event-ticket-test ..."
+              docker stack rm event-ticket-test
+              for i in $(seq 1 30); do
+                if ! docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-test'; then
+                  break
+                fi
+                sleep 2
+              done
+              # Give Docker a moment to release the published ports before the
+              # new DB stack binds them.
+              sleep 5
+            fi
 
-            # Deploy stack
-            docker stack deploy -c docker-compose.swarm.test.rendered.yml event-ticket-test --with-registry-auth
+            # Ensure the external database volume exists before deploying the DB stack.
+            if ! docker volume inspect event-ticket-configuration_postgres_test_data >/dev/null 2>&1; then
+              docker volume create event-ticket-configuration_postgres_test_data
+            fi
 
-            # Clean up temporary rendered stack file
-            rm -f docker-compose.swarm.test.rendered.yml
+            # Render the database stack and deploy it first so its overlay
+            # network exists before the app stack attaches to it.
+            envsubst < docker-compose.swarm.test-db.yml > docker-compose.swarm.test-db.rendered.yml
+            docker stack deploy -c docker-compose.swarm.test-db.rendered.yml event-ticket-test-db --with-registry-auth
+            rm -f docker-compose.swarm.test-db.rendered.yml
+
+            # Wait for the shared overlay network to be created by the DB stack.
+            for i in $(seq 1 30); do
+              if docker network inspect event-ticket-network-test >/dev/null 2>&1; then
+                break
+              fi
+              echo "Waiting for network event-ticket-network-test ..."
+              sleep 2
+            done
+
+            # Render and deploy the application stack.
+            GHCR_OWNER='${{ github.actor }}' envsubst < docker-compose.swarm.test-app.yml > docker-compose.swarm.test-app.rendered.yml
+            docker stack deploy -c docker-compose.swarm.test-app.rendered.yml event-ticket-test-app --with-registry-auth
+            rm -f docker-compose.swarm.test-app.rendered.yml
+
+            # Force recreate nginx so it re-reads the bind-mounted config.
+            docker service update --force event-ticket-test-app_nginx
 
             # Show services
             docker service ls
