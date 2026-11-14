@@ -7,6 +7,9 @@ import {
   MockPayRequest,
   MockPayResponse,
   Order,
+  PaymentInstruction,
+  PaymentMethod,
+  PaymentStatus,
   ReleaseRequest,
   ReserveRequest,
   ReserveResponse,
@@ -50,12 +53,24 @@ export const mockPayOrder = async (orderId: number, payload: MockPayRequest): Pr
   return response.data as MockPayResponse;
 };
 
+export const createPaymentInstruction = async (orderId: number, provider?: string): Promise<PaymentInstruction> => {
+  const response = await axios.post(`/api/v1/orders/${orderId}/pay`, undefined, {
+    params: provider ? { provider } : undefined
+  });
+  return response.data as PaymentInstruction;
+};
+
+export const getPaymentStatus = async (orderId: number): Promise<PaymentStatus> => {
+  const response = await axios.get(`/api/v1/orders/${orderId}/payment-status`);
+  return response.data as PaymentStatus;
+};
+
 export const validatePromotion = async (payload: ValidatePromotionRequest): Promise<ValidatePromotionResponse> => {
   const response = await axios.post('/api/v1/promotions/validate', payload);
   return response.data as ValidatePromotionResponse;
 };
 
-export const getPaymentMethods = async (): Promise<{ code: string; name: string }[]> => {
+export const getPaymentMethods = async (): Promise<PaymentMethod[]> => {
   const response = await axios.get('/api/v1/payment-methods');
-  return response.data as { code: string; name: string }[];
+  return response.data as PaymentMethod[];
 };

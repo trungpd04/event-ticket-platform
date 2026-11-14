@@ -21,6 +21,7 @@ import { useIntl } from 'react-intl';
 import { openSnackbar } from 'api/snackbar';
 import {
   cancelOrder,
+  createPaymentInstruction,
   createOrder,
   getPaymentMethods,
   mockPayOrder,
@@ -158,11 +159,20 @@ export default function CheckoutPage() {
     if (!order) return;
     setPaying(true);
     try {
-      const result = await mockPayOrder(order.id, {
-        paymentMethod: selectedMethod || 'MOCK_VNPAY',
-        returnMessage: 'Pay Successfully'
-      });
-      navigate('/payment/success', { state: { order, payment: result, event } });
+      // MOCK is retained for local development. Real providers return an
+      // instruction (usually a QR code) and are confirmed asynchronously by
+      // the provider webhook, so the success page must poll payment-status.
+      if (selectedMethod.toUpperCase() === 'MOCK') {
+        const result = await mockPayOrder(order.id, {
+          paymentMethod: 'MOCK_VNPAY',
+          returnMessage: 'Pay Successfully'
+        });
+        navigate('/payment/success', { state: { order: { ...order, status: 'PAID', paidAt: result.paidAt }, mockPayment: result, event } });
+        return;
+      }
+
+      const instruction = await createPaymentInstruction(order.id, selectedMethod || undefined);
+      navigate('/payment/success', { state: { order, payment: instruction, event } });
     } catch {
       openSnackbar({
         open: true,
@@ -207,182 +217,168 @@ export default function CheckoutPage() {
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: { xs: 4, md: 6 } }}>
       <Container maxWidth="xl">
-      <Typography variant="h2" fontWeight={800} mb={1}>
-        {intl.formatMessage({ id: 'checkout.title', defaultMessage: 'Checkout' })}
-      </Typography>
-      <Typography color="text.secondary" mb={4}>
-        {intl.formatMessage({ id: 'checkout.subtitle', defaultMessage: 'Review your reservation and complete payment.' })}
-      </Typography>
+        <Typography variant="h2" fontWeight={800} mb={1}>
+          {intl.formatMessage({ id: 'checkout.title', defaultMessage: 'Checkout' })}
+        </Typography>
+        <Typography color="text.secondary" mb={4}>
+          {intl.formatMessage({ id: 'checkout.subtitle', defaultMessage: 'Review your reservation and complete payment.' })}
+        </Typography>
 
-      <Grid container spacing={4} alignItems="flex-start">
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Card>
-            <CardContent>
-              <Stack spacing={3}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h4" fontWeight={800}>
-                    {event.title}
+        <Grid container spacing={4} alignItems="flex-start">
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Card>
+              <CardContent>
+                <Stack spacing={3}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h4" fontWeight={800}>
+                      {event.title}
+                    </Typography>
+                    {!order && countdown > 0 && (
+                      <Stack direction="row" spacing={1} alignItems="center" color="warning.main">
+                        <Clock size={20} />
+                        <Typography fontWeight={700}>{formatCountdown(countdown)}</Typography>
+                      </Stack>
+                    )}
+                  </Stack>
+
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} flexWrap="wrap" useFlexGap>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Calendar1 size={20} />
+                      <Typography>{formatDateTime(event.startTime, intl.locale)}</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Location size={20} />
+                      <Typography>{event.location}</Typography>
+                    </Stack>
+                  </Stack>
+
+                  <Divider />
+
+                  <Typography variant="h6" fontWeight={700}>
+                    {intl.formatMessage({ id: 'checkout.tickets', defaultMessage: 'Tickets' })}
                   </Typography>
-                  {!order && countdown > 0 && (
-                    <Stack direction="row" spacing={1} alignItems="center" color="warning.main">
-                      <Clock size={20} />
-                      <Typography fontWeight={700}>{formatCountdown(countdown)}</Typography>
+                  {reservation.items.map((item) => (
+                    <Stack key={item.ticketTypeId} direction="row" justifyContent="space-between" alignItems="center">
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Ticket2 size={18} />
+                        <Typography>
+                          {item.ticketTypeName} x {item.quantity}
+                        </Typography>
+                      </Stack>
+                      <Typography fontWeight={700}>{formatCurrency(item.subtotal, intl.locale)}</Typography>
+                    </Stack>
+                  ))}
+
+                  <Divider />
+
+                  {!order ? (
+                    <Stack spacing={2}>
+                      <Typography variant="h6" fontWeight={700}>
+                        {intl.formatMessage({ id: 'checkout.promotion', defaultMessage: 'Promotion code' })}
+                      </Typography>
+                      <Stack direction="row" spacing={1}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          value={promotionCode}
+                          onChange={(e) => setPromotionCode(e.target.value)}
+                          placeholder={intl.formatMessage({ id: 'checkout.promotionPlaceholder', defaultMessage: 'Enter code' })}
+                        />
+                        <Button variant="outlined" onClick={handleValidatePromotion} disabled={validating || !promotionCode.trim()}>
+                          {validating
+                            ? intl.formatMessage({ id: 'checkout.validating', defaultMessage: '...' })
+                            : intl.formatMessage({ id: 'checkout.apply', defaultMessage: 'Apply' })}
+                        </Button>
+                      </Stack>
+                      {appliedPromotion && (
+                        <Typography color="success.main">
+                          {intl.formatMessage(
+                            { id: 'checkout.promotionDiscount', defaultMessage: 'Discount: -{amount}' },
+                            { amount: formatCurrency(appliedPromotion.discountAmount, intl.locale) }
+                          )}
+                        </Typography>
+                      )}
+                    </Stack>
+                  ) : (
+                    <Stack spacing={1}>
+                      <Typography variant="h6" fontWeight={700}>
+                        {intl.formatMessage({ id: 'checkout.orderSummary', defaultMessage: 'Order summary' })}
+                      </Typography>
+                      <SummaryRow
+                        label={intl.formatMessage({ id: 'checkout.subtotal', defaultMessage: 'Subtotal' })}
+                        value={formatCurrency(order.totalTicketAmount, intl.locale)}
+                      />
+                      <SummaryRow
+                        label={intl.formatMessage({ id: 'checkout.discount', defaultMessage: 'Discount' })}
+                        value={`-${formatCurrency(order.discountAmount, intl.locale)}`}
+                      />
+                      <SummaryRow
+                        label={intl.formatMessage({ id: 'checkout.platformFee', defaultMessage: 'Platform fee' })}
+                        value={formatCurrency(order.platformFee, intl.locale)}
+                      />
+                      <SummaryRow
+                        label={intl.formatMessage({ id: 'checkout.total', defaultMessage: 'Total' })}
+                        value={formatCurrency(order.finalAmount, intl.locale)}
+                        bold
+                      />
                     </Stack>
                   )}
                 </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} flexWrap="wrap" useFlexGap>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Calendar1 size={20} />
-                    <Typography>{formatDateTime(event.startTime, intl.locale)}</Typography>
-                  </Stack>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Location size={20} />
-                    <Typography>{event.location}</Typography>
-                  </Stack>
-                </Stack>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card sx={{ position: { md: 'sticky' }, top: 110 }}>
+              <CardContent>
+                <Stack spacing={2}>
+                  <Typography variant="h5" fontWeight={800}>
+                    {intl.formatMessage({ id: 'checkout.total', defaultMessage: 'Total' })}
+                  </Typography>
+                  <Typography variant="h3" fontWeight={800} color="primary.main">
+                    {formatCurrency(finalAmount, intl.locale)}
+                  </Typography>
 
-                <Divider />
-
-                <Typography variant="h6" fontWeight={700}>
-                  {intl.formatMessage({ id: 'checkout.tickets', defaultMessage: 'Tickets' })}
-                </Typography>
-                {reservation.items.map((item) => (
-                  <Stack key={item.ticketTypeId} direction="row" justifyContent="space-between" alignItems="center">
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Ticket2 size={18} />
-                      <Typography>
-                        {item.ticketTypeName} x {item.quantity}
-                      </Typography>
-                    </Stack>
-                    <Typography fontWeight={700}>{formatCurrency(item.subtotal, intl.locale)}</Typography>
-                  </Stack>
-                ))}
-
-                <Divider />
-
-                {!order ? (
-                  <Stack spacing={2}>
-                    <Typography variant="h6" fontWeight={700}>
-                      {intl.formatMessage({ id: 'checkout.promotion', defaultMessage: 'Promotion code' })}
-                    </Typography>
-                    <Stack direction="row" spacing={1}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={promotionCode}
-                        onChange={(e) => setPromotionCode(e.target.value)}
-                        placeholder={intl.formatMessage({ id: 'checkout.promotionPlaceholder', defaultMessage: 'Enter code' })}
-                      />
-                      <Button variant="outlined" onClick={handleValidatePromotion} disabled={validating || !promotionCode.trim()}>
-                        {validating
-                          ? intl.formatMessage({ id: 'checkout.validating', defaultMessage: '...' })
-                          : intl.formatMessage({ id: 'checkout.apply', defaultMessage: 'Apply' })}
-                      </Button>
-                    </Stack>
-                    {appliedPromotion && (
-                      <Typography color="success.main">
-                        {intl.formatMessage(
-                          { id: 'checkout.promotionDiscount', defaultMessage: 'Discount: -{amount}' },
-                          { amount: formatCurrency(appliedPromotion.discountAmount, intl.locale) }
-                        )}
-                      </Typography>
-                    )}
-                  </Stack>
-                ) : (
-                  <Stack spacing={1}>
-                    <Typography variant="h6" fontWeight={700}>
-                      {intl.formatMessage({ id: 'checkout.orderSummary', defaultMessage: 'Order summary' })}
-                    </Typography>
-                    <SummaryRow
-                      label={intl.formatMessage({ id: 'checkout.subtotal', defaultMessage: 'Subtotal' })}
-                      value={formatCurrency(order.totalTicketAmount, intl.locale)}
-                    />
-                    <SummaryRow
-                      label={intl.formatMessage({ id: 'checkout.discount', defaultMessage: 'Discount' })}
-                      value={`-${formatCurrency(order.discountAmount, intl.locale)}`}
-                    />
-                    <SummaryRow
-                      label={intl.formatMessage({ id: 'checkout.platformFee', defaultMessage: 'Platform fee' })}
-                      value={formatCurrency(order.platformFee, intl.locale)}
-                    />
-                    <SummaryRow
-                      label={intl.formatMessage({ id: 'checkout.total', defaultMessage: 'Total' })}
-                      value={formatCurrency(order.finalAmount, intl.locale)}
-                      bold
-                    />
-                  </Stack>
-                )}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card sx={{ position: { md: 'sticky' }, top: 110 }}>
-            <CardContent>
-              <Stack spacing={2}>
-                <Typography variant="h5" fontWeight={800}>
-                  {intl.formatMessage({ id: 'checkout.total', defaultMessage: 'Total' })}
-                </Typography>
-                <Typography variant="h3" fontWeight={800} color="primary.main">
-                  {formatCurrency(finalAmount, intl.locale)}
-                </Typography>
-
-                {!order ? (
-                  <Button
-                    variant="contained"
-                    size="large"
-                    fullWidth
-                    disabled={creating}
-                    onClick={handleCreateOrder}
-                    sx={{ height: 48 }}
-                  >
-                    {creating
-                      ? intl.formatMessage({ id: 'checkout.processing', defaultMessage: 'Processing...' })
-                      : intl.formatMessage({ id: 'checkout.createOrder', defaultMessage: 'Create order' })}
-                  </Button>
-                ) : (
-                  <>
-                    <TextField
-                      select
-                      size="small"
-                      fullWidth
-                      value={selectedMethod}
-                      onChange={(e) => setSelectedMethod(e.target.value)}
-                      SelectProps={{ native: true }}
-                      label={intl.formatMessage({ id: 'checkout.paymentMethod', defaultMessage: 'Payment method' })}
-                    >
-                      {paymentMethods.map((method) => (
-                        <option key={method.code} value={method.code}>
-                          {method.name}
-                        </option>
-                      ))}
-                    </TextField>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      fullWidth
-                      disabled={paying}
-                      onClick={handlePay}
-                      sx={{ height: 48 }}
-                    >
-                      {paying
+                  {!order ? (
+                    <Button variant="contained" size="large" fullWidth disabled={creating} onClick={handleCreateOrder} sx={{ height: 48 }}>
+                      {creating
                         ? intl.formatMessage({ id: 'checkout.processing', defaultMessage: 'Processing...' })
-                        : intl.formatMessage({ id: 'checkout.payNow', defaultMessage: 'Pay now' })}
+                        : intl.formatMessage({ id: 'checkout.createOrder', defaultMessage: 'Create order' })}
                     </Button>
-                    <Button variant="outlined" color="secondary" fullWidth onClick={handleCancel}>
-                      {intl.formatMessage({ id: 'checkout.cancel', defaultMessage: 'Cancel order' })}
-                    </Button>
-                  </>
-                )}
-              </Stack>
-            </CardContent>
-          </Card>
+                  ) : (
+                    <>
+                      <TextField
+                        select
+                        size="small"
+                        fullWidth
+                        value={selectedMethod}
+                        onChange={(e) => setSelectedMethod(e.target.value)}
+                        SelectProps={{ native: true }}
+                        label={intl.formatMessage({ id: 'checkout.paymentMethod', defaultMessage: 'Payment method' })}
+                      >
+                        {paymentMethods.map((method) => (
+                          <option key={method.code} value={method.code}>
+                            {method.name}
+                          </option>
+                        ))}
+                      </TextField>
+                      <Button variant="contained" size="large" fullWidth disabled={paying} onClick={handlePay} sx={{ height: 48 }}>
+                        {paying
+                          ? intl.formatMessage({ id: 'checkout.processing', defaultMessage: 'Processing...' })
+                          : intl.formatMessage({ id: 'checkout.payNow', defaultMessage: 'Pay now' })}
+                      </Button>
+                      <Button variant="outlined" color="secondary" fullWidth onClick={handleCancel}>
+                        {intl.formatMessage({ id: 'checkout.cancel', defaultMessage: 'Cancel order' })}
+                      </Button>
+                    </>
+                  )}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
-  </Box>
+      </Container>
+    </Box>
   );
 }
 

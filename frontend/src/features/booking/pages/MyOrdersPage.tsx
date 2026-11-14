@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -14,7 +15,7 @@ import { useIntl } from 'react-intl';
 
 // project-imports
 import { openSnackbar } from 'api/snackbar';
-import { cancelOrder, getMyOrders } from 'features/booking/api/booking';
+import { cancelOrder, createPaymentInstruction, getMyOrders, getPaymentMethods } from 'features/booking/api/booking';
 import OrderStatusBadge from 'features/booking/components/OrderStatusBadge';
 import { Order } from 'features/booking/types';
 import { formatCurrency, formatDateTime } from 'utils/format';
@@ -28,10 +29,12 @@ const PAGE_SIZE = 10;
 
 export default function MyOrdersPage() {
   const intl = useIntl();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [payingOrderId, setPayingOrderId] = useState<number | null>(null);
 
   const load = async (currentPage: number) => {
     setLoading(true);
@@ -72,6 +75,25 @@ export default function MyOrdersPage() {
         variant: 'alert',
         alert: { color: 'error' }
       } as any);
+    }
+  };
+
+  const handleContinuePayment = async (order: Order) => {
+    setPayingOrderId(order.id);
+    try {
+      const methods = await getPaymentMethods();
+      const provider = methods[0]?.code;
+      const payment = await createPaymentInstruction(order.id, provider);
+      navigate('/payment/success', { state: { order, payment } });
+    } catch {
+      openSnackbar({
+        open: true,
+        message: intl.formatMessage({ id: 'myOrders.paymentError', defaultMessage: 'Unable to start payment.' }),
+        variant: 'alert',
+        alert: { color: 'error' }
+      } as any);
+    } finally {
+      setPayingOrderId(null);
     }
   };
 
@@ -136,14 +158,26 @@ export default function MyOrdersPage() {
                       </Typography>
                       <Stack direction="row" spacing={1}>
                         {order.status === 'PENDING_PAYMENT' && (
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            onClick={() => handleCancel(order.id)}
-                          >
-                            {intl.formatMessage({ id: 'myOrders.cancel', defaultMessage: 'Cancel' })}
-                          </Button>
+                          <>
+                            <Button
+                              variant="contained"
+                              size="small"
+                              disabled={payingOrderId === order.id}
+                              onClick={() => handleContinuePayment(order)}
+                            >
+                              {payingOrderId === order.id
+                                ? intl.formatMessage({ id: 'myOrders.paymentStarting', defaultMessage: 'Opening...' })
+                                : intl.formatMessage({ id: 'myOrders.pay', defaultMessage: 'Pay' })}
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              onClick={() => handleCancel(order.id)}
+                            >
+                              {intl.formatMessage({ id: 'myOrders.cancel', defaultMessage: 'Cancel' })}
+                            </Button>
+                          </>
                         )}
                         <Button variant="text" color="primary" endIcon={<ArrowRight2 size={18} />}>
                           {intl.formatMessage({ id: 'myOrders.detail', defaultMessage: 'Detail' })}
