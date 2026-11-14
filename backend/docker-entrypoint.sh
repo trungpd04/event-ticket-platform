@@ -34,12 +34,6 @@ if [ -f /run/secrets/cloudinary_api_secret ]; then
   export CLOUDINARY_API_SECRET="$(cat /run/secrets/cloudinary_api_secret)"
 fi
 
-# Disable real SMTP auto-configuration when MAIL_ENABLED is not "true".
-# Spring Boot only creates a real JavaMailSender when spring.mail.host is set.
-if [ "${MAIL_ENABLED}" != "true" ]; then
-  export SPRING_MAIL_HOST=""
-fi
-
 # Wait for PostgreSQL to be reachable before starting the application.
 # Swarm may start the backend before the database service has a DNS entry,
 # and the JVM caches failed DNS resolutions. Retry for up to 5 minutes.
