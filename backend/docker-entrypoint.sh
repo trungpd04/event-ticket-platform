@@ -41,21 +41,32 @@ if [ "${MAIL_ENABLED}" != "true" ]; then
 fi
 
 # Wait for PostgreSQL to be reachable before starting the application.
-# This avoids JVM DNS caching failed resolutions during Swarm startup.
+# Swarm may start the backend before the database service has a DNS entry,
+# and the JVM caches failed DNS resolutions. Retry for up to 5 minutes.
 if [ -n "${SPRING_DATASOURCE_URL}" ]; then
-  DB_HOST=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://\([^:]*\):[0-9]*/.*|\1|p')
-  DB_PORT=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://[^:]*:\([0-9]*\)/.*|\1|p')
+  DB_HOST=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://\([^:/]*\).*|\1|p')
+  DB_PORT=$(echo "$SPRING_DATASOURCE_URL" | sed -n 's|jdbc:postgresql://[^:/]*:\([0-9]*\).*|\1|p')
+  DB_PORT="${DB_PORT:-5432}"
 
-  if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then
+  if [ -n "$DB_HOST" ]; then
     echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT ..."
-    for i in $(seq 1 60); do
-      if nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; then
-        echo "PostgreSQL is available at $DB_HOST:$DB_PORT"
+    attempts=0
+    max_attempts=150
+    until nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; do
+      attempts=$((attempts + 1))
+      if [ "$attempts" -ge "$max_attempts" ]; then
+        echo "PostgreSQL did not become ready after $max_attempts attempts; starting anyway so Swarm can restart the task."
         break
       fi
-      echo "PostgreSQL not ready yet (attempt $i/60), retrying in 2s ..."
+      # Log every 10 attempts (20s) to avoid flooding the logs.
+      if [ $((attempts % 10)) -eq 0 ]; then
+        echo "Still waiting for PostgreSQL at $DB_HOST:$DB_PORT (attempt $attempts/$max_attempts) ..."
+      fi
       sleep 2
     done
+    if nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; then
+      echo "PostgreSQL is available at $DB_HOST:$DB_PORT"
+    fi
   fi
 fi
 

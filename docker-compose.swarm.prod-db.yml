@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Production database stack. Owns the overlay network that the production app
+# stack attaches to as an external network.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - target: 5432
+        published: 5434
+        mode: host
+    secrets:
+      - db_password
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
+      POSTGRES_DB: event_ticket_prod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - type: volume
+        source: postgres_prod_data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d event_ticket_prod"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - event-ticket-network-prod
+
+networks:
+  event-ticket-network-prod:
+    name: event-ticket-network-prod
+    driver: overlay
+    attachable: true
+
+volumes:
+  postgres_prod_data:
+    external: true
+    name: event-ticket-configuration_postgres_prod_data
+
+secrets:
+  db_password:
+    file: /home/event-ticket/secrets/prod/db_password
