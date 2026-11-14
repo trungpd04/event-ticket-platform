@@ -3,6 +3,8 @@ version: '3.8'
 services:
   nginx:
     image: nginx:alpine
+    environment:
+      TZ: Asia/Ho_Chi_Minh
     ports:
       - target: 80
         published: 8080
@@ -53,6 +55,8 @@ services:
   backend:
     image: ghcr.io/${GHCR_OWNER}/event-ticket-be:test
     environment:
+      TZ: Asia/Ho_Chi_Minh
+      JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Ho_Chi_Minh
       SPRING_PROFILES_ACTIVE: test
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/event_ticket_test
     secrets:
@@ -94,6 +98,8 @@ services:
     secrets:
       - db_password
     environment:
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
       POSTGRES_DB: event_ticket_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
