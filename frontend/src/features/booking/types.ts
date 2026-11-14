@@ -73,6 +73,27 @@ export interface MockPayResponse {
   message: string;
 }
 
+export interface PaymentInstruction {
+  provider: string;
+  paymentCode: string;
+  qrUrl?: string;
+  accountNumber?: string;
+  bankCode?: string;
+  bankName?: string;
+  content?: string;
+  amount: number;
+  maxPollCount?: number;
+  frequenceCallApiPoll?: number;
+  redirectUrl?: string;
+  paymentUrl?: string;
+}
+
+export interface PaymentStatus {
+  orderId: number;
+  status: Order['status'];
+  paidAt?: string;
+}
+
 export interface Promotion {
   id: number;
   code: string;
@@ -100,4 +121,7 @@ export interface ValidatePromotionResponse {
 export interface PaymentMethod {
   code: string;
   name: string;
+  description?: string;
+  logoUrl?: string;
+  active?: boolean;
 }
