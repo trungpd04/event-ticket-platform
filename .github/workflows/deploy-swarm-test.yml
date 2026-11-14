@@ -9,8 +9,9 @@ permissions:
   contents: read
   packages: write
 
+# Serialize test and prod deploys because both touch the shared edge stack.
 concurrency:
-  group: deploy-swarm-test
+  group: deploy-swarm
   cancel-in-progress: false
 
 jobs:
@@ -36,8 +37,10 @@ jobs:
               - 'frontend/**'
             infra:
               - 'nginx/nginx.swarm.test.conf'
+              - 'nginx/nginx.swarm.edge.conf'
               - 'docker-compose.swarm.test-app.yml'
               - 'docker-compose.swarm.test-db.yml'
+              - 'docker-compose.swarm.edge.yml'
               - '.github/workflows/deploy-swarm-test.yml'
 
   build-backend:
@@ -65,7 +68,9 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.actor }}/event-ticket-be:test
+          tags: |
+            ghcr.io/${{ github.actor }}/event-ticket-be:test
+            ghcr.io/${{ github.actor }}/event-ticket-be:test-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -94,7 +99,9 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.actor }}/event-ticket-fe:test
+          tags: |
+            ghcr.io/${{ github.actor }}/event-ticket-fe:test
+            ghcr.io/${{ github.actor }}/event-ticket-fe:test-${{ github.sha }}
           build-args: |
             VITE_APP_API_URL=https://test.letticket.live
           cache-from: type=gha
@@ -112,11 +119,16 @@ jobs:
       needs.build-backend.result != 'failure' &&
       needs.build-frontend.result != 'failure'
     runs-on: ubuntu-latest
+    env:
+      BACKEND_CHANGED: ${{ needs.changes.outputs.backend }}
+      FRONTEND_CHANGED: ${{ needs.changes.outputs.frontend }}
+      GIT_SHA: ${{ github.sha }}
+      GHCR_OWNER: ${{ github.actor }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy stack files to server
+      - name: Copy test stack files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -125,12 +137,22 @@ jobs:
           source: "docker-compose.swarm.test-app.yml,docker-compose.swarm.test-db.yml,nginx/nginx.swarm.test.conf"
           target: "/home/event-ticket/event-ticket-configuration/test"
 
+      - name: Copy edge stack files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker-compose.swarm.edge.yml,nginx/nginx.swarm.edge.conf"
+          target: "/home/event-ticket/event-ticket-configuration/edge"
+
       - name: Deploy test stack to Docker Swarm
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
+          envs: BACKEND_CHANGED,FRONTEND_CHANGED,GIT_SHA,GHCR_OWNER
           script: |
             set -e
             cd /home/event-ticket/event-ticket-configuration/test
@@ -160,9 +182,8 @@ jobs:
             cp /home/event-ticket/event-ticket-configuration/test/ssl/test.letticket.live.crt /home/event-ticket/secrets/test/
             cp /home/event-ticket/event-ticket-configuration/test/ssl/test.letticket.live.key /home/event-ticket/secrets/test/
 
-            # One-time migration: remove the old combined stack (nginx + app + db)
-            # if it still exists. Named volumes are external, so the database
-            # data survives this removal.
+            # One-time migration: remove the legacy combined stack (nginx + app + db)
+            # if it still exists. Named volumes are external, so data survives.
             if docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-test'; then
               echo "Removing legacy combined stack event-ticket-test ..."
               docker stack rm event-ticket-test
@@ -172,38 +193,82 @@ jobs:
                 fi
                 sleep 2
               done
-              # Give Docker a moment to release the published ports before the
-              # new DB stack binds them.
-              sleep 5
             fi
 
-            # Ensure the external database volume exists before deploying the DB stack.
+            wait_port_free() {
+              port="$1"
+              for i in $(seq 1 60); do
+                if ! ss -ltn 2>/dev/null | grep -q ":$port "; then
+                  echo "Port $port is free"
+                  return 0
+                fi
+                echo "Waiting for port $port to be released (attempt $i/60) ..."
+                sleep 2
+              done
+              echo "ERROR: port $port is still in use. Current listeners:"
+              ss -ltnp 2>/dev/null | grep ":$port " || true
+              echo "Docker containers publishing this port:"
+              docker ps -a --filter "publish=$port" --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' || true
+              return 1
+            }
+
+            # Both overlay networks are shared infrastructure, created here so
+            # the DB, app and edge stacks can all reference them as external.
+            for net in event-ticket-network-test event-ticket-network-prod; do
+              if ! docker network inspect "$net" >/dev/null 2>&1; then
+                echo "Creating overlay network $net ..."
+                docker network create --driver overlay --attachable "$net"
+              fi
+            done
+
+            # Ensure the external database volume exists (data is preserved).
             if ! docker volume inspect event-ticket-configuration_postgres_test_data >/dev/null 2>&1; then
               docker volume create event-ticket-configuration_postgres_test_data
             fi
 
-            # Render the database stack and deploy it first so its overlay
-            # network exists before the app stack attaches to it.
-            envsubst < docker-compose.swarm.test-db.yml > docker-compose.swarm.test-db.rendered.yml
-            docker stack deploy -c docker-compose.swarm.test-db.rendered.yml event-ticket-test-db --with-registry-auth
-            rm -f docker-compose.swarm.test-db.rendered.yml
+            # Resolve immutable image refs. Changed components use the new
+            # git-SHA tag; unchanged components keep the image currently running.
+            SHORT_SHA="$GIT_SHA"
+            if [ "$BACKEND_CHANGED" = "true" ]; then
+              BE_IMAGE="ghcr.io/$GHCR_OWNER/event-ticket-be:test-$SHORT_SHA"
+            else
+              BE_IMAGE="$(docker service inspect --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' event-ticket-test-app_backend 2>/dev/null || true)"
+              [ -n "$BE_IMAGE" ] || BE_IMAGE="ghcr.io/$GHCR_OWNER/event-ticket-be:test"
+            fi
+            if [ "$FRONTEND_CHANGED" = "true" ]; then
+              FE_IMAGE="ghcr.io/$GHCR_OWNER/event-ticket-fe:test-$SHORT_SHA"
+            else
+              FE_IMAGE="$(docker service inspect --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' event-ticket-test-app_frontend 2>/dev/null || true)"
+              [ -n "$FE_IMAGE" ] || FE_IMAGE="ghcr.io/$GHCR_OWNER/event-ticket-fe:test"
+            fi
+            export BE_IMAGE FE_IMAGE
+            echo "Backend image:  $BE_IMAGE"
+            echo "Frontend image: $FE_IMAGE"
 
-            # Wait for the shared overlay network to be created by the DB stack.
-            for i in $(seq 1 30); do
-              if docker network inspect event-ticket-network-test >/dev/null 2>&1; then
-                break
-              fi
-              echo "Waiting for network event-ticket-network-test ..."
-              sleep 2
-            done
+            # Deploy the database stack first (no host ports, data volume external).
+            docker stack deploy -c docker-compose.swarm.test-db.yml event-ticket-test-db --with-registry-auth
 
-            # Render and deploy the application stack.
-            GHCR_OWNER='${{ github.actor }}' envsubst < docker-compose.swarm.test-app.yml > docker-compose.swarm.test-app.rendered.yml
+            # Deploy the application stack (HTTP only, no host ports).
+            envsubst < docker-compose.swarm.test-app.yml > docker-compose.swarm.test-app.rendered.yml
             docker stack deploy -c docker-compose.swarm.test-app.rendered.yml event-ticket-test-app --with-registry-auth
             rm -f docker-compose.swarm.test-app.rendered.yml
 
-            # Force recreate nginx so it re-reads the bind-mounted config.
+            # The edge stack needs public ports 80/443. On the very first deploy
+            # another stack (for example a not-yet-migrated prod-app) may still
+            # hold them; wait and then fail with diagnostics. On later deploys
+            # the edge itself owns the ports, so skip the wait.
+            if ! docker stack ls --format '{{.Name}}' | grep -qx 'event-ticket-edge'; then
+              wait_port_free 80
+              wait_port_free 443
+            fi
+
+            # Deploy the shared edge gateway last.
+            cd /home/event-ticket/event-ticket-configuration/edge
+            docker stack deploy -c docker-compose.swarm.edge.yml event-ticket-edge --with-registry-auth
+
+            # Force recreate nginx services so they re-read bind-mounted config.
             docker service update --force event-ticket-test-app_nginx
+            docker service update --force event-ticket-edge_nginx
 
             # Show services
             docker service ls

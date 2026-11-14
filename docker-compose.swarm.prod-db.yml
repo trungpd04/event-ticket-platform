@@ -1,15 +1,15 @@
 version: '3.8'
 
-# Production database stack. Owns the overlay network that the production app
-# stack attaches to as an external network.
+# Production database stack. Owns no host ports: PostgreSQL is reachable only
+# over the shared overlay network, never from the internet.
+#
+# The overlay network is external and created by the deploy workflow, so
+# removing/redeploying this stack never touches the network lifecycle.
+# The data volume is external too, so redeploys preserve existing data.
 
 services:
   postgres:
     image: postgres:16-alpine
-    ports:
-      - target: 5432
-        published: 5434
-        mode: host
     secrets:
       - db_password
     environment:
@@ -33,6 +33,11 @@ services:
       placement:
         constraints:
           - node.role == manager
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+        failure_action: rollback
       restart_policy:
         condition: any
         delay: 5s
@@ -42,9 +47,8 @@ services:
 
 networks:
   event-ticket-network-prod:
+    external: true
     name: event-ticket-network-prod
-    driver: overlay
-    attachable: true
 
 volumes:
   postgres_prod_data:

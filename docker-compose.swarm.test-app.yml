@@ -1,33 +1,25 @@
 version: '3.8'
 
 # Test application stack: nginx, frontend, backend.
-# The PostgreSQL database lives in docker-compose.swarm.test-db.yml and owns
-# the shared overlay network `event-ticket-network-test`. This stack only
-# attaches to it as an external network, so deploying the app never restarts
-# the database.
+#
+# - Public TLS is terminated by the shared edge stack (docker-compose.swarm.edge.yml).
+#   This nginx only serves HTTP inside the overlay network, so it publishes no
+#   host ports.
+# - PostgreSQL lives in docker-compose.swarm.test-db.yml; this stack attaches to
+#   the shared overlay network as external.
+# - Image refs are rendered by the deploy workflow so changed components use an
+#   immutable git-SHA tag, while unchanged components keep their current image.
 
 services:
   nginx:
     image: nginx:alpine
     environment:
       TZ: Asia/Ho_Chi_Minh
-    ports:
-      - target: 80
-        published: 8080
-        mode: host
-      - target: 443
-        published: 8443
-        mode: host
     volumes:
       - type: bind
         source: /home/event-ticket/event-ticket-configuration/test/nginx/nginx.swarm.test.conf
         target: /etc/nginx/conf.d/default.conf
         read_only: true
-    secrets:
-      - source: test_ssl_crt
-        target: /etc/nginx/ssl/test.letticket.live.crt
-      - source: test_ssl_key
-        target: /etc/nginx/ssl/test.letticket.live.key
     deploy:
       replicas: 1
       update_config:
@@ -43,9 +35,9 @@ services:
       - event-ticket-network-test
 
   frontend:
-    image: ghcr.io/${GHCR_OWNER}/event-ticket-fe:test
+    image: ${FE_IMAGE}
     environment:
-      VITE_APP_API_URL: https://test.letticket.live:8443
+      TZ: Asia/Ho_Chi_Minh
     deploy:
       replicas: 1
       update_config:
@@ -61,7 +53,7 @@ services:
       - event-ticket-network-test
 
   backend:
-    image: ghcr.io/${GHCR_OWNER}/event-ticket-be:test
+    image: ${BE_IMAGE}
     environment:
       TZ: Asia/Ho_Chi_Minh
       JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Ho_Chi_Minh
@@ -121,7 +113,3 @@ secrets:
     file: /home/event-ticket/secrets/test/cloudinary_api_key
   cloudinary_api_secret:
     file: /home/event-ticket/secrets/test/cloudinary_api_secret
-  test_ssl_crt:
-    file: /home/event-ticket/secrets/test/test.letticket.live.crt
-  test_ssl_key:
-    file: /home/event-ticket/secrets/test/test.letticket.live.key
