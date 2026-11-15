@@ -46,4 +46,19 @@ public class EmailService implements IEmailService {
         }
     }
 
+    @Async("emailTaskExecutor")
+    public void sendPendingEventReminderEmail(String to, String content) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject("Nhắc việc: sự kiện chưa được duyệt trước thời gian mở bán");
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (MessagingException exception) {
+            log.error("Failed to send pending event reminder email to {}", to, exception);
+        }
+    }
+
 }
