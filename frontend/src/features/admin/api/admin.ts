@@ -10,7 +10,10 @@ import {
   PagedResponse,
   SearchAdminEventsParams,
   UpdateEventFeePolicyPayload,
-  UpdateEventStatusPayload
+  UpdateEventStatusPayload,
+  Checker,
+  CreateCheckerPayload,
+  UserStatus
 } from '../types/admin';
 
 // ==============================|| ADMIN API ||============================== //
@@ -63,4 +66,19 @@ export const createFeePolicy = async (payload: Omit<FeePolicy, 'id'>): Promise<F
 export const updateFeePolicy = async (id: number, payload: Omit<FeePolicy, 'id'>): Promise<FeePolicy> => {
   const response = await axios.put(`/api/v1/admin/fee-policies/${id}`, payload);
   return response.data as FeePolicy;
+};
+
+export const getCheckers = async (): Promise<Checker[]> => {
+  const response = await axios.get('/api/v1/admin/checkers');
+  return response.data as Checker[];
+};
+
+export const createChecker = async (payload: CreateCheckerPayload): Promise<Checker> => {
+  const response = await axios.post('/api/v1/admin/checkers', payload);
+  return response.data as Checker;
+};
+
+export const updateCheckerStatus = async (id: number, status: UserStatus): Promise<Checker> => {
+  const response = await axios.put(`/api/v1/admin/checkers/${id}/status`, { status });
+  return response.data as Checker;
 };
