@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT DISTINCT u FROM User u WHERE :role MEMBER OF u.roles AND u.status = :status")
     List<User> findByRoleAndStatus(@Param("role") Role role, @Param("status") UserStatus status);
 
+    @Query("SELECT DISTINCT u FROM User u JOIN u.roles role WHERE role = :role")
+    List<User> findAllByRole(@Param("role") Role role);
+
 }
