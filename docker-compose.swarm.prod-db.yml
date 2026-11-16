@@ -1,7 +1,8 @@
 version: '3.8'
 
-# Production database stack. Port 5434 is published for local administration.
-# The deploy workflow adds a DOCKER-USER rule so only 127.0.0.1 can reach it.
+# Production database stack. PostgreSQL stays internal to the Swarm network. A
+# separate Docker-managed socat tunnel binds 127.0.0.1:5434 for administration
+# without requiring sudo or exposing PostgreSQL publicly.
 #
 # The overlay network is external and created by the deploy workflow, so
 # removing/redeploying this stack never touches the network lifecycle.
@@ -10,11 +11,6 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    ports:
-      - target: 5432
-        published: 5434
-        protocol: tcp
-        mode: host
     secrets:
       - db_password
     environment:
