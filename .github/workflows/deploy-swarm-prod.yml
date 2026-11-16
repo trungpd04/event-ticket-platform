@@ -245,20 +245,18 @@ jobs:
             echo "Backend image:  $BE_IMAGE"
             echo "Frontend image: $FE_IMAGE"
 
-            # Deploy the database stack first (localhost admin port, external data volume).
+            # Deploy the database stack first (internal PostgreSQL, external data volume).
             docker stack deploy -c docker-compose.swarm.prod-db.yml event-ticket-prod-db --with-registry-auth
 
-            # Swarm cannot express a host IP in its published-port syntax.
-            # Restrict the published admin port in DOCKER-USER so it remains
-            # reachable only from localhost and is not exposed to the Internet.
-            if command -v iptables >/dev/null 2>&1; then
-              sudo iptables -C DOCKER-USER -p tcp --dport 5434 ! -s 127.0.0.1 -j DROP 2>/dev/null || \
-                sudo iptables -I DOCKER-USER -p tcp --dport 5434 ! -s 127.0.0.1 -j DROP
-            fi
-            if command -v ip6tables >/dev/null 2>&1; then
-              sudo ip6tables -C DOCKER-USER -p tcp --dport 5434 ! -s ::1 -j DROP 2>/dev/null || \
-                sudo ip6tables -I DOCKER-USER -p tcp --dport 5434 ! -s ::1 -j DROP
-            fi
+            # Provide a localhost-only administration tunnel without sudo.
+            # The tunnel joins the attachable overlay and forwards to the DB
+            # service; the database itself has no published Swarm port.
+            docker rm -f event-ticket-prod-pg-local 2>/dev/null || true
+            docker run -d --restart unless-stopped --name event-ticket-prod-pg-local \
+              --network event-ticket-network-prod \
+              -p 127.0.0.1:5434:5432 \
+              alpine/socat \
+              TCP-LISTEN:5432,fork,reuseaddr TCP:event-ticket-prod-db_postgres:5432
 
             # Deploy the application stack (HTTP only, no host ports).
             envsubst < docker-compose.swarm.prod-app.yml > docker-compose.swarm.prod-app.rendered.yml
