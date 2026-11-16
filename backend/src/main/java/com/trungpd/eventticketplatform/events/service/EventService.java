@@ -142,7 +142,13 @@ public class EventService implements IEventService {
                                                       EventStatus status, TimeFilter timeFilter,
                                                       Long categoryId, Long provinceId,
                                                       Pageable pageable) {
-        Specification<Event> spec = Specification.where(EventSpecification.hasStatus(status));
+        // Public pages may display events while they are published or already ongoing.
+        // Keep an explicit ONGOING request precise, but treat the public default
+        // PUBLISHED filter as "publicly visible" rather than hiding live events.
+        Specification<Event> spec = Specification.where(
+                status == EventStatus.PUBLISHED
+                        ? EventSpecification.hasStatusIn(List.of(EventStatus.PUBLISHED, EventStatus.ONGOING))
+                        : EventSpecification.hasStatus(status));
 
         if (title != null && !title.isBlank()) {
             spec = spec.and(EventSpecification.hasTitle(title));
@@ -165,6 +171,7 @@ public class EventService implements IEventService {
         if (provinceId != null) {
             spec = spec.and(EventSpecification.hasProvince(provinceId));
         }
+        spec = spec.and(EventSpecification.prioritizeTicketSales(LocalDateTime.now()));
 
         Page<Event> page = eventRepository.findAll(spec, pageable);
         Page<EventResponse> responsePage = page.map(eventMapper::toResponse).map(this::enrichEventResponse);
