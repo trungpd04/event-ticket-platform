@@ -174,9 +174,14 @@ jobs:
             echo '${{ secrets.MAIL_PASSWORD }}' > /home/event-ticket/secrets/prod/mail_password
             echo '${{ secrets.ADMIN_EMAIL }}' > /home/event-ticket/secrets/prod/admin_email
             echo '${{ secrets.ADMIN_PASSWORD }}' > /home/event-ticket/secrets/prod/admin_password
-            echo '${{ secrets.CLOUDINARY_CLOUD_NAME }}' > /home/event-ticket/secrets/prod/cloudinary_cloud_name
-            echo '${{ secrets.CLOUDINARY_API_KEY }}' > /home/event-ticket/secrets/prod/cloudinary_api_key
-            echo '${{ secrets.CLOUDINARY_API_SECRET }}' > /home/event-ticket/secrets/prod/cloudinary_api_secret
+             echo '${{ secrets.CLOUDINARY_CLOUD_NAME }}' > /home/event-ticket/secrets/prod/cloudinary_cloud_name
+             echo '${{ secrets.CLOUDINARY_API_KEY }}' > /home/event-ticket/secrets/prod/cloudinary_api_key
+             echo '${{ secrets.CLOUDINARY_API_SECRET }}' > /home/event-ticket/secrets/prod/cloudinary_api_secret
+             echo '${{ secrets.SEPAY_API_KEY }}' > /home/event-ticket/secrets/prod/sepay_api_key
+             echo '${{ secrets.SEPAY_WEBHOOK_SECRET }}' > /home/event-ticket/secrets/prod/sepay_webhook_secret
+             echo '${{ secrets.SEPAY_ACCOUNT_NUMBER }}' > /home/event-ticket/secrets/prod/sepay_account_number
+             echo '${{ secrets.SEPAY_BANK_CODE }}' > /home/event-ticket/secrets/prod/sepay_bank_code
+             echo '${{ secrets.SEPAY_PAYMENT_PREFIX }}' > /home/event-ticket/secrets/prod/sepay_payment_prefix
 
             # Copy SSL certificates to secrets directory
             cp /home/event-ticket/event-ticket-configuration/prod/ssl/letticket.live.crt /home/event-ticket/secrets/prod/

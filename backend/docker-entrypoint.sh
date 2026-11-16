@@ -33,6 +33,21 @@ fi
 if [ -f /run/secrets/cloudinary_api_secret ]; then
   export CLOUDINARY_API_SECRET="$(cat /run/secrets/cloudinary_api_secret)"
 fi
+if [ -f /run/secrets/sepay_api_key ]; then
+  export SEPAY_API_KEY="$(cat /run/secrets/sepay_api_key)"
+fi
+if [ -f /run/secrets/sepay_webhook_secret ]; then
+  export SEPAY_WEBHOOK_SECRET="$(cat /run/secrets/sepay_webhook_secret)"
+fi
+if [ -f /run/secrets/sepay_account_number ]; then
+  export SEPAY_ACCOUNT_NUMBER="$(cat /run/secrets/sepay_account_number)"
+fi
+if [ -f /run/secrets/sepay_bank_code ]; then
+  export SEPAY_BANK_CODE="$(cat /run/secrets/sepay_bank_code)"
+fi
+if [ -f /run/secrets/sepay_payment_prefix ]; then
+  export SEPAY_PAYMENT_PREFIX="$(cat /run/secrets/sepay_payment_prefix)"
+fi
 
 # Wait for PostgreSQL to be reachable before starting the application.
 # Swarm may start the backend before the database service has a DNS entry,

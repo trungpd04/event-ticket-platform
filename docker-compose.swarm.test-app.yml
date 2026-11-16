@@ -59,6 +59,8 @@ services:
       JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Ho_Chi_Minh
       SPRING_PROFILES_ACTIVE: test
       SPRING_DATASOURCE_URL: jdbc:postgresql://event-ticket-test-db_postgres:5432/event_ticket_test
+      PAYMENT_PROVIDER: SEPAY
+      SEPAY_ENABLED: "true"
       SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
     secrets:
@@ -71,6 +73,11 @@ services:
       - cloudinary_cloud_name
       - cloudinary_api_key
       - cloudinary_api_secret
+      - sepay_api_key
+      - sepay_webhook_secret
+      - sepay_account_number
+      - sepay_bank_code
+      - sepay_payment_prefix
     deploy:
       replicas: 1
       update_config:
@@ -115,3 +122,13 @@ secrets:
     file: /home/event-ticket/secrets/test/cloudinary_api_key
   cloudinary_api_secret:
     file: /home/event-ticket/secrets/test/cloudinary_api_secret
+  sepay_api_key:
+    file: /home/event-ticket/secrets/test/sepay_api_key
+  sepay_webhook_secret:
+    file: /home/event-ticket/secrets/test/sepay_webhook_secret
+  sepay_account_number:
+    file: /home/event-ticket/secrets/test/sepay_account_number
+  sepay_bank_code:
+    file: /home/event-ticket/secrets/test/sepay_bank_code
+  sepay_payment_prefix:
+    file: /home/event-ticket/secrets/test/sepay_payment_prefix
