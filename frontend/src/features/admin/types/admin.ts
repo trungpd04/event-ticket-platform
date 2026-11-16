@@ -83,3 +83,21 @@ export interface UpdateEventStatusPayload {
 export interface UpdateEventFeePolicyPayload {
   feePolicyId: number;
 }
+
+export type UserStatus = 'ACTIVE' | 'BANNED';
+
+export interface Checker {
+  id: number;
+  email: string;
+  fullName: string;
+  phone?: string;
+  roles: string[];
+  status: UserStatus;
+}
+
+export interface CreateCheckerPayload {
+  email: string;
+  password: string;
+  fullName: string;
+  phone?: string;
+}

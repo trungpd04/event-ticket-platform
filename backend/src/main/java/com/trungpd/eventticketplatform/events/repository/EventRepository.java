@@ -29,6 +29,8 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 
     List<Event> findByStatusAndEndTimeLessThanEqual(EventStatus status, LocalDateTime now);
 
+    List<Event> findByStatusAndTicketSaleStartTimeAfter(EventStatus status, LocalDateTime now);
+
     List<Event> findBySecretKeyIsNull();
 
     @Query("SELECT e FROM Event e WHERE e.secretKey IS NULL AND e.status IN :statuses")

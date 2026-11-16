@@ -18,3 +18,7 @@ payment:
     account-number: ${SEPAY_ACCOUNT_NUMBER:}
     bank-code: ${SEPAY_BANK_CODE:Vietcombank}
     payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}
+
+app:
+  scheduler:
+    time-zone: ${APP_SCHEDULER_TIME_ZONE:Asia/Ho_Chi_Minh}

@@ -11,6 +11,7 @@ import EventApprovalPage from 'features/admin/pages/EventApprovalPage';
 import EventApprovalDetailPage from 'features/admin/pages/EventApprovalDetailPage';
 import CategoryManagementPage from 'features/admin/pages/CategoryManagementPage';
 import FeePolicyManagementPage from 'features/admin/pages/FeePolicyManagementPage';
+import CheckerManagementPage from 'features/admin/pages/CheckerManagementPage';
 
 // ==============================|| ADMIN ROUTES ||============================== //
 
@@ -47,6 +48,10 @@ const AdminRoutes = {
     {
       path: 'fee-policies',
       element: <FeePolicyManagementPage />
+    },
+    {
+      path: 'checkers',
+      element: <CheckerManagementPage />
     }
   ]
 };
