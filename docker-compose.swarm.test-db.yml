@@ -1,7 +1,7 @@
 version: '3.8'
 
-# Test database stack. Owns no host ports: PostgreSQL is reachable only over
-# the shared overlay network, never from the internet.
+# Test database stack. Port 5433 is published for local administration. The
+# deploy workflow adds a DOCKER-USER rule so only 127.0.0.1 can reach it.
 #
 # The overlay network is external and created by the deploy workflow, so
 # removing/redeploying this stack never touches the network lifecycle.
@@ -10,6 +10,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
+    ports:
+      - target: 5432
+        published: 5433
+        protocol: tcp
+        mode: host
     secrets:
       - db_password
     environment:
