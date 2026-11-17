@@ -23,15 +23,19 @@ public class SePayWebhookController {
 
     private static final String SEPAY_SIGNATURE_HEADER = "X-SePay-Signature";
     private static final String SEPAY_TIMESTAMP_HEADER = "X-SePay-Timestamp";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @PostMapping(value = "/sepay", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Boolean>> handleSePayWebhook(
             @RequestBody String rawPayload,
             @RequestHeader(value = SEPAY_SIGNATURE_HEADER, required = false) String signature,
-            @RequestHeader(value = SEPAY_TIMESTAMP_HEADER, required = false) String timestamp) {
+            @RequestHeader(value = SEPAY_TIMESTAMP_HEADER, required = false) String timestamp,
+            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) String authorization) {
 
         var provider = providerFactory.getProvider(PaymentProviderType.SEPAY);
-        if (!provider.verifyWebhook(rawPayload, signature, timestamp)) {
+        // HMAC uses X-SePay-Signature; API Key authentication uses Authorization.
+        String authenticationHeader = signature != null ? signature : authorization;
+        if (!provider.verifyWebhook(rawPayload, authenticationHeader, timestamp)) {
             log.warn("SePay webhook verification failed");
             return ResponseEntity.status(401).body(Map.of("success", false));
         }
