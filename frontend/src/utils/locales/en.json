@@ -493,6 +493,7 @@
   "paymentSuccess.expired": "Payment expired",
   "paymentSuccess.notFound": "Payment information not found.",
   "paymentSuccess.instructions": "Complete the transfer below. This page will update automatically after the payment is confirmed.",
+  "paymentSuccess.timeRemaining": "Payment time remaining: {minutes}:{seconds}",
   "paymentSuccess.checking": "Checking payment status...",
   "paymentSuccess.pollError": "Unable to check status. Retrying...",
   "paymentSuccess.paymentCode": "Payment code",

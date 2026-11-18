@@ -504,6 +504,7 @@
   "paymentSuccess.expired": "Thanh toán đã hết hạn",
   "paymentSuccess.notFound": "Không tìm thấy thông tin thanh toán.",
   "paymentSuccess.instructions": "Vui lòng chuyển khoản theo thông tin bên dưới. Trang sẽ tự động cập nhật khi giao dịch được xác nhận.",
+  "paymentSuccess.timeRemaining": "Thời gian thanh toán còn lại: {minutes}:{seconds}",
   "paymentSuccess.checking": "Đang kiểm tra trạng thái thanh toán...",
   "paymentSuccess.pollError": "Không thể kiểm tra trạng thái. Đang thử lại...",
   "paymentSuccess.paymentCode": "Mã thanh toán",

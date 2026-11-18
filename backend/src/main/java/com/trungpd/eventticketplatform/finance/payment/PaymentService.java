@@ -9,11 +9,13 @@ import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.orders.entity.Order;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
 import com.trungpd.eventticketplatform.orders.repository.OrderRepository;
+import com.trungpd.eventticketplatform.orders.service.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class PaymentService implements IPaymentService {
     private final PaymentProviderFactory providerFactory;
     private final IPaymentMethodService paymentMethodService;
     private final OrderRepository orderRepository;
+    private final IOrderService orderService;
     private final IUserService userService;
 
     @Transactional
@@ -31,8 +34,11 @@ public class PaymentService implements IPaymentService {
                 .orElseThrow(() -> new NotFoundException("error.order.not-found"));
 
         validateOwner(order, user.getId());
-        validatePending(order);
+        orderService.expireIfPending(orderId, LocalDateTime.now());
+        order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("error.order.not-found"));
         validateNotExpired(order);
+        validatePending(order);
 
         PaymentProviderType providerType = resolveProviderType(order, requestedProvider);
 
@@ -77,18 +83,31 @@ public class PaymentService implements IPaymentService {
         return requestedProvider != null ? requestedProvider : providerFactory.getProvider().getProviderType();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PaymentStatusResponse getPaymentStatus(Long userId, Long orderId) {
         User user = userService.findById(userId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("error.order.not-found"));
 
         validateOwner(order, user.getId());
+        LocalDateTime now = LocalDateTime.now();
+        orderService.expireIfPending(orderId, now);
+        order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("error.order.not-found"));
+
+        Long secondsRemaining = order.getExpiredAt() == null
+                ? null
+                : Math.max(0L, Duration.between(now, order.getExpiredAt()).getSeconds());
+        boolean canPay = order.getStatus() == OrderStatus.PENDING_PAYMENT
+                && (secondsRemaining == null || secondsRemaining > 0);
 
         return PaymentStatusResponse.builder()
                 .orderId(order.getId())
                 .status(order.getStatus())
                 .paidAt(order.getPaidAt())
+                .expiresAt(order.getExpiredAt())
+                .secondsRemaining(secondsRemaining)
+                .canPay(canPay)
                 .build();
     }
 

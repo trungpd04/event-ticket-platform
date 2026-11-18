@@ -92,6 +92,9 @@ export interface PaymentStatus {
   orderId: number;
   status: Order['status'];
   paidAt?: string;
+  expiresAt?: string;
+  secondsRemaining?: number;
+  canPay?: boolean;
 }
 
 export interface Promotion {
