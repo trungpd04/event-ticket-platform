@@ -33,6 +33,11 @@ interface LocationState {
 
 const TERMINAL_STATUSES = new Set(['PAID', 'CANCELLED', 'EXPIRED']);
 
+const getRemainingSeconds = (expiresAt?: string) => {
+  if (!expiresAt) return undefined;
+  return Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000));
+};
+
 // ==============================|| PAYMENT STATUS PAGE ||============================== //
 
 export default function PaymentSuccessPage() {
@@ -45,7 +50,14 @@ export default function PaymentSuccessPage() {
     state.mockPayment
       ? { orderId: state.mockPayment.orderId, status: 'PAID', paidAt: state.mockPayment.paidAt }
       : state.order
-        ? { orderId: state.order.id, status: state.order.status, paidAt: state.order.paidAt }
+        ? {
+            orderId: state.order.id,
+            status: state.order.status,
+            paidAt: state.order.paidAt,
+            expiresAt: state.order.expiredAt,
+            secondsRemaining: getRemainingSeconds(state.order.expiredAt),
+            canPay: state.order.status === 'PENDING_PAYMENT'
+          }
         : null
   );
   const [pollCount, setPollCount] = useState(0);
@@ -54,13 +66,18 @@ export default function PaymentSuccessPage() {
   const instruction = state.payment;
   const isPaid = status?.status === 'PAID';
   const isTerminal = status ? TERMINAL_STATUSES.has(status.status) : false;
-  const maxPollCount = instruction?.maxPollCount || 300;
   const pollInterval = instruction?.frequenceCallApiPoll || 3000;
+  const expiresAt = status?.expiresAt || order?.expiredAt;
+  const remainingSeconds = status?.secondsRemaining ?? getRemainingSeconds(expiresAt);
 
   useEffect(() => {
-    if (!order || state.mockPayment || isTerminal || pollCount >= maxPollCount) return;
+    if (!order || state.mockPayment || isTerminal) return;
 
     let cancelled = false;
+    const remainingMilliseconds = expiresAt ? new Date(expiresAt).getTime() - Date.now() : undefined;
+    const delay = remainingMilliseconds === undefined
+      ? pollInterval
+      : Math.min(pollInterval, Math.max(100, remainingMilliseconds));
     const timer = window.setTimeout(async () => {
       try {
         const nextStatus = await getPaymentStatus(order.id);
@@ -81,13 +98,13 @@ export default function PaymentSuccessPage() {
           setPollCount((current) => current + 1);
         }
       }
-    }, pollInterval);
+    }, delay);
 
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [order, state.mockPayment, isTerminal, pollCount, maxPollCount, pollInterval]);
+  }, [order, state.mockPayment, isTerminal, pollCount, pollInterval, expiresAt]);
 
   const title = useMemo(() => {
     if (isPaid) return intl.formatMessage({ id: 'paymentSuccess.title', defaultMessage: 'Payment successful!' });
@@ -126,13 +143,24 @@ export default function PaymentSuccessPage() {
               </Typography>
 
               {!isPaid && status.status === 'PENDING_PAYMENT' && instruction && (
-                <Stack spacing={2} alignItems="center" sx={{ width: '100%' }}>
-                  <Typography color="text.secondary" textAlign="center">
+                 <Stack spacing={2} alignItems="center" sx={{ width: '100%' }}>
+                   <Typography color="text.secondary" textAlign="center">
                     {intl.formatMessage({
                       id: 'paymentSuccess.instructions',
                       defaultMessage: 'Complete the transfer below. This page will update automatically after the payment is confirmed.'
-                    })}
-                  </Typography>
+                     })}
+                   </Typography>
+                   {remainingSeconds !== undefined && (
+                     <Typography color={remainingSeconds <= 30 ? 'error.main' : 'warning.main'} fontWeight={700}>
+                       {intl.formatMessage(
+                         { id: 'paymentSuccess.timeRemaining', defaultMessage: 'Payment time remaining: {minutes}:{seconds}' },
+                         {
+                           minutes: Math.floor(remainingSeconds / 60).toString().padStart(2, '0'),
+                           seconds: (remainingSeconds % 60).toString().padStart(2, '0')
+                         }
+                       )}
+                     </Typography>
+                   )}
 
                   <Box
                     sx={{

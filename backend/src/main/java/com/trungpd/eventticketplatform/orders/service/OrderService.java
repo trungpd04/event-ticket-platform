@@ -143,6 +143,20 @@ public class OrderService implements IOrderService {
         orderRepository.save(order);
     }
 
+    @Transactional
+    public boolean expireIfPending(Long orderId, LocalDateTime now) {
+        int updated = orderRepository.expirePendingOrder(orderId, now);
+        if (updated == 0) {
+            return false;
+        }
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("error.order.not-found"));
+        release(order);
+        orderRepository.save(order);
+        return true;
+    }
+
     @Transactional(readOnly = true)
     public OrderResponse get(Long userId, Long orderId) {
         User user = userService.findById(userId);

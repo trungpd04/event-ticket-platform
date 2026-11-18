@@ -27,6 +27,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByStatusAndExpiredAtBefore(OrderStatus status, LocalDateTime expiredAt);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+            UPDATE Order o
+            SET o.status = com.trungpd.eventticketplatform.orders.enums.OrderStatus.EXPIRED
+            WHERE o.id = :orderId
+              AND o.status = com.trungpd.eventticketplatform.orders.enums.OrderStatus.PENDING_PAYMENT
+              AND o.expiredAt IS NOT NULL
+              AND o.expiredAt <= :now
+            """)
+    int expirePendingOrder(
+            @Param("orderId") Long orderId,
+            @Param("now") LocalDateTime now);
+
     @Modifying
     @Query("""
             UPDATE Order o

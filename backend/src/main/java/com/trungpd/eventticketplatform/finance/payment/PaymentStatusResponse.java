@@ -15,4 +15,7 @@ public class PaymentStatusResponse {
     private Long orderId;
     private OrderStatus status;
     private LocalDateTime paidAt;
+    private LocalDateTime expiresAt;
+    private Long secondsRemaining;
+    private boolean canPay;
 }

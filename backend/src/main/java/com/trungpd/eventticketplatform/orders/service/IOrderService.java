@@ -7,6 +7,8 @@ import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderResponse;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
 
+import java.time.LocalDateTime;
+
 public interface IOrderService {
 
     OrderResponse createFromReservation(Long userId, CreateOrderRequest request);
@@ -14,6 +16,8 @@ public interface IOrderService {
     MockPaymentResponse mockPay(Long userId, Long orderId, MockPaymentRequest request);
 
     void cancel(Long userId, Long orderId);
+
+    boolean expireIfPending(Long orderId, LocalDateTime now);
 
     OrderResponse get(Long userId, Long orderId);
 
