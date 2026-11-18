@@ -215,40 +215,45 @@ export default function CheckoutPage() {
   }
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: { xs: 4, md: 6 } }}>
-      <Container maxWidth="xl">
-        <Typography variant="h2" fontWeight={800} mb={1}>
+    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', pt: { xs: 10, sm: 11, md: 14 }, pb: { xs: 6, md: 10 } }}>
+      <Container maxWidth="lg">
+        <Typography variant="h3" fontWeight={800} mb={1}>
           {intl.formatMessage({ id: 'checkout.title', defaultMessage: 'Checkout' })}
         </Typography>
         <Typography color="text.secondary" mb={4}>
           {intl.formatMessage({ id: 'checkout.subtitle', defaultMessage: 'Review your reservation and complete payment.' })}
         </Typography>
 
-        <Grid container spacing={4} alignItems="flex-start">
+        <Grid container spacing={{ xs: 2, md: 4 }} alignItems="flex-start">
           <Grid size={{ xs: 12, md: 8 }}>
-            <Card>
-              <CardContent>
+            <Card sx={{ overflow: 'hidden' }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Stack spacing={3}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4" fontWeight={800}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    justifyContent="space-between"
+                    alignItems={{ xs: 'flex-start', sm: 'center' }}
+                    spacing={1}
+                  >
+                    <Typography variant="h4" fontWeight={800} sx={{ overflowWrap: 'anywhere' }}>
                       {event.title}
                     </Typography>
                     {!order && countdown > 0 && (
-                      <Stack direction="row" spacing={1} alignItems="center" color="warning.main">
+                      <Stack direction="row" spacing={1} alignItems="center" color="warning.main" sx={{ flexShrink: 0 }}>
                         <Clock size={20} />
                         <Typography fontWeight={700}>{formatCountdown(countdown)}</Typography>
                       </Stack>
                     )}
                   </Stack>
 
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} flexWrap="wrap" useFlexGap>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Calendar1 size={20} />
-                      <Typography>{formatDateTime(event.startTime, intl.locale)}</Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 3 }} flexWrap="wrap" useFlexGap>
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                      <Calendar1 size={20} style={{ flexShrink: 0 }} />
+                      <Typography sx={{ overflowWrap: 'anywhere' }}>{formatDateTime(event.startTime, intl.locale)}</Typography>
                     </Stack>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Location size={20} />
-                      <Typography>{event.location}</Typography>
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                      <Location size={20} style={{ flexShrink: 0 }} />
+                      <Typography sx={{ overflowWrap: 'anywhere' }}>{event.location}</Typography>
                     </Stack>
                   </Stack>
 
@@ -258,14 +263,22 @@ export default function CheckoutPage() {
                     {intl.formatMessage({ id: 'checkout.tickets', defaultMessage: 'Tickets' })}
                   </Typography>
                   {reservation.items.map((item) => (
-                    <Stack key={item.ticketTypeId} direction="row" justifyContent="space-between" alignItems="center">
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Ticket2 size={18} />
-                        <Typography>
+                    <Stack
+                      key={item.ticketTypeId}
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                        <Ticket2 size={18} style={{ flexShrink: 0 }} />
+                        <Typography sx={{ overflowWrap: 'anywhere' }}>
                           {item.ticketTypeName} x {item.quantity}
                         </Typography>
                       </Stack>
-                      <Typography fontWeight={700}>{formatCurrency(item.subtotal, intl.locale)}</Typography>
+                      <Typography fontWeight={700} sx={{ flexShrink: 0 }}>
+                        {formatCurrency(item.subtotal, intl.locale)}
+                      </Typography>
                     </Stack>
                   ))}
 
@@ -276,7 +289,7 @@ export default function CheckoutPage() {
                       <Typography variant="h6" fontWeight={700}>
                         {intl.formatMessage({ id: 'checkout.promotion', defaultMessage: 'Promotion code' })}
                       </Typography>
-                      <Stack direction="row" spacing={1}>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                         <TextField
                           fullWidth
                           size="small"
@@ -284,7 +297,12 @@ export default function CheckoutPage() {
                           onChange={(e) => setPromotionCode(e.target.value)}
                           placeholder={intl.formatMessage({ id: 'checkout.promotionPlaceholder', defaultMessage: 'Enter code' })}
                         />
-                        <Button variant="outlined" onClick={handleValidatePromotion} disabled={validating || !promotionCode.trim()}>
+                        <Button
+                          variant="outlined"
+                          onClick={handleValidatePromotion}
+                          disabled={validating || !promotionCode.trim()}
+                          sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}
+                        >
                           {validating
                             ? intl.formatMessage({ id: 'checkout.validating', defaultMessage: '...' })
                             : intl.formatMessage({ id: 'checkout.apply', defaultMessage: 'Apply' })}
@@ -329,7 +347,7 @@ export default function CheckoutPage() {
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ position: { md: 'sticky' }, top: 110 }}>
+            <Card sx={{ position: { md: 'sticky' }, top: 24 }}>
               <CardContent>
                 <Stack spacing={2}>
                   <Typography variant="h5" fontWeight={800}>
@@ -384,9 +402,13 @@ export default function CheckoutPage() {
 
 function SummaryRow({ label, value, bold = false }: { label: string; value: string; bold?: boolean }) {
   return (
-    <Stack direction="row" justifyContent="space-between">
-      <Typography color="text.secondary">{label}</Typography>
-      <Typography fontWeight={bold ? 700 : 400}>{value}</Typography>
+    <Stack direction="row" justifyContent="space-between" spacing={2}>
+      <Typography color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>
+        {label}
+      </Typography>
+      <Typography fontWeight={bold ? 700 : 400} sx={{ flexShrink: 0 }}>
+        {value}
+      </Typography>
     </Stack>
   );
 }
