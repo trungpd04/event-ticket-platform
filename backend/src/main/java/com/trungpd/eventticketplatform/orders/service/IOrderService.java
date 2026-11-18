@@ -5,9 +5,11 @@ import com.trungpd.eventticketplatform.orders.dto.request.CreateOrderRequest;
 import com.trungpd.eventticketplatform.orders.dto.request.MockPaymentRequest;
 import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderResponse;
+import com.trungpd.eventticketplatform.orders.dto.response.OrderTicketResponse;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IOrderService {
 
@@ -20,6 +22,8 @@ public interface IOrderService {
     boolean expireIfPending(Long orderId, LocalDateTime now);
 
     OrderResponse get(Long userId, Long orderId);
+
+    List<OrderTicketResponse> tickets(Long userId, Long orderId);
 
     PagedResponse<OrderResponse> myOrders(Long userId, OrderStatus status, int page, int size);
 }

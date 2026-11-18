@@ -121,6 +121,13 @@ export interface ValidatePromotionResponse {
   message?: string;
 }
 
+export interface OrderTicket {
+  id: number;
+  ticketTypeId?: number;
+  ticketTypeName?: string;
+  qrCode?: string;
+}
+
 export interface PaymentMethod {
   code: string;
   name: string;
