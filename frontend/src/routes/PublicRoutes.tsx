@@ -12,6 +12,7 @@ const EventDetailPage = Loadable(lazy(() => import('features/public/pages/EventD
 const CheckoutPage = Loadable(lazy(() => import('features/booking/pages/CheckoutPage')));
 const PaymentSuccessPage = Loadable(lazy(() => import('features/booking/pages/PaymentSuccessPage')));
 const MyOrdersPage = Loadable(lazy(() => import('features/booking/pages/MyOrdersPage')));
+const OrderDetailPage = Loadable(lazy(() => import('features/booking/pages/OrderDetailPage')));
 
 // ==============================|| PUBLIC ROUTES ||============================== //
 
@@ -52,6 +53,14 @@ const PublicRoutes = {
       element: (
         <AuthGuard>
           <MyOrdersPage />
+        </AuthGuard>
+      )
+    },
+    {
+      path: 'my-orders/:orderId',
+      element: (
+        <AuthGuard>
+          <OrderDetailPage />
         </AuthGuard>
       )
     }
