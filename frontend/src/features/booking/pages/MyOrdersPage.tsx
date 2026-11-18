@@ -185,7 +185,12 @@ export default function MyOrdersPage() {
                               </Button>
                             </>
                           )}
-                          <Button variant="text" color="primary" endIcon={<ArrowRight2 size={18} />}>
+                          <Button
+                            variant="text"
+                            color="primary"
+                            endIcon={<ArrowRight2 size={18} />}
+                            onClick={() => navigate(`/my-orders/${order.id}`)}
+                          >
                             {intl.formatMessage({ id: 'myOrders.detail', defaultMessage: 'Detail' })}
                           </Button>
                         </Stack>
