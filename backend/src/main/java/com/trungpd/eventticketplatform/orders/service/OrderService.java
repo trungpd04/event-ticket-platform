@@ -17,6 +17,7 @@ import com.trungpd.eventticketplatform.orders.dto.request.MockPaymentRequest;
 import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderItemResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderResponse;
+import com.trungpd.eventticketplatform.orders.dto.response.OrderTicketResponse;
 import com.trungpd.eventticketplatform.orders.entity.Order;
 import com.trungpd.eventticketplatform.orders.entity.OrderDetail;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
@@ -162,6 +163,58 @@ public class OrderService implements IOrderService {
         User user = userService.findById(userId);
         Order order = findAccessible(orderId, user);
         return toResponse(order);
+    }
+
+    @Transactional
+    public List<OrderTicketResponse> tickets(Long userId, Long orderId) {
+        User user = userService.findById(userId);
+        Order order = findAccessible(orderId, user);
+
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+        if (details.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, TicketType> ticketTypeMap = ticketTypeRepository.findAllById(
+                        details.stream().map(OrderDetail::getTicketTypeId).toList())
+                .stream()
+                .collect(Collectors.toMap(TicketType::getId, Function.identity()));
+
+        Map<Long, Long> ticketTypeByDetailId = details.stream()
+                .collect(Collectors.toMap(OrderDetail::getId, OrderDetail::getTicketTypeId));
+
+        List<Ticket> paidTickets = ticketRepository.findByOrderDetailIdIn(details.stream().map(OrderDetail::getId).toList())
+                .stream()
+                .filter(ticket -> ticket.getStatus() == TicketStatus.PAID)
+                .sorted((a, b) -> a.getId().compareTo(b.getId()))
+                .toList();
+
+        // Legacy tickets generated before the QR feature was introduced may have no code yet.
+        boolean missingQr = paidTickets.stream().anyMatch(ticket -> ticket.getQrCode() == null || ticket.getQrCode().isBlank());
+        Event event = null;
+        if (missingQr) {
+            event = eventRepository.findById(order.getEventId())
+                    .orElseThrow(() -> new NotFoundException("error.event.not-found"));
+            for (Ticket ticket : paidTickets) {
+                if (ticket.getQrCode() == null || ticket.getQrCode().isBlank()) {
+                    ticket.setQrCode(ticketQrService.generate(ticket, order, event));
+                }
+            }
+            ticketRepository.saveAll(paidTickets);
+        }
+
+        return paidTickets.stream()
+                .map(ticket -> {
+                    Long ticketTypeId = ticketTypeByDetailId.get(ticket.getOrderDetailId());
+                    TicketType ticketType = ticketTypeId == null ? null : ticketTypeMap.get(ticketTypeId);
+                    return OrderTicketResponse.builder()
+                            .id(ticket.getId())
+                            .ticketTypeId(ticketTypeId)
+                            .ticketTypeName(ticketType == null ? null : ticketType.getName())
+                            .qrCode(ticket.getQrCode())
+                            .build();
+                })
+                .toList();
     }
 
     @Transactional(readOnly = true)

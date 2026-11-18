@@ -7,6 +7,7 @@ import {
   MockPayRequest,
   MockPayResponse,
   Order,
+  OrderTicket,
   PaymentInstruction,
   PaymentMethod,
   PaymentStatus,
@@ -63,6 +64,11 @@ export const createPaymentInstruction = async (orderId: number, provider?: strin
 export const getPaymentStatus = async (orderId: number): Promise<PaymentStatus> => {
   const response = await axios.get(`/api/v1/orders/${orderId}/payment-status`);
   return response.data as PaymentStatus;
+};
+
+export const getOrderTickets = async (orderId: number): Promise<OrderTicket[]> => {
+  const response = await axios.get(`/api/v1/orders/${orderId}/tickets`);
+  return response.data as OrderTicket[];
 };
 
 export const validatePromotion = async (payload: ValidatePromotionRequest): Promise<ValidatePromotionResponse> => {

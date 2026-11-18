@@ -6,6 +6,7 @@ import com.trungpd.eventticketplatform.orders.dto.request.CreateOrderRequest;
 import com.trungpd.eventticketplatform.orders.dto.request.MockPaymentRequest;
 import com.trungpd.eventticketplatform.orders.dto.response.MockPaymentResponse;
 import com.trungpd.eventticketplatform.orders.dto.response.OrderResponse;
+import com.trungpd.eventticketplatform.orders.dto.response.OrderTicketResponse;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
 import com.trungpd.eventticketplatform.orders.service.IOrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -40,6 +43,13 @@ public class OrderController {
     public ResponseEntity<ApiResponse<OrderResponse>> get(
             @AuthenticationPrincipal Long userId, @PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(orderService.get(userId, id)));
+    }
+
+    @GetMapping("/{id}/tickets")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ORGANIZER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<List<OrderTicketResponse>>> tickets(
+            @AuthenticationPrincipal Long userId, @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(orderService.tickets(userId, id)));
     }
 
     @GetMapping("/my-orders")

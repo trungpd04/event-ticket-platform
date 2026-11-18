@@ -15,26 +15,19 @@ import Typography from '@mui/material/Typography';
 
 // third-party
 import { useIntl } from 'react-intl';
+import { QRCodeSVG } from 'qrcode.react';
 
 // project-imports
 import { getEventDetail } from 'api/events';
 import { openSnackbar } from 'api/snackbar';
-import { cancelOrder, createPaymentInstruction, getOrder, getPaymentMethods } from 'features/booking/api/booking';
+import { cancelOrder, createPaymentInstruction, getOrder, getOrderTickets, getPaymentMethods } from 'features/booking/api/booking';
 import OrderStatusBadge from 'features/booking/components/OrderStatusBadge';
-import { Order } from 'features/booking/types';
+import { Order, OrderTicket } from 'features/booking/types';
 import { EventDetail } from 'types/organizer';
 import { formatCurrency, formatDateTime, formatLocation } from 'utils/format';
 
 // assets
-import {
-  ArrowLeft2,
-  Calendar1,
-  Clock,
-  Location,
-  Receipt21,
-  Ticket2,
-  WalletMoney
-} from 'iconsax-reactjs';
+import { ArrowLeft2, Calendar1, Clock, Location, Receipt21, Ticket2, WalletMoney } from 'iconsax-reactjs';
 
 // ==============================|| ORDER DETAIL PAGE ||============================== //
 
@@ -57,6 +50,8 @@ export default function OrderDetailPage() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [event, setEvent] = useState<EventDetail | null>(null);
+  const [tickets, setTickets] = useState<OrderTicket[]>([]);
+  const [ticketsLoading, setTicketsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [paying, setPaying] = useState(false);
@@ -85,6 +80,20 @@ export default function OrderDetailPage() {
         } catch {
           setEvent(null);
         }
+      }
+
+      if (nextOrder.status === 'PAID') {
+        setTicketsLoading(true);
+        try {
+          const nextTickets = await getOrderTickets(nextOrder.id);
+          setTickets(nextTickets);
+        } catch {
+          setTickets([]);
+        } finally {
+          setTicketsLoading(false);
+        }
+      } else {
+        setTickets([]);
       }
     } catch {
       setNotFound(true);
@@ -283,6 +292,90 @@ export default function OrderDetailPage() {
                   </Stack>
                 </CardContent>
               </Card>
+
+              {order.status === 'PAID' && (ticketsLoading || tickets.length > 0) && (
+                <Card sx={{ overflow: 'hidden' }}>
+                  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                    <Stack spacing={2}>
+                      <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Ticket2 size={22} />
+                        <Typography variant="h5" fontWeight={800}>
+                          {intl.formatMessage({ id: 'orderDetail.yourTickets', defaultMessage: 'Your e-tickets' })}
+                        </Typography>
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary">
+                        {intl.formatMessage({
+                          id: 'orderDetail.qrHint',
+                          defaultMessage: 'Show this QR code at the entrance to check in.'
+                        })}
+                      </Typography>
+                      <Typography variant="caption" color="warning.main">
+                        {intl.formatMessage({
+                          id: 'orderDetail.qrSingleUse',
+                          defaultMessage:
+                            'Each QR code is valid for one entry only. Do not share or screenshot it — repeated scans are logged and may be treated as fraud.'
+                        })}
+                      </Typography>
+
+                      {ticketsLoading && (
+                        <Stack alignItems="center" py={2}>
+                          <CircularProgress size={24} />
+                        </Stack>
+                      )}
+
+                      <Box
+                        sx={{
+                          display: 'grid',
+                          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
+                          gap: 2
+                        }}
+                      >
+                        {tickets.map((ticket) => (
+                          <Stack
+                            key={ticket.id}
+                            spacing={1}
+                            alignItems="center"
+                            sx={{
+                              p: 2,
+                              borderRadius: 2,
+                              border: '1px solid',
+                              borderColor: 'divider',
+                              bgcolor: 'background.paper',
+                              minWidth: 0
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1.5,
+                                borderRadius: 2,
+                                bgcolor: '#fff',
+                                display: 'inline-flex',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            >
+                              {ticket.qrCode ? (
+                                <QRCodeSVG value={ticket.qrCode} size={148} level="M" />
+                              ) : (
+                                <Typography variant="body2" color="error.main">
+                                  {intl.formatMessage({ id: 'orderDetail.qrUnavailable', defaultMessage: 'QR unavailable' })}
+                                </Typography>
+                              )}
+                            </Box>
+                            <Typography fontWeight={700} textAlign="center" sx={{ overflowWrap: 'anywhere' }}>
+                              {ticket.ticketTypeName ||
+                                intl.formatMessage({ id: 'orderDetail.ticket', defaultMessage: 'Ticket' })}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              #{ticket.id}
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
 
               <Card sx={{ overflow: 'hidden' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
