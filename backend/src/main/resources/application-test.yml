@@ -83,3 +83,8 @@ payment:
     account-number: ${SEPAY_ACCOUNT_NUMBER:}
     bank-code: ${SEPAY_BANK_CODE:Vietcombank}
     payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}
+
+app:
+  payout:
+    hold-days: ${APP_PAYOUT_HOLD_DAYS:0}
+    min-amount: ${APP_PAYOUT_MIN_AMOUNT:100000}

@@ -18,6 +18,8 @@ public class OrderResponse {
     private Long totalTicketAmount;
     private Long discountAmount;
     private Long platformFee;
+    private Long platformServiceFee;
+    private Long platformProcessingFee;
     private Long commissionFee;
     private Long finalAmount;
     private LocalDateTime paidAt;

@@ -1,5 +1,5 @@
 // assets
-import { CalendarTick, Ticket2 } from 'iconsax-reactjs';
+import { CalendarTick, MoneySend, Ticket2 } from 'iconsax-reactjs';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -27,6 +27,14 @@ const organizer: NavItemType = {
       url: '/organizer/events/create',
       end: true,
       icon: Ticket2
+    },
+    {
+      id: 'organizer-finance',
+      title: 'organizer.finance.title',
+      type: 'item',
+      url: '/organizer/finance',
+      end: true,
+      icon: MoneySend
     }
   ]
 };

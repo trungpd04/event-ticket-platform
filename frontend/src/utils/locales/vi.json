@@ -1,13 +1,11 @@
 {
   "home": "Trang chủ",
-
   "app.name": "Event Ticket Platform",
   "language.english": "English",
   "language.vietnamese": "Tiếng Việt",
   "language.french": "Français",
   "language.romanian": "Română",
   "language.chinese": "中文",
-
   "sample-page": "Trang mẫu",
   "maintenance": "Bảo trì",
   "error-404": "Lỗi 404",
@@ -17,7 +15,6 @@
   "under-construction": "Đang bảo trì",
   "contact-us": "Liên hệ",
   "pages": "Trang",
-
   "header.home": "Trang chủ",
   "header.events": "Sự kiện",
   "header.login": "Đăng nhập",
@@ -32,12 +29,10 @@
   "header.music": "Ca nhạc",
   "header.theater": "Kịch",
   "header.exhibitions": "Triển lãm",
-
   "category.sports": "Thể thao",
   "category.music": "Ca nhạc",
   "category.theater": "Kịch",
   "category.exhibitions": "Triển lãm",
-
   "footer.copyright": "© 2026 Event Ticket Platform. Mọi quyền được bảo lưu.",
   "footer.description": "Tìm kiếm những khoảnh khắc đáng nhớ. Khám phá, đặt vé và chia sẻ trải nghiệm tiếp theo của bạn.",
   "footer.explore": "Khám phá",
@@ -45,7 +40,6 @@
   "footer.allEvents": "Tất cả sự kiện",
   "footer.categories": "Danh mục",
   "footer.contact": "Liên hệ",
-
   "search.what": "Tìm gì",
   "search.where": "Ở đâu",
   "search.when": "Thời gian",
@@ -54,7 +48,6 @@
   "search.whenPlaceholder": "Ngày",
   "search.button": "Tìm kiếm",
   "search.tab.all": "Tất cả sự kiện",
-
   "home.hero.title": "Bạn muốn tham gia sự kiện nào?",
   "home.hero.subtitle": "Hơn 100 sự kiện tại nhiều thành phố đang chờ bạn khám phá.",
   "home.category.description": "Khám phá những sự kiện {category} hấp dẫn nhất.",
@@ -63,7 +56,6 @@
   "home.card.from": "từ",
   "home.card.priceUnavailable": "Liên hệ để biết giá",
   "home.cta": "Xem tất cả sự kiện",
-
   "auth.brand": "Event",
   "auth.login.title": "Đăng nhập",
   "auth.login.subtitle": "Vui lòng nhập email để đăng nhập",
@@ -75,7 +67,6 @@
   "auth.login.noAccount": "Chưa có tài khoản?",
   "auth.login.createAccount": "Tạo tài khoản",
   "auth.login.failed": "Đăng nhập thất bại",
-
   "auth.register.title": "Đăng ký",
   "auth.register.subtitle": "Tạo tài khoản để bắt đầu",
   "auth.register.firstName": "Họ",
@@ -91,7 +82,6 @@
   "auth.register.login": "Đăng nhập",
   "auth.register.success": "Đăng ký tài khoản thành công.",
   "auth.register.failed": "Đăng ký thất bại",
-
   "auth.forgotPassword.title": "Quên mật khẩu",
   "auth.forgotPassword.subtitle": "Nhập email và chúng tôi sẽ gửi mã OTP để đặt lại mật khẩu",
   "auth.forgotPassword.email": "Email",
@@ -99,7 +89,6 @@
   "auth.forgotPassword.backToLogin": "Quay lại đăng nhập",
   "auth.forgotPassword.success": "OTP đã được gửi đến email của bạn.",
   "auth.forgotPassword.failed": "Gửi OTP thất bại",
-
   "auth.codeVerification.title": "Xác thực",
   "auth.codeVerification.subtitle": "Chúng tôi đã gửi OTP đến",
   "auth.codeVerification.maskedEmail": "email của bạn",
@@ -111,7 +100,6 @@
   "auth.codeVerification.backToLogin": "Quay lại đăng nhập",
   "auth.codeVerification.success": "Xác thực thành công. Đặt mật khẩu mới.",
   "auth.codeVerification.failed": "OTP không hợp lệ",
-
   "auth.resetPassword.title": "Đặt lại mật khẩu",
   "auth.resetPassword.subtitle": "Đặt mật khẩu mới cho tài khoản của bạn",
   "auth.resetPassword.newPassword": "Mật khẩu mới",
@@ -120,21 +108,17 @@
   "auth.resetPassword.backToLogin": "Quay lại đăng nhập",
   "auth.resetPassword.success": "Đặt lại mật khẩu thành công.",
   "auth.resetPassword.failed": "Đặt lại mật khẩu thất bại",
-
   "auth.checkMail.title": "Kiểm tra email của bạn",
   "auth.checkMail.subtitle": "Chúng tôi đã gửi hướng dẫn khôi phục mật khẩu đến email của bạn.",
   "auth.checkMail.button": "Đăng nhập",
-
   "auth.toggle.email": "Email",
   "auth.toggle.phone": "Số điện thoại",
   "auth.divider.default": "Hoặc tiếp tục với",
-
   "validation.required": "{field} là bắt buộc",
   "validation.email": "Email không hợp lệ",
   "validation.passwordMin": "Mật khẩu phải có ít nhất {min} ký tự",
   "validation.passwordMatch": "Mật khẩu không khớp",
   "validation.otpLength": "OTP phải có {length} chữ số",
-
   "createEvent.title": "Tạo sự kiện mới",
   "createEvent.steps.info": "Thông tin",
   "createEvent.steps.tickets": "Vé",
@@ -162,7 +146,6 @@
   "createEvent.requestPublishSuccess": "Đã gửi yêu cầu duyệt sự kiện",
   "createEvent.requestPublishFailed": "Gửi yêu cầu duyệt thất bại",
   "createEvent.summary.pendingReview": "Sự kiện đang chờ quản trị viên xét duyệt.",
-
   "createEvent.eventTitle": "Tên sự kiện",
   "createEvent.description": "Mô tả",
   "createEvent.coverImageUrl": "URL ảnh bìa",
@@ -181,7 +164,6 @@
   "createEvent.province": "Tỉnh / Thành phố",
   "createEvent.ward": "Quận / Huyện",
   "createEvent.selectProvinceFirst": "Chọn tỉnh trước",
-
   "createEvent.eventStartTime": "Thời gian bắt đầu",
   "createEvent.eventEndTime": "Thời gian kết thúc",
   "createEvent.ticketSaleStart": "Bắt đầu bán vé",
@@ -194,17 +176,14 @@
   "createEvent.ticketQuantity": "Số lượng",
   "createEvent.ticketMin": "Tối thiểu",
   "createEvent.ticketMax": "Tối đa",
-
   "createEvent.refundPolicy": "Chính sách hoàn vé",
   "createEvent.ageRestriction": "Giới hạn độ tuổi",
   "createEvent.tags": "Thẻ (phân cách bởi dấu phẩy)",
   "createEvent.publicEvent": "Sự kiện công khai",
-
   "createEvent.bankName": "Tên ngân hàng",
   "createEvent.accountNumber": "Số tài khoản",
   "createEvent.accountHolder": "Chủ tài khoản",
   "createEvent.branch": "Chi nhánh",
-
   "createEvent.summary.created": "Tạo sự kiện thành công!",
   "createEvent.summary.eventId": "Mã sự kiện",
   "createEvent.summary.eventInfo": "Thông tin sự kiện",
@@ -230,7 +209,6 @@
   "createEvent.summary.accountNumber": "Số tài khoản",
   "createEvent.summary.holder": "Chủ tài khoản",
   "createEvent.summary.branch": "Chi nhánh",
-
   "home.categories.title": "Duyệt theo danh mục",
   "home.featured.title": "Sự kiện nổi bật",
   "home.featured.empty": "Chưa có sự kiện nổi bật.",
@@ -294,19 +272,15 @@
   "eventDetail.organizerId": "Ban tổ chức #{id}",
   "eventDetail.chooseTicket": "Chọn vé",
   "eventDetail.phaseNote": "Tính năng chọn vé sẽ được mở ở phase tiếp theo.",
-
   "error404.title": "Không tìm thấy trang",
   "error404.message": "Trang bạn tìm kiếm đã được di chuyển, xóa, đổi tên hoặc không tồn tại!",
   "error404.button": "Về trang chủ",
-
   "error500.title": "Lỗi máy chủ nội bộ",
   "error500.message": "Lỗi máy chủ 500. Chúng tôi đang khắc phục sự cố. Vui lòng thử lại sau.",
   "error500.button": "Về trang chủ",
-
   "underConstruction.title": "Đang bảo trì",
   "underConstruction.message": "Trang web đang được bảo trì. Vui lòng quay lại sau.",
   "underConstruction.button": "Về trang chủ",
-
   "comingSoon.title": "Sắp ra mắt",
   "comingSoon.subtitleBrand": "Able Pro",
   "comingSoon.subtitleRest": "- The Bootstrap Admin Template",
@@ -314,10 +288,8 @@
   "comingSoon.description": "Presenting Material-UI based React Dashboard Template to build performance centric websites and applications.",
   "comingSoon.emailPlaceholder": "Địa chỉ email",
   "comingSoon.button": "Thông báo cho tôi",
-
   "samplePage.title": "Thẻ mẫu",
   "samplePage.body": "Bạn có biết? Able được sử dụng bởi hơn 2.4K+ khách hàng trên toàn thế giới. Phiên bản mới v9 là bản phát hành chính của Able Pro Dashboard Template với giao diện ngườ dùng hiện đại hoàn toàn mới.",
-
   "contact.title": "Liên hệ chuyên gia",
   "contact.subtitle": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   "contact.firstName": "Họ",
@@ -332,7 +304,6 @@
   "contact.terms": "Tôi đồng ý với",
   "contact.termsLink": "Điều khoản & Điều kiện",
   "contact.submit": "Gửi",
-
   "simpleHeader.dashboard": "Bảng điều khiển",
   "simpleHeader.components": "Thành phần",
   "simpleHeader.documentation": "Tài liệu",
@@ -341,7 +312,6 @@
   "simpleHeader.allComponents": "Tất cả thành phần",
   "simpleHeader.freeVersion": "Phiên bản miễn phí",
   "simpleHeader.support": "Hỗ trợ",
-
   "simpleFooter.description": "Phoenixcoded đã nhận được sự tin tưởng của hơn 5.5K+ khách hàng kể từ năm 2015, nhờ cam kết cung cấp sản phẩm chất lượng cao. Đội ngũ nhân viên giàu kinh nghiệm của chúng tôi chịu trách nhiệm quản lý Able Pro.",
   "simpleFooter.company": "Công ty",
   "simpleFooter.helpSupport": "Trợ giúp & Hỗ trợ",
@@ -361,7 +331,6 @@
   "simpleFooter.github": "Github",
   "simpleFooter.dribbble": "Dribbble",
   "simpleFooter.youtube": "Youtube",
-
   "admin": "Quản trị",
   "organizer": "Ban tổ chức",
   "admin.dashboard": "Tổng quan",
@@ -372,12 +341,10 @@
   "admin.eventApproval": "Phê duyệt sự kiện",
   "admin.categories": "Danh mục sự kiện",
   "admin.feePolicies": "Chính sách phí",
-
   "admin.status.pending": "Chờ duyệt",
   "admin.status.pendingReview": "Chờ xét duyệt",
   "admin.status.published": "Đã xuất bản",
   "admin.status.closed": "Đã đóng",
-
   "admin.events.title": "Danh sách sự kiện",
   "admin.events.search": "Tìm kiếm sự kiện",
   "admin.events.filter.all": "Tất cả ({count})",
@@ -404,7 +371,6 @@
   "admin.events.statusUpdateError": "Cập nhật trạng thái thất bại.",
   "admin.events.feePolicyUpdated": "Gán chính sách phí thành công.",
   "admin.events.feePolicyUpdateError": "Gán chính sách phí thất bại.",
-
   "admin.categories.title": "Quản lý danh mục",
   "admin.categories.name": "Tên danh mục",
   "admin.categories.slug": "Slug",
@@ -415,7 +381,6 @@
   "admin.categories.loadError": "Tải danh sách danh mục thất bại.",
   "admin.categories.saveSuccess": "Lưu danh mục thành công.",
   "admin.categories.saveError": "Lưu danh mục thất bại.",
-
   "admin.feePolicies.title": "Quản lý chính sách phí",
   "admin.feePolicies.name": "Tên chính sách",
   "admin.feePolicies.commissionRate": "Tỷ lệ hoa hồng BTC",
@@ -428,7 +393,6 @@
   "admin.feePolicies.loadError": "Tải danh sách chính sách phí thất bại.",
   "admin.feePolicies.saveSuccess": "Lưu chính sách phí thành công.",
   "admin.feePolicies.saveError": "Lưu chính sách phí thất bại.",
-
   "admin.checkers": "Nhân viên soát vé",
   "admin.checkers.title": "Quản lý nhân viên soát vé",
   "admin.checkers.add": "Thêm nhân viên soát vé",
@@ -446,7 +410,6 @@
   "admin.checkers.createError": "Tạo nhân viên soát vé thất bại.",
   "admin.checkers.statusSuccess": "Cập nhật trạng thái nhân viên thành công.",
   "admin.checkers.statusError": "Cập nhật trạng thái nhân viên thất bại.",
-
   "admin.common.loading": "Đang tải...",
   "admin.common.cancel": "Hủy",
   "admin.common.save": "Lưu",
@@ -455,7 +418,6 @@
   "admin.common.detail": "Chi tiết",
   "admin.common.back": "Quay lại",
   "admin.common.actions": "Thao tác",
-
   "organizer.events.title": "Sự kiện của tôi",
   "organizer.events.create": "Tạo sự kiện",
   "organizer.events.search": "Tìm kiếm sự kiện",
@@ -466,12 +428,10 @@
   "organizer.events.requestPublish": "Gửi yêu cầu duyệt",
   "organizer.events.requestPublishSuccess": "Đã gửi yêu cầu duyệt.",
   "organizer.events.requestPublishError": "Gửi yêu cầu duyệt thất bại.",
-
   "eventDetail.bookNow": "Đặt vé — {amount}",
   "eventDetail.processing": "Đang xử lý...",
   "eventDetail.loginRequired": "Vui lòng đăng nhập để đặt vé.",
   "eventDetail.reserveError": "Giữ vé thất bại. Vui lòng thử lại.",
-
   "checkout.title": "Thanh toán",
   "checkout.subtitle": "Kiểm tra vé đã chọn và hoàn tất thanh toán.",
   "checkout.tickets": "Vé",
@@ -497,7 +457,6 @@
   "checkout.cancel": "Hủy đơn hàng",
   "checkout.cancelError": "Hủy đơn hàng thất bại.",
   "checkout.reservationExpired": "Vé giữ chỗ đã hết hạn.",
-
   "paymentSuccess.title": "Thanh toán thành công!",
   "paymentSuccess.pendingTitle": "Đang chờ thanh toán",
   "paymentSuccess.cancelled": "Đơn hàng đã hủy",
@@ -517,7 +476,6 @@
   "paymentSuccess.paidAt": "Thanh toán lúc",
   "paymentSuccess.amount": "Số tiền",
   "paymentSuccess.viewOrders": "Đơn hàng của tôi",
-
   "myOrders.title": "Đơn hàng của tôi",
   "myOrders.loading": "Đang tải...",
   "myOrders.empty": "Không có đơn hàng nào.",
@@ -552,9 +510,56 @@
   "orderDetail.notFoundDescription": "Đơn hàng có thể đã bị xoá hoặc bạn không có quyền xem đơn hàng này.",
   "orderDetail.loadError": "Không thể tải đơn hàng này.",
   "orderDetail.paymentError": "Không thể bắt đầu thanh toán.",
-
   "orderStatus.pendingPayment": "Chờ thanh toán",
   "orderStatus.paid": "Đã thanh toán",
   "orderStatus.cancelled": "Đã hủy",
-  "orderStatus.expired": "Hết hạn"
+  "orderStatus.expired": "Hết hạn",
+  "checkout.serviceFee": "Phí dịch vụ",
+  "checkout.processingFee": "Phí xử lý",
+  "organizer.finance.title": "Tài chính",
+  "organizer.finance.subtitle": "Theo dõi doanh thu sự kiện và yêu cầu chi trả.",
+  "organizer.finance.events": "Doanh thu sự kiện",
+  "organizer.finance.event": "Sự kiện",
+  "organizer.finance.grossRevenue": "Doanh thu gộp",
+  "organizer.finance.commission": "Hoa hồng",
+  "organizer.finance.netRevenue": "Thực nhận",
+  "organizer.finance.status": "Trạng thái chi trả",
+  "organizer.finance.action": "Thao tác",
+  "organizer.finance.requestPayout": "Yêu cầu chi trả",
+  "organizer.finance.requests": "Yêu cầu chi trả",
+  "organizer.finance.noEvents": "Chưa có sự kiện nào.",
+  "organizer.finance.noRequests": "Chưa có yêu cầu chi trả nào.",
+  "organizer.finance.note": "Ghi chú (tùy chọn)",
+  "organizer.finance.confirmRequest": "Gửi yêu cầu",
+  "organizer.finance.bankReady": "Thông tin ngân hàng đã xác minh.",
+  "organizer.finance.notReady": "Chưa đủ điều kiện chi trả.",
+  "organizer.finance.loadError": "Không thể tải dữ liệu tài chính.",
+  "organizer.finance.requestSent": "Đã gửi yêu cầu chi trả.",
+  "organizer.finance.requestError": "Gửi yêu cầu chi trả thất bại.",
+  "organizer.finance.cancel": "Huỷ",
+  "organizer.finance.cancelSuccess": "Đã huỷ yêu cầu chi trả.",
+  "organizer.finance.cancelError": "Huỷ yêu cầu chi trả thất bại.",
+  "adminPayout.title": "Duyệt chi trả",
+  "adminPayout.subtitle": "Xem xét và xử lý yêu cầu chi trả của Organizer.",
+  "adminPayout.status": "Trạng thái",
+  "adminPayout.requestCode": "Mã yêu cầu",
+  "adminPayout.event": "Sự kiện",
+  "adminPayout.platformFee": "Phí nền tảng",
+  "adminPayout.action": "Thao tác",
+  "adminPayout.approve": "Duyệt",
+  "adminPayout.reject": "Từ chối",
+  "adminPayout.markPaid": "Đã chuyển",
+  "adminPayout.approvalNote": "Ghi chú duyệt (tùy chọn)",
+  "adminPayout.rejectionReason": "Lý do từ chối",
+  "adminPayout.transactionRef": "Mã giao dịch",
+  "adminPayout.paidAt": "Thời gian chuyển",
+  "adminPayout.loadError": "Không thể tải yêu cầu chi trả.",
+  "adminPayout.actionSuccess": "Thao tác thành công.",
+  "adminPayout.actionError": "Thao tác thất bại.",
+  "adminPayout.noRequests": "Không có yêu cầu chi trả nào.",
+  "common.cancel": "Huỷ",
+  "common.processing": "Đang xử lý...",
+  "common.all": "Tất cả",
+  "common.view": "Xem",
+  "admin.payouts": "Duyệt chi trả"
 }

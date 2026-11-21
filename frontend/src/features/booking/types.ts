@@ -48,6 +48,8 @@ export interface Order {
   totalTicketAmount: number;
   discountAmount: number;
   platformFee: number;
+  platformServiceFee: number;
+  platformProcessingFee: number;
   commissionFee: number;
   finalAmount: number;
   paidAt?: string;
