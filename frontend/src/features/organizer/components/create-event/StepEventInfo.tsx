@@ -68,8 +68,12 @@ export default function StepEventInfo({
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
-        <Typography variant="h6" fontWeight={700}>Tell people about your event</Typography>
-        <Typography variant="body2" color="text.secondary">Use a clear title, description and cover images so attendees know what to expect.</Typography>
+        <Typography variant="h6" fontWeight={700}>
+          {intl.formatMessage({ id: 'createEvent.eventInfoTitle' })}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {intl.formatMessage({ id: 'createEvent.eventInfoHint' })}
+        </Typography>
       </Grid>
       <Grid size={12}>
         <TextField
@@ -86,7 +90,7 @@ export default function StepEventInfo({
       <Grid size={{ xs: 12, md: 6 }}>
         <ImageUploadField
           label={intl.formatMessage({ id: 'createEvent.thumbnailImage' })}
-          hint="Square image used in event cards"
+          hint={intl.formatMessage({ id: 'createEvent.thumbnailHintLong' })}
           fileType={1}
           value={values.thumbnailFileId}
           previewUrl={values.thumbnailUrl}
@@ -101,7 +105,7 @@ export default function StepEventInfo({
       <Grid size={{ xs: 12, md: 6 }}>
         <ImageUploadField
           label={intl.formatMessage({ id: 'createEvent.bannerImage' })}
-          hint="Wide image used on the event detail page"
+          hint={intl.formatMessage({ id: 'createEvent.bannerHintLong' })}
           fileType={2}
           value={values.bannerFileId}
           previewUrl={values.bannerUrl}

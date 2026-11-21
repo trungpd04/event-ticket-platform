@@ -1,4 +1,5 @@
 // material-ui
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -54,6 +55,15 @@ export default function StepTickets({
 
   return (
     <Grid container spacing={3}>
+      {/* Event time */}
+      <Grid size={12}>
+        <Typography variant="h6" fontWeight={700}>
+          {intl.formatMessage({ id: 'createEvent.eventTimeSection' })}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {intl.formatMessage({ id: 'createEvent.eventTimeHint' })}
+        </Typography>
+      </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           fullWidth
@@ -77,6 +87,20 @@ export default function StepTickets({
           onBlur={handleBlur}
           InputLabelProps={{ shrink: true }}
         />
+      </Grid>
+
+      <Grid size={12}>
+        <Divider />
+      </Grid>
+
+      {/* Ticket sale time */}
+      <Grid size={12}>
+        <Typography variant="h6" fontWeight={700}>
+          {intl.formatMessage({ id: 'createEvent.ticketSaleTimeSection' })}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {intl.formatMessage({ id: 'createEvent.ticketSaleTimeHint' })}
+        </Typography>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
@@ -104,8 +128,15 @@ export default function StepTickets({
       </Grid>
 
       <Grid size={12}>
+        <Divider />
+      </Grid>
+
+      {/* Ticket types */}
+      <Grid size={12}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-          <Typography variant="h5">{intl.formatMessage({ id: 'createEvent.ticketTypes' })}</Typography>
+          <Typography variant="h6" fontWeight={700}>
+            {intl.formatMessage({ id: 'createEvent.ticketTypes' })}
+          </Typography>
           <EventButton variant="outlined" color="primary" onClick={addTicketType}>
             {intl.formatMessage({ id: 'createEvent.addTicketType' })}
           </EventButton>
