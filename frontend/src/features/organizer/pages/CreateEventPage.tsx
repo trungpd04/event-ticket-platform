@@ -268,12 +268,16 @@ export default function CreateEventPage() {
       <Typography variant="h2" mb={1} sx={{ fontWeight: 800, letterSpacing: '-0.06em' }}>
         {intl.formatMessage({ id: 'createEvent.title' })}
       </Typography>
-      <Typography color="text.secondary" mb={4}>Bring your experience to life and reach the right audience.</Typography>
+      <Typography color="text.secondary" mb={4}>
+        {intl.formatMessage({ id: 'createEvent.subtitle' })}
+      </Typography>
 
       <Grid container spacing={4} alignItems="flex-start">
         <Grid size={{ xs: 12, md: 3 }}>
           <Paper sx={{ p: 2.5, position: { md: 'sticky' }, top: 96 }}>
-            <Typography variant="overline" color="text.secondary" fontWeight={700}>CREATE YOUR EVENT</Typography>
+            <Typography variant="overline" color="text.secondary" fontWeight={700}>
+              {intl.formatMessage({ id: 'createEvent.stepperTitle' })}
+            </Typography>
             <Stepper activeStep={activeStep} orientation="vertical" sx={{ mt: 2 }}>
               {stepLabels.map((label, index) => (
                 <Step key={label} completed={activeStep > index}>
@@ -288,8 +292,14 @@ export default function CreateEventPage() {
         <Grid size={{ xs: 12, md: 9 }}>
           <Paper sx={{ p: { xs: 2, md: 4 }, borderRadius: 3 }}>
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h4" fontWeight={700}>{activeStep === steps.length ? 'Event submitted' : stepLabels[activeStep]}</Typography>
-              <Typography color="text.secondary" variant="body2" sx={{ mt: 0.5 }}>Complete each section to submit your event for review.</Typography>
+              <Typography variant="h4" fontWeight={700}>
+                {activeStep === steps.length
+                  ? intl.formatMessage({ id: 'createEvent.eventSubmitted' })
+                  : stepLabels[activeStep]}
+              </Typography>
+              <Typography color="text.secondary" variant="body2" sx={{ mt: 0.5 }}>
+                {intl.formatMessage({ id: 'createEvent.stepDescription' })}
+              </Typography>
             </Box>
             <Divider sx={{ mb: 3 }} />
         <Formik

@@ -1,12 +1,11 @@
 {
-  "home" : "Home",
+  "home": "Home",
   "app.name": "Event Ticket Platform",
   "language.english": "English",
   "language.vietnamese": "Vietnamese",
   "language.french": "French",
   "language.romanian": "Romanian",
   "language.chinese": "Chinese",
-
   "header.home": "Home",
   "header.events": "Events",
   "header.login": "Login",
@@ -21,12 +20,10 @@
   "header.music": "Music",
   "header.theater": "Theater",
   "header.exhibitions": "Exhibitions",
-
   "category.sports": "Sports",
   "category.music": "Music",
   "category.theater": "Theater",
   "category.exhibitions": "Exhibitions",
-
   "footer.copyright": "© 2026 Event Ticket Platform. All rights reserved.",
   "footer.description": "Find the moments worth remembering. Discover, book and share your next experience.",
   "footer.explore": "Explore",
@@ -34,7 +31,6 @@
   "footer.allEvents": "All events",
   "footer.categories": "Categories",
   "footer.contact": "Contact us",
-
   "search.what": "What",
   "search.where": "Where",
   "search.when": "When",
@@ -43,7 +39,6 @@
   "search.whenPlaceholder": "Date",
   "search.button": "Search",
   "search.tab.all": "All events",
-
   "home.hero.title": "What event would you like to go to?",
   "home.hero.subtitle": "More than 100 events in different cities are now available to you.",
   "home.category.description": "Discover the best {category} events.",
@@ -52,7 +47,6 @@
   "home.card.from": "from",
   "home.card.priceUnavailable": "Contact for price",
   "home.cta": "View all events",
-
   "auth.brand": "Event",
   "auth.login.title": "Login",
   "auth.login.subtitle": "Please enter your email to login",
@@ -64,7 +58,6 @@
   "auth.login.noAccount": "New to Event?",
   "auth.login.createAccount": "Create account",
   "auth.login.failed": "Login failed",
-
   "auth.register.title": "Register",
   "auth.register.subtitle": "Create your account to get started",
   "auth.register.firstName": "First Name",
@@ -80,7 +73,6 @@
   "auth.register.login": "Log in",
   "auth.register.success": "Your registration has been successfully completed.",
   "auth.register.failed": "Registration failed",
-
   "auth.forgotPassword.title": "Forgot Password",
   "auth.forgotPassword.subtitle": "Enter your email and we'll send you an OTP to reset your password",
   "auth.forgotPassword.email": "Email",
@@ -88,7 +80,6 @@
   "auth.forgotPassword.backToLogin": "Back to Login",
   "auth.forgotPassword.success": "OTP has been sent to your email.",
   "auth.forgotPassword.failed": "Failed to send OTP",
-
   "auth.codeVerification.title": "Verification",
   "auth.codeVerification.subtitle": "We sent an OTP to",
   "auth.codeVerification.maskedEmail": "your email",
@@ -100,7 +91,6 @@
   "auth.codeVerification.backToLogin": "Back to Login",
   "auth.codeVerification.success": "Verification successful. Set your new password.",
   "auth.codeVerification.failed": "Invalid OTP",
-
   "auth.resetPassword.title": "Reset Password",
   "auth.resetPassword.subtitle": "Set a new password for your account",
   "auth.resetPassword.newPassword": "New password",
@@ -109,21 +99,17 @@
   "auth.resetPassword.backToLogin": "Back to Login",
   "auth.resetPassword.success": "Password reset successfully.",
   "auth.resetPassword.failed": "Password reset failed",
-
   "auth.checkMail.title": "Hi, Check Your Mail",
   "auth.checkMail.subtitle": "We have sent a password recover instructions to your email.",
   "auth.checkMail.button": "Sign in",
-
   "auth.toggle.email": "Email",
   "auth.toggle.phone": "Phone number",
   "auth.divider.default": "Or continue with",
-
   "validation.required": "{field} is required",
   "validation.email": "Must be a valid email",
   "validation.passwordMin": "Password must be at least {min} characters",
   "validation.passwordMatch": "Passwords must match",
   "validation.otpLength": "OTP must be {length} digits",
-
   "createEvent.title": "Create new event",
   "createEvent.steps.info": "Event info",
   "createEvent.steps.tickets": "Tickets",
@@ -151,7 +137,6 @@
   "createEvent.requestPublishSuccess": "Review request has been sent",
   "createEvent.requestPublishFailed": "Failed to send review request",
   "createEvent.summary.pendingReview": "This event is waiting for administrator review.",
-
   "createEvent.eventTitle": "Event title",
   "createEvent.description": "Description",
   "createEvent.coverImageUrl": "Cover image URL",
@@ -170,7 +155,6 @@
   "createEvent.province": "Province / City",
   "createEvent.ward": "District / Ward",
   "createEvent.selectProvinceFirst": "Select province first",
-
   "createEvent.eventStartTime": "Event start time",
   "createEvent.eventEndTime": "Event end time",
   "createEvent.ticketSaleStart": "Ticket sale start",
@@ -183,17 +167,14 @@
   "createEvent.ticketQuantity": "Quantity",
   "createEvent.ticketMin": "Min",
   "createEvent.ticketMax": "Max",
-
   "createEvent.refundPolicy": "Refund policy",
   "createEvent.ageRestriction": "Age restriction",
   "createEvent.tags": "Tags (comma separated)",
   "createEvent.publicEvent": "Public event",
-
   "createEvent.bankName": "Bank name",
   "createEvent.accountNumber": "Account number",
   "createEvent.accountHolder": "Account holder",
   "createEvent.branch": "Branch",
-
   "createEvent.summary.created": "Event created successfully!",
   "createEvent.summary.eventId": "Event ID",
   "createEvent.summary.eventInfo": "Event information",
@@ -219,7 +200,6 @@
   "createEvent.summary.accountNumber": "Account number",
   "createEvent.summary.holder": "Holder",
   "createEvent.summary.branch": "Branch",
-
   "home.categories.title": "Browse by category",
   "home.featured.title": "Featured events",
   "home.featured.empty": "No featured events yet.",
@@ -283,19 +263,15 @@
   "eventDetail.organizerId": "Organizer #{id}",
   "eventDetail.chooseTicket": "Choose tickets",
   "eventDetail.phaseNote": "Ticket selection will be available in the next phase.",
-
   "error404.title": "Page Not Found",
   "error404.message": "The page you are looking was moved, removed, renamed, or might never exist!",
   "error404.button": "Back To Home",
-
   "error500.title": "Internal Server Error",
   "error500.message": "Server error 500. we fixing the problem. please try again at a later stage.",
   "error500.button": "Back To Home",
-
   "underConstruction.title": "Under Construction",
   "underConstruction.message": "Hey! Please check out this site later. We are doing some maintenance on it right now.",
   "underConstruction.button": "Back To Home",
-
   "comingSoon.title": "Coming Soon",
   "comingSoon.subtitleBrand": "Able Pro",
   "comingSoon.subtitleRest": "- The Bootstrap Admin Template",
@@ -303,10 +279,8 @@
   "comingSoon.description": "Presenting Material-UI based React Dashboard Template to build performance centric websites and applications.",
   "comingSoon.emailPlaceholder": "Email Address",
   "comingSoon.button": "Notify Me",
-
   "samplePage.title": "Sample Card",
   "samplePage.body": "Do you Know? Able is used by more than 2.4K+ Customers worldwide. This new v9 version is the major release of Able Pro Dashboard Template with having brand new modern User Interface.",
-
   "contact.title": "Talk to our Expert",
   "contact.subtitle": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   "contact.firstName": "First Name",
@@ -321,7 +295,6 @@
   "contact.terms": "I agree to all the",
   "contact.termsLink": "Terms & Condition",
   "contact.submit": "Submit",
-
   "simpleHeader.dashboard": "Dashboard",
   "simpleHeader.components": "Components",
   "simpleHeader.documentation": "Documentation",
@@ -330,7 +303,6 @@
   "simpleHeader.allComponents": "All Components",
   "simpleHeader.freeVersion": "Free Version",
   "simpleHeader.support": "Support",
-
   "simpleFooter.description": "Phoenixcoded has gained the trust of over 5.5K+ customers since 2015, thanks to our commitment to delivering high-quality products. Our experienced team players are responsible for managing Able Pro.",
   "simpleFooter.company": "Company",
   "simpleFooter.helpSupport": "Help & Support",
@@ -350,7 +322,6 @@
   "simpleFooter.github": "Github",
   "simpleFooter.dribbble": "Dribbble",
   "simpleFooter.youtube": "Youtube",
-
   "admin": "Admin",
   "organizer": "Organizer",
   "admin.dashboard": "Dashboard",
@@ -361,12 +332,10 @@
   "admin.eventApproval": "Event approval",
   "admin.categories": "Event categories",
   "admin.feePolicies": "Fee policies",
-
   "admin.status.pending": "Pending",
   "admin.status.pendingReview": "Pending review",
   "admin.status.published": "Published",
   "admin.status.closed": "Closed",
-
   "admin.events.title": "Events",
   "admin.events.search": "Search events",
   "admin.events.filter.all": "All ({count})",
@@ -393,7 +362,6 @@
   "admin.events.statusUpdateError": "Failed to update status.",
   "admin.events.feePolicyUpdated": "Fee policy assigned successfully.",
   "admin.events.feePolicyUpdateError": "Failed to assign fee policy.",
-
   "admin.categories.title": "Category management",
   "admin.categories.name": "Category name",
   "admin.categories.slug": "Slug",
@@ -404,7 +372,6 @@
   "admin.categories.loadError": "Failed to load categories.",
   "admin.categories.saveSuccess": "Category saved successfully.",
   "admin.categories.saveError": "Failed to save category.",
-
   "admin.feePolicies.title": "Fee policy management",
   "admin.feePolicies.name": "Policy name",
   "admin.feePolicies.commissionRate": "Organizer commission rate",
@@ -417,7 +384,6 @@
   "admin.feePolicies.loadError": "Failed to load fee policies.",
   "admin.feePolicies.saveSuccess": "Fee policy saved successfully.",
   "admin.feePolicies.saveError": "Failed to save fee policy.",
-
   "admin.checkers": "Checkers",
   "admin.checkers.title": "Checker management",
   "admin.checkers.add": "Add checker",
@@ -435,7 +401,6 @@
   "admin.checkers.createError": "Failed to create checker.",
   "admin.checkers.statusSuccess": "Checker status updated successfully.",
   "admin.checkers.statusError": "Failed to update checker status.",
-
   "admin.common.loading": "Loading...",
   "admin.common.cancel": "Cancel",
   "admin.common.save": "Save",
@@ -444,7 +409,6 @@
   "admin.common.detail": "Detail",
   "admin.common.back": "Back",
   "admin.common.actions": "Actions",
-
   "organizer.events.title": "My events",
   "organizer.events.create": "Create event",
   "organizer.events.search": "Search my events",
@@ -455,12 +419,10 @@
   "organizer.events.requestPublish": "Request review",
   "organizer.events.requestPublishSuccess": "Review request sent successfully.",
   "organizer.events.requestPublishError": "Failed to send review request.",
-
   "eventDetail.bookNow": "Book now — {amount}",
   "eventDetail.processing": "Processing...",
   "eventDetail.loginRequired": "Please log in to book tickets.",
   "eventDetail.reserveError": "Failed to reserve tickets. Please try again.",
-
   "checkout.title": "Checkout",
   "checkout.subtitle": "Review your reservation and complete payment.",
   "checkout.tickets": "Tickets",
@@ -486,7 +448,6 @@
   "checkout.cancel": "Cancel order",
   "checkout.cancelError": "Failed to cancel order.",
   "checkout.reservationExpired": "Reservation expired.",
-
   "paymentSuccess.title": "Payment successful!",
   "paymentSuccess.pendingTitle": "Waiting for payment",
   "paymentSuccess.cancelled": "Order cancelled",
@@ -506,7 +467,6 @@
   "paymentSuccess.paidAt": "Paid at",
   "paymentSuccess.amount": "Amount",
   "paymentSuccess.viewOrders": "My orders",
-
   "myOrders.title": "My orders",
   "myOrders.loading": "Loading...",
   "myOrders.empty": "No orders found.",
@@ -541,9 +501,20 @@
   "orderDetail.notFoundDescription": "This order may have been removed or you do not have permission to view it.",
   "orderDetail.loadError": "Unable to load this order.",
   "orderDetail.paymentError": "Unable to start payment.",
-
   "orderStatus.pendingPayment": "Pending payment",
   "orderStatus.paid": "Paid",
   "orderStatus.cancelled": "Cancelled",
-  "orderStatus.expired": "Expired"
+  "orderStatus.expired": "Expired",
+  "createEvent.subtitle": "Bring your experience to life and reach the right audience.",
+  "createEvent.stepperTitle": "CREATE YOUR EVENT",
+  "createEvent.eventSubmitted": "Event submitted",
+  "createEvent.stepDescription": "Complete each section to submit your event for review.",
+  "createEvent.eventInfoTitle": "Tell people about your event",
+  "createEvent.eventInfoHint": "Use a clear title, description and cover images so attendees know what to expect.",
+  "createEvent.thumbnailHintLong": "Square image used in event cards",
+  "createEvent.bannerHintLong": "Wide image used on the event detail page",
+  "createEvent.eventTimeSection": "Event time",
+  "createEvent.eventTimeHint": "Choose when the event will take place.",
+  "createEvent.ticketSaleTimeSection": "Ticket sale time",
+  "createEvent.ticketSaleTimeHint": "Choose the ticket sale window for this event."
 }
