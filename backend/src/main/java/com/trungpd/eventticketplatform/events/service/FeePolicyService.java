@@ -52,6 +52,8 @@ public class FeePolicyService implements IFeePolicyService {
     @CacheEvict(value = "feePolicies", key = "'active'")
     @Transactional
     public FeePolicyResponse createFeePolicy(FeePolicyRequest request) {
+        validateDefaultConsistency(request);
+
         FeePolicy feePolicy = feePolicyMapper.toEntity(request);
 
         if (Boolean.TRUE.equals(request.getIsDefault())) {
@@ -65,10 +67,16 @@ public class FeePolicyService implements IFeePolicyService {
     @CacheEvict(value = "feePolicies", key = "'active'")
     @Transactional
     public FeePolicyResponse updateFeePolicy(Long id, FeePolicyRequest request) {
+        validateDefaultConsistency(request);
+
         FeePolicy feePolicy = feePolicyRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("error.fee-policy.not-found"));
 
         Boolean wasDefault = feePolicy.getIsDefault();
+        Boolean wasActive = feePolicy.getIsActive();
+
+        validateCanRelinquishDefault(id, wasDefault, wasActive, request);
+
         feePolicyMapper.updateEntityFromRequest(request, feePolicy);
 
         if (Boolean.TRUE.equals(request.getIsDefault()) && !Boolean.TRUE.equals(wasDefault)) {
@@ -77,6 +85,34 @@ public class FeePolicyService implements IFeePolicyService {
 
         FeePolicy updated = feePolicyRepository.save(feePolicy);
         return feePolicyMapper.toResponse(updated);
+    }
+
+    private void validateDefaultConsistency(FeePolicyRequest request) {
+        if (Boolean.TRUE.equals(request.getIsDefault()) && !Boolean.TRUE.equals(request.getIsActive())) {
+            throw new BusinessException("error.fee-policy.default-must-be-active");
+        }
+    }
+
+    private void validateCanRelinquishDefault(Long id, Boolean wasDefault, Boolean wasActive,
+                                              FeePolicyRequest request) {
+        boolean isNoLongerDefault = Boolean.TRUE.equals(wasDefault)
+                && !Boolean.TRUE.equals(request.getIsDefault());
+        boolean isBeingDeactivated = Boolean.TRUE.equals(wasDefault)
+                && Boolean.TRUE.equals(wasActive)
+                && !Boolean.TRUE.equals(request.getIsActive());
+
+        if (!isNoLongerDefault && !isBeingDeactivated) {
+            return;
+        }
+
+        boolean hasAnotherActiveDefault = feePolicyRepository
+                .findByIsDefaultTrueAndIsActiveTrue()
+                .map(other -> !other.getId().equals(id))
+                .orElse(false);
+
+        if (!hasAnotherActiveDefault) {
+            throw new BusinessException("error.fee-policy.cannot-deactivate-default");
+        }
     }
 
     private void clearDefaultFlagFromOthers(Long excludeId) {
