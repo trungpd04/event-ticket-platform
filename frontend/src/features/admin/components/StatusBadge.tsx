@@ -30,6 +30,11 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       bg: 'rgba(76, 175, 80, 0.08)',
       label: intl.formatMessage({ id: 'admin.status.published' })
     },
+    ONGOING: {
+      color: 'primary',
+      bg: 'rgba(193, 79, 230, 0.08)',
+      label: intl.formatMessage({ id: 'admin.status.ongoing' })
+    },
     CLOSED: {
       color: 'error',
       bg: 'rgba(244, 67, 54, 0.08)',

@@ -2,6 +2,7 @@ package com.trungpd.eventticketplatform.events.service;
 
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
+import com.trungpd.eventticketplatform.events.dto.request.PublishedEventUpdateRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
@@ -32,7 +33,11 @@ public interface IEventService {
 
     EventDetailResponse getAdminEventDetail(Long id);
 
+    EventDetailResponse getOrganizerEventDetail(Long userId, Long id);
+
     EventResponse updateEvent(Long userId, Long id, UpdateEventRequest request);
+
+    void applyPublishedEventUpdate(Long adminUserId, Event event, PublishedEventUpdateRequest request);
 
     EventResponse requestPublish(Long userId, Long id);
 

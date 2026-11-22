@@ -23,7 +23,7 @@ import { Event } from 'types/organizer';
 import { formatDateTime } from 'utils/format';
 
 // assets
-import { ArrowRight2, Calendar, Location, SearchNormal1, Tag, Ticket2 } from 'iconsax-reactjs';
+import { ArrowRight2, Calendar, Edit2, Location, SearchNormal1, Tag, Ticket2 } from 'iconsax-reactjs';
 
 const PAGE_SIZE = 10;
 
@@ -167,19 +167,31 @@ export default function OrganizerEventsPage() {
                   </Stack>
                 </Stack>
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
-                  {event.status === 'PENDING' && (
+                  {event.status !== 'CLOSED' && (
+                    <Button
+                      variant="text"
+                      color="secondary"
+                      startIcon={<Edit2 size={18} />}
+                      onClick={() => navigate(`/organizer/events/${event.id}/edit`)}
+                    >
+                      {intl.formatMessage({ id: 'organizer.events.edit' })}
+                    </Button>
+                  )}
+                  {['PENDING', 'PENDING_REVIEW'].includes(String(event.status)) && (
                     <Button variant="outlined" color="primary" onClick={() => handleRequestPublish(event.id)}>
                       {intl.formatMessage({ id: 'organizer.events.requestPublish' })}
                     </Button>
                   )}
-                  <Button
-                    variant="text"
-                    color="primary"
-                    endIcon={<ArrowRight2 size={18} />}
-                    onClick={() => navigate(`/events/${event.id}`)}
-                  >
-                    {intl.formatMessage({ id: 'organizer.events.detail' })}
-                  </Button>
+                  {['PUBLISHED', 'ONGOING'].includes(String(event.status)) && (
+                    <Button
+                      variant="text"
+                      color="primary"
+                      endIcon={<ArrowRight2 size={18} />}
+                      onClick={() => navigate(`/events/${event.id}`)}
+                    >
+                      {intl.formatMessage({ id: 'organizer.events.detail' })}
+                    </Button>
+                  )}
                 </Stack>
               </Stack>
             </AdminCard>

@@ -4,12 +4,15 @@ import com.trungpd.eventticketplatform.common.response.ApiResponse;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.common.response.ResponseViews;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
+import com.trungpd.eventticketplatform.events.dto.request.PublishedEventUpdateRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventDetailResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
+import com.trungpd.eventticketplatform.events.dto.response.EventUpdateRequestResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
 import com.trungpd.eventticketplatform.events.service.IEventService;
+import com.trungpd.eventticketplatform.events.service.IEventUpdateRequestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +36,7 @@ import java.time.LocalDateTime;
 public class EventController {
 
     private final IEventService eventService;
+    private final IEventUpdateRequestService eventUpdateRequestService;
 
     @PostMapping
     @PreAuthorize("hasRole('ORGANIZER')")
@@ -78,7 +82,7 @@ public class EventController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateEventRequest request) {
         EventResponse response = eventService.updateEvent(userId, id, request);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success("success.event.updated", response));
     }
 
     @PostMapping("/{id}/request-publish")
@@ -89,6 +93,28 @@ public class EventController {
             @PathVariable Long id) {
         EventResponse response = eventService.requestPublish(userId, id);
         return ResponseEntity.ok(ApiResponse.success("success.operation.completed", response));
+    }
+
+    @PostMapping("/{id}/update-requests")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ApiResponse<EventUpdateRequestResponse>> createEventUpdateRequest(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long id,
+            @Valid @RequestBody PublishedEventUpdateRequest request) {
+        EventUpdateRequestResponse response = eventUpdateRequestService.createEventUpdateRequest(userId, id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("success.event-update-request.created", response));
+    }
+
+    @GetMapping("/{id}/organizer")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @SecurityRequirement(name = "bearerAuth")
+    @JsonView(ResponseViews.Admin.class)
+    public ResponseEntity<ApiResponse<EventDetailResponse>> getOrganizerEventDetail(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long id) {
+        EventDetailResponse response = eventService.getOrganizerEventDetail(userId, id);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/organizer/events")

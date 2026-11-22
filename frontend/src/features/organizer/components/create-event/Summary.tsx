@@ -19,15 +19,16 @@ interface SummaryProps {
   settings: EventSettings;
   bankAccount: BankAccount;
   createdEvent?: any;
+  headingId?: string;
 }
 
-export default function Summary({ event, ticketTypes, settings, bankAccount, createdEvent }: SummaryProps) {
+export default function Summary({ event, ticketTypes, settings, bankAccount, createdEvent, headingId }: SummaryProps) {
   const intl = useIntl();
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
         <Typography variant="h5" color="primary">
-          {intl.formatMessage({ id: 'createEvent.summary.created' })}
+          {intl.formatMessage({ id: headingId || 'createEvent.summary.created' })}
         </Typography>
         <Typography variant="body2" color="warning.main">
           {intl.formatMessage({ id: 'createEvent.summary.pendingReview' })}

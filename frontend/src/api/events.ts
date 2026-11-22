@@ -1,5 +1,5 @@
 import axios from 'utils/axios';
-import { Category, CreateEventPayload, Event, EventDetail, PagedResponse, Province, Ward } from 'types/organizer';
+import { BankAccount, Category, CreateEventPayload, Event, EventDetail, EventSettings, PagedResponse, Province, PublishedEventUpdatePayload, Ward } from 'types/organizer';
 
 // ==============================|| EVENTS API ||============================== //
 
@@ -18,24 +18,37 @@ export const getWards = async (provinceCode: string): Promise<Ward[]> => {
   return response.data as Ward[];
 };
 
+const buildEventBody = (payload: CreateEventPayload) => ({
+  ...payload,
+  categoryId: Number(payload.categoryId),
+  provinceId: Number(payload.provinceId),
+  wardId: Number(payload.wardId),
+  thumbnailFileId: Number(payload.thumbnailFileId),
+  bannerFileId: Number(payload.bannerFileId),
+  ticketTypes: payload.ticketTypes.map((ticket) => ({
+    ...(ticket.ticketTypeId ? { id: ticket.ticketTypeId } : {}),
+    name: ticket.name,
+    description: ticket.description || '',
+    price: Number(ticket.price),
+    totalQuantity: Number(ticket.totalQuantity),
+    minPerOrder: Number(ticket.minPerOrder),
+    maxPerOrder: Number(ticket.maxPerOrder)
+  }))
+});
+
 export const createEvent = async (payload: CreateEventPayload) => {
-  const response = await axios.post('/api/v1/events', {
-    ...payload,
-    categoryId: Number(payload.categoryId),
-    provinceId: Number(payload.provinceId),
-    wardId: Number(payload.wardId),
-    thumbnailFileId: Number(payload.thumbnailFileId),
-    bannerFileId: Number(payload.bannerFileId),
-    ticketTypes: payload.ticketTypes.map((ticket) => ({
-      name: ticket.name,
-      description: ticket.description || '',
-      price: Number(ticket.price),
-      totalQuantity: Number(ticket.totalQuantity),
-      minPerOrder: Number(ticket.minPerOrder),
-      maxPerOrder: Number(ticket.maxPerOrder)
-    }))
-  });
+  const response = await axios.post('/api/v1/events', buildEventBody(payload));
   return response.data;
+};
+
+export const updateEvent = async (eventId: number, payload: CreateEventPayload) => {
+  const response = await axios.put(`/api/v1/events/${eventId}`, buildEventBody(payload));
+  return response.data;
+};
+
+export const getOrganizerEventDetail = async (eventId: number): Promise<EventDetail> => {
+  const response = await axios.get(`/api/v1/events/${eventId}/organizer`);
+  return response.data as EventDetail;
 };
 
 export const requestPublishEvent = async (eventId: number) => {
@@ -88,4 +101,16 @@ export const searchEvents = async (params: SearchEventsParams = {}): Promise<Pag
 
   const response = await axios.get(`/api/v1/events?${searchParams.toString()}`);
   return response.data as PagedResponse<Event>;
+};
+
+export const createEventUpdateRequest = async (eventId: number, payload: PublishedEventUpdatePayload) => {
+  const response = await axios.post(`/api/v1/events/${eventId}/update-requests`, {
+    description: payload.description,
+    thumbnailFileId: payload.thumbnailFileId ? Number(payload.thumbnailFileId) : null,
+    bannerFileId: payload.bannerFileId ? Number(payload.bannerFileId) : null,
+    categoryId: payload.categoryId ? Number(payload.categoryId) : null,
+    settings: payload.settings,
+    payoutInfo: payload.payoutInfo
+  });
+  return response.data;
 };
