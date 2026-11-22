@@ -16,6 +16,9 @@ public class EventUpdateRequestResponse {
     private String eventTitle;
     private Long organizerId;
     private String organizerEmail;
+    private String categoryName;
+    private String thumbnailUrl;
+    private String bannerUrl;
     private PublishedEventUpdateRequest payload;
     private EventUpdateRequestStatus status;
     private String rejectionReason;

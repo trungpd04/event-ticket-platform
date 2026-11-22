@@ -122,6 +122,9 @@ export interface EventUpdateRequest {
   eventTitle?: string;
   organizerId: number;
   organizerEmail?: string;
+  categoryName?: string;
+  thumbnailUrl?: string;
+  bannerUrl?: string;
   payload: EventUpdateRequestPayload;
   status: EventUpdateRequestStatus;
   rejectionReason?: string;

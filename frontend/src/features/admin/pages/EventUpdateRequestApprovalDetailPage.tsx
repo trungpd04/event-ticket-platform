@@ -23,12 +23,13 @@ import AdminCard from 'features/admin/components/AdminCard';
 import EventUpdateRequestStatusBadge from 'features/admin/components/event-update-requests/EventUpdateRequestStatusBadge';
 import {
   approveEventUpdateRequest,
+  getCategoriesAdmin,
   getEventUpdateRequestDetail,
   rejectEventUpdateRequest
 } from 'features/admin/api/admin';
 
 // types
-import { EventUpdateRequest } from 'features/admin/types/admin';
+import { Category, EventUpdateRequest } from 'features/admin/types/admin';
 import { formatDateTime } from 'utils/format';
 
 // ==============================|| EVENT UPDATE REQUEST DETAIL PAGE ||============================== //
@@ -40,6 +41,7 @@ export default function EventUpdateRequestApprovalDetailPage() {
   const requestId = Number(id);
 
   const [request, setRequest] = useState<EventUpdateRequest | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
@@ -48,8 +50,9 @@ export default function EventUpdateRequestApprovalDetailPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const data = await getEventUpdateRequestDetail(requestId);
+      const [data, cats] = await Promise.all([getEventUpdateRequestDetail(requestId), getCategoriesAdmin()]);
       setRequest(data);
+      setCategories(cats);
     } catch {
       openSnackbar({
         open: true,
@@ -176,23 +179,43 @@ export default function EventUpdateRequestApprovalDetailPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 {intl.formatMessage({ id: 'createEvent.category' })}
               </Typography>
-              <Typography>{payload.categoryId}</Typography>
+              <Typography>
+                {request.categoryName || categories.find((c) => c.id === payload.categoryId)?.name || payload.categoryId}
+              </Typography>
             </Grid>
           )}
           {payload.thumbnailFileId !== undefined && (
             <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
                 {intl.formatMessage({ id: 'createEvent.thumbnailImage' })}
               </Typography>
-              <Typography>{payload.thumbnailFileId}</Typography>
+              {request.thumbnailUrl ? (
+                <Box
+                  component="img"
+                  src={request.thumbnailUrl}
+                  alt="thumbnail"
+                  sx={{ maxWidth: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover' }}
+                />
+              ) : (
+                <Typography>File ID: {payload.thumbnailFileId}</Typography>
+              )}
             </Grid>
           )}
           {payload.bannerFileId !== undefined && (
             <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
                 {intl.formatMessage({ id: 'createEvent.bannerImage' })}
               </Typography>
-              <Typography>{payload.bannerFileId}</Typography>
+              {request.bannerUrl ? (
+                <Box
+                  component="img"
+                  src={request.bannerUrl}
+                  alt="banner"
+                  sx={{ maxWidth: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover' }}
+                />
+              ) : (
+                <Typography>File ID: {payload.bannerFileId}</Typography>
+              )}
             </Grid>
           )}
           {payload.settings && (
