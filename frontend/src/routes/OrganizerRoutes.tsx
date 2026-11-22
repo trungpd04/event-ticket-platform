@@ -9,6 +9,7 @@ import RoleGuard from 'utils/route-guard/RoleGuard';
 
 // render - organizer pages
 const CreateEventPage = Loadable(lazy(() => import('features/organizer/pages/CreateEventPage')));
+const EditEventPage = Loadable(lazy(() => import('features/organizer/pages/EditEventPage')));
 const OrganizerEventsPage = Loadable(lazy(() => import('features/organizer/pages/OrganizerEventsPage')));
 
 // ==============================|| ORGANIZER ROUTES ||============================== //
@@ -34,6 +35,10 @@ const OrganizerRoutes = {
     {
       path: 'events/create',
       element: <CreateEventPage />
+    },
+    {
+      path: 'events/:eventId/edit',
+      element: <EditEventPage />
     }
   ]
 };

@@ -65,7 +65,7 @@ export interface PagedResponse<T> {
   last: boolean;
 }
 
-export type EventStatus = 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'CLOSED';
+export type EventStatus = 'PENDING' | 'PENDING_REVIEW' | 'PUBLISHED' | 'ONGOING' | 'CLOSED';
 
 export interface SearchAdminEventsParams {
   title?: string;

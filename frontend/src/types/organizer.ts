@@ -20,6 +20,7 @@ export interface Ward {
 
 export interface TicketType {
   id: string;
+  ticketTypeId?: number;
   name: string;
   price: number;
   totalQuantity: number;
@@ -81,11 +82,16 @@ export interface Event {
 }
 
 export interface EventDetail extends Event {
+  thumbnailFileId?: number;
+  bannerFileId?: number;
   ward?: {
     id: number;
     name: string;
   };
+  wardId?: number;
   ticketTypes: TicketType[];
+  settings?: EventSettings;
+  payoutInfo?: BankAccount;
   activePromotions?: Array<{
     id: number;
     code?: string;
@@ -103,6 +109,15 @@ export interface PagedResponse<T> {
   totalPages: number;
   first: boolean;
   last: boolean;
+}
+
+export interface PublishedEventUpdatePayload {
+  description: string;
+  thumbnailFileId: number | '';
+  bannerFileId: number | '';
+  categoryId: number | '';
+  settings: EventSettings;
+  payoutInfo: BankAccount;
 }
 
 export interface EventWizardState {

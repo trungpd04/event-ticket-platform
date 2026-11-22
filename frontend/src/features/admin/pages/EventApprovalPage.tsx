@@ -36,6 +36,7 @@ export default function EventApprovalPage() {
     PENDING: 0,
     PENDING_REVIEW: 0,
     PUBLISHED: 0,
+    ONGOING: 0,
     CLOSED: 0
   });
 
@@ -54,6 +55,7 @@ export default function EventApprovalPage() {
           PENDING: 0,
           PENDING_REVIEW: pendingReviewRes.totalElements,
           PUBLISHED: publishedRes.totalElements,
+          ONGOING: 0,
           CLOSED: closedRes.totalElements
         });
 

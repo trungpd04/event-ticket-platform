@@ -45,6 +45,9 @@ export default function StepEventInfo({
       setFieldValue('wardId', '');
       return;
     }
+    if (provinces.length === 0) {
+      return;
+    }
     const province = provinces.find((p) => p.id === Number(values.provinceId));
     if (province?.provinceCode) {
       getWards(province.provinceCode)

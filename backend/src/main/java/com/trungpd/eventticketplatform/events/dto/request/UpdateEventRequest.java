@@ -1,9 +1,11 @@
 package com.trungpd.eventticketplatform.events.dto.request;
 
+import com.trungpd.eventticketplatform.ticketing.dto.request.UpdateTicketTypeRequest;
 import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class UpdateEventRequest {
@@ -26,5 +28,8 @@ public class UpdateEventRequest {
 
     @Valid
     private EventPayoutInfoRequest payoutInfo;
+
+    @Valid
+    private List<UpdateTicketTypeRequest> ticketTypes;
 
 }

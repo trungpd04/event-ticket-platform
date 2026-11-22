@@ -8,6 +8,7 @@ import com.trungpd.eventticketplatform.common.storage.enums.FileType;
 import com.trungpd.eventticketplatform.common.storage.service.IFileUploadService;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
 import com.trungpd.eventticketplatform.events.dto.request.CreateEventRequest;
+import com.trungpd.eventticketplatform.events.dto.request.PublishedEventUpdateRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventFeePolicyRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventRequest;
 import com.trungpd.eventticketplatform.events.dto.request.UpdateEventStatusRequest;
@@ -33,6 +34,7 @@ import com.trungpd.eventticketplatform.events.specification.EventSpecification;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.IUserService;
 import com.trungpd.eventticketplatform.ticketing.dto.request.CreateTicketTypeRequest;
+import com.trungpd.eventticketplatform.ticketing.dto.request.UpdateTicketTypeRequest;
 import com.trungpd.eventticketplatform.ticketing.entity.TicketType;
 import com.trungpd.eventticketplatform.ticketing.mapper.TicketTypeMapper;
 import com.trungpd.eventticketplatform.ticketing.repository.TicketTypeRepository;
@@ -228,11 +230,25 @@ public class EventService implements IEventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
 
+        return buildEventDetail(event);
+    }
+
+    @Transactional(readOnly = true)
+    public EventDetailResponse getOrganizerEventDetail(Long userId, Long id) {
+        User user = userService.findById(userId);
+        Event event = findEventById(id);
+
+        validateEventOwnership(event, user.getId());
+
+        return buildEventDetail(event);
+    }
+
+    private EventDetailResponse buildEventDetail(Event event) {
         EventDetailResponse response = eventMapper.toDetailResponse(event);
-        response.setTicketTypes(ticketTypeRepository.findByEventId(id).stream()
+        response.setTicketTypes(ticketTypeRepository.findByEventId(event.getId()).stream()
                 .map(ticketTypeMapper::toResponse)
                 .toList());
-        response.setActivePromotions(getActivePromotions(id));
+        response.setActivePromotions(getActivePromotions(event.getId()));
         return enrichEventDetailResponse(response);
     }
 
@@ -254,7 +270,7 @@ public class EventService implements IEventService {
         LocalDateTime saleEnd = request.getTicketSaleEndTime() != null ? request.getTicketSaleEndTime() : event.getTicketSaleEndTime();
 
         if (timesChanged) {
-            validateEventTimes(startTime, endTime);
+            validateUpdatedEventTimes(startTime, endTime);
         }
         if (timesChanged || saleTimesChanged) {
             validateTicketSalePeriod(saleStart, saleEnd, startTime);
@@ -270,6 +286,73 @@ public class EventService implements IEventService {
         }
         if (request.getWardId() != null) {
             wardService.findById(request.getWardId());
+        }
+
+        Event updated = eventRepository.save(event);
+        updated.setStatus(EventStatus.PENDING_REVIEW);
+        eventRepository.save(updated);
+
+        if (request.getSettings() != null) {
+            EventSetting setting = eventSettingRepository.findById(updated.getId())
+                    .orElseGet(() -> {
+                        EventSetting created = new EventSetting();
+                        created.setEventId(updated.getId());
+                        return created;
+                    });
+            eventSettingMapper.updateEntityFromRequest(request.getSettings(), setting);
+            eventSettingRepository.save(setting);
+        }
+
+        if (request.getPayoutInfo() != null) {
+            EventPayoutInfo payoutInfo = eventPayoutInfoRepository.findByEventId(updated.getId())
+                    .orElseGet(() -> {
+                        EventPayoutInfo created = new EventPayoutInfo();
+                        created.setEventId(updated.getId());
+                        return created;
+                    });
+            eventPayoutInfoMapper.updateEntityFromRequest(request.getPayoutInfo(), payoutInfo);
+            eventPayoutInfoRepository.save(payoutInfo);
+        }
+
+        if (request.getTicketTypes() != null) {
+            syncTicketTypes(updated.getId(), request.getTicketTypes());
+        }
+
+        Long currentThumbnailId = findEventImageFileId(id, FileType.EVENT_THUMBNAIL);
+        Long currentBannerId = findEventImageFileId(id, FileType.BANNER);
+
+        if (request.getThumbnailFileId() != null
+                && !request.getThumbnailFileId().equals(currentThumbnailId)) {
+            if (currentThumbnailId != null) {
+                fileUploadService.unlinkFromEvent(currentThumbnailId);
+            }
+            linkEventImage(updated.getId(), request.getThumbnailFileId(),
+                    FileType.EVENT_THUMBNAIL, user.getEmail());
+        }
+
+        if (request.getBannerFileId() != null
+                && !request.getBannerFileId().equals(currentBannerId)) {
+            if (currentBannerId != null) {
+                fileUploadService.unlinkFromEvent(currentBannerId);
+            }
+            linkEventImage(updated.getId(), request.getBannerFileId(),
+                    FileType.BANNER, user.getEmail());
+        }
+
+        return enrichEventResponse(eventMapper.toResponse(updated));
+    }
+
+    @CacheEvict(value = "events", key = "#event.id")
+    @Transactional
+    public void applyPublishedEventUpdate(Long adminUserId, Event event, PublishedEventUpdateRequest request) {
+        User admin = userService.findById(adminUserId);
+
+        if (request.getDescription() != null) {
+            event.setDescription(request.getDescription());
+        }
+        if (request.getCategoryId() != null) {
+            categoryService.findActiveById(request.getCategoryId());
+            event.setCategoryId(request.getCategoryId());
         }
 
         Event updated = eventRepository.save(event);
@@ -296,8 +379,8 @@ public class EventService implements IEventService {
             eventPayoutInfoRepository.save(payoutInfo);
         }
 
-        Long currentThumbnailId = findEventImageFileId(id, FileType.EVENT_THUMBNAIL);
-        Long currentBannerId = findEventImageFileId(id, FileType.BANNER);
+        Long currentThumbnailId = findEventImageFileId(updated.getId(), FileType.EVENT_THUMBNAIL);
+        Long currentBannerId = findEventImageFileId(updated.getId(), FileType.BANNER);
 
         if (request.getThumbnailFileId() != null
                 && !request.getThumbnailFileId().equals(currentThumbnailId)) {
@@ -305,7 +388,7 @@ public class EventService implements IEventService {
                 fileUploadService.unlinkFromEvent(currentThumbnailId);
             }
             linkEventImage(updated.getId(), request.getThumbnailFileId(),
-                    FileType.EVENT_THUMBNAIL, user.getEmail());
+                    FileType.EVENT_THUMBNAIL, admin.getEmail());
         }
 
         if (request.getBannerFileId() != null
@@ -314,10 +397,8 @@ public class EventService implements IEventService {
                 fileUploadService.unlinkFromEvent(currentBannerId);
             }
             linkEventImage(updated.getId(), request.getBannerFileId(),
-                    FileType.BANNER, user.getEmail());
+                    FileType.BANNER, admin.getEmail());
         }
-
-        return enrichEventResponse(eventMapper.toResponse(updated));
     }
 
     @Transactional
@@ -485,6 +566,15 @@ public class EventService implements IEventService {
         }
     }
 
+    private void validateUpdatedEventTimes(LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime == null || endTime == null) {
+            throw new BusinessException("error.validation.end-time-after-start");
+        }
+        if (!endTime.isAfter(startTime)) {
+            throw new BusinessException("error.validation.end-time-after-start");
+        }
+    }
+
     private void validateTicketSalePeriod(LocalDateTime saleStart, LocalDateTime saleEnd, LocalDateTime eventStart) {
         if (!saleEnd.isAfter(saleStart)) {
             throw new BusinessException("error.event.invalid-sale-period");
@@ -528,9 +618,68 @@ public class EventService implements IEventService {
     }
 
     private void validateEventEditable(Event event) {
-        if (event.getStatus() != EventStatus.PENDING) {
+        if (event.getStatus() != EventStatus.PENDING && event.getStatus() != EventStatus.PENDING_REVIEW) {
             throw new BusinessException("error.event.not-editable");
         }
+    }
+
+    private void syncTicketTypes(Long eventId, List<UpdateTicketTypeRequest> requests) {
+        if (requests.isEmpty()) {
+            throw new BusinessException("error.event.ticket-types.empty");
+        }
+
+        List<TicketType> existing = ticketTypeRepository.findByEventId(eventId);
+        Set<String> names = new HashSet<>();
+        Set<Long> keptIds = new HashSet<>();
+
+        for (UpdateTicketTypeRequest request : requests) {
+            String normalizedName = request.getName() == null
+                    ? ""
+                    : request.getName().trim().toLowerCase(Locale.ROOT);
+            if (!names.add(normalizedName)) {
+                throw new BusinessException("error.event.ticket-types.duplicate-name");
+            }
+
+            int minPerOrder = request.getMinPerOrder() == null ? 1 : request.getMinPerOrder();
+            int maxPerOrder = request.getMaxPerOrder() == null
+                    ? request.getTotalQuantity()
+                    : request.getMaxPerOrder();
+            if (minPerOrder > maxPerOrder || maxPerOrder > request.getTotalQuantity()) {
+                throw new BusinessException("error.ticket-type.order-limit.invalid");
+            }
+
+            TicketType ticketType;
+            if (request.getId() != null) {
+                ticketType = existing.stream()
+                        .filter(item -> item.getId().equals(request.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new BusinessException("error.event.ticket-types.not-found"));
+                keptIds.add(ticketType.getId());
+            } else {
+                ticketType = new TicketType();
+                ticketType.setEventId(eventId);
+            }
+
+            int sold = ticketType.getAvailableQuantity() == null
+                    ? 0
+                    : Math.max(0, ticketType.getTotalQuantity() - ticketType.getAvailableQuantity());
+            if (request.getTotalQuantity() < sold) {
+                throw new BusinessException("error.ticket-type.total-quantity.below-sold");
+            }
+
+            ticketType.setName(request.getName().trim());
+            ticketType.setDescription(request.getDescription());
+            ticketType.setPrice(request.getPrice());
+            ticketType.setTotalQuantity(request.getTotalQuantity());
+            ticketType.setAvailableQuantity(request.getTotalQuantity() - sold);
+            ticketType.setMinPerOrder(minPerOrder);
+            ticketType.setMaxPerOrder(maxPerOrder);
+            ticketTypeRepository.save(ticketType);
+        }
+
+        existing.stream()
+                .filter(item -> !keptIds.contains(item.getId()))
+                .forEach(ticketTypeRepository::delete);
     }
 
     private void validateHasTicketTypes(Long eventId) {
