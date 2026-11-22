@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -31,6 +32,9 @@ import {
 // types
 import { Category, EventUpdateRequest } from 'features/admin/types/admin';
 import { formatDateTime } from 'utils/format';
+
+// assets
+import { Calendar, Profile, Tag, User } from 'iconsax-reactjs';
 
 // ==============================|| EVENT UPDATE REQUEST DETAIL PAGE ||============================== //
 
@@ -129,6 +133,24 @@ export default function EventUpdateRequestApprovalDetailPage() {
   const isPending = request.status === 'PENDING_REVIEW';
   const payload = request.payload;
 
+  const categoryName =
+    request.categoryName || categories.find((c) => c.id === payload.categoryId)?.name || String(payload.categoryId ?? '-');
+
+  const InfoItem = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <Box>
+      <Typography variant="caption" color="text.secondary" fontWeight={600}>
+        {label}
+      </Typography>
+      <Box sx={{ mt: 0.5 }}>{children}</Box>
+    </Box>
+  );
+
+  const SectionTitle = ({ title }: { title: string }) => (
+    <Typography variant="h6" fontWeight={700} mb={2}>
+      {title}
+    </Typography>
+  );
+
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
@@ -138,173 +160,195 @@ export default function EventUpdateRequestApprovalDetailPage() {
         </Button>
       </Stack>
 
+      {/* Overview */}
       <AdminCard sx={{ mb: 3 }}>
-        <Stack spacing={2}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h5" fontWeight={700}>
-              {request.eventTitle || intl.formatMessage({ id: 'admin.eventUpdateRequest.noTitle' })}
-            </Typography>
+        <Grid container spacing={3} alignItems="center">
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Stack spacing={1}>
+              <Typography variant="h4" fontWeight={700}>
+                {request.eventTitle || intl.formatMessage({ id: 'admin.eventUpdateRequest.noTitle' })}
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} color="secondary.800">
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <User size={18} />
+                  <Typography variant="body2">{request.organizerEmail || '-'}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Calendar size={18} />
+                  <Typography variant="body2">{formatDateTime(request.createdAt, intl.locale)}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Tag size={18} />
+                  <Typography variant="body2">Event #{request.eventId}</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: { md: 'right' } }}>
             <EventUpdateRequestStatusBadge status={request.status} />
-          </Box>
-          <Typography variant="body2" color="secondary.800">
-            {intl.formatMessage({ id: 'admin.eventUpdateRequest.eventId' })}: #{request.eventId}
-          </Typography>
-          <Typography variant="body2" color="secondary.800">
-            {intl.formatMessage({ id: 'admin.eventUpdateRequest.organizer' })}: {request.organizerEmail || '-'}
-          </Typography>
-          <Typography variant="body2" color="secondary.800">
-            {intl.formatMessage({ id: 'admin.eventUpdateRequest.createdAt' })}: {formatDateTime(request.createdAt, intl.locale)}
-          </Typography>
-          {request.rejectionReason && (
-            <Alert severity="error">{request.rejectionReason}</Alert>
-          )}
-        </Stack>
-      </AdminCard>
-
-      <AdminCard sx={{ mb: 3 }}>
-        <Typography variant="h6" fontWeight={700} mb={2}>
-          {intl.formatMessage({ id: 'admin.eventUpdateRequest.payload' })}
-        </Typography>
-        <Grid container spacing={2}>
-          {payload.description !== undefined && (
-            <Grid size={12}>
-              <Typography variant="subtitle2" color="text.secondary">
-                {intl.formatMessage({ id: 'createEvent.description' })}
-              </Typography>
-              <Typography whiteSpace="pre-wrap">{payload.description}</Typography>
-            </Grid>
-          )}
-          {payload.categoryId !== undefined && (
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="subtitle2" color="text.secondary">
-                {intl.formatMessage({ id: 'createEvent.category' })}
-              </Typography>
-              <Typography>
-                {request.categoryName || categories.find((c) => c.id === payload.categoryId)?.name || payload.categoryId}
-              </Typography>
-            </Grid>
-          )}
-          {payload.thumbnailFileId !== undefined && (
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
-                {intl.formatMessage({ id: 'createEvent.thumbnailImage' })}
-              </Typography>
-              {request.thumbnailUrl ? (
-                <Box
-                  component="img"
-                  src={request.thumbnailUrl}
-                  alt="thumbnail"
-                  sx={{ maxWidth: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover' }}
-                />
-              ) : (
-                <Typography>File ID: {payload.thumbnailFileId}</Typography>
-              )}
-            </Grid>
-          )}
-          {payload.bannerFileId !== undefined && (
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
-                {intl.formatMessage({ id: 'createEvent.bannerImage' })}
-              </Typography>
-              {request.bannerUrl ? (
-                <Box
-                  component="img"
-                  src={request.bannerUrl}
-                  alt="banner"
-                  sx={{ maxWidth: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover' }}
-                />
-              ) : (
-                <Typography>File ID: {payload.bannerFileId}</Typography>
-              )}
-            </Grid>
-          )}
-          {payload.settings && (
-            <>
-              <Grid size={12}>
-                <Typography variant="subtitle1" fontWeight={700}>
-                  {intl.formatMessage({ id: 'createEvent.steps.settings' })}
-                </Typography>
-              </Grid>
-              {payload.settings.refundPolicy !== undefined && (
-                <Grid size={12}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {intl.formatMessage({ id: 'createEvent.refundPolicy' })}
-                  </Typography>
-                  <Typography whiteSpace="pre-wrap">{payload.settings.refundPolicy}</Typography>
-                </Grid>
-              )}
-              {payload.settings.ageRestriction !== undefined && (
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {intl.formatMessage({ id: 'createEvent.ageRestriction' })}
-                  </Typography>
-                  <Typography>{payload.settings.ageRestriction}</Typography>
-                </Grid>
-              )}
-              {payload.settings.tags !== undefined && (
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {intl.formatMessage({ id: 'createEvent.tags' })}
-                  </Typography>
-                  <Typography>{payload.settings.tags.join(', ')}</Typography>
-                </Grid>
-              )}
-              {payload.settings.isPublic !== undefined && (
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {intl.formatMessage({ id: 'createEvent.publicEvent' })}
-                  </Typography>
-                  <Typography>{payload.settings.isPublic ? 'Yes' : 'No'}</Typography>
-                </Grid>
-              )}
-            </>
-          )}
-          {payload.payoutInfo && (
-            <>
-              <Grid size={12}>
-                <Typography variant="subtitle1" fontWeight={700}>
-                  {intl.formatMessage({ id: 'createEvent.steps.payout' })}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {intl.formatMessage({ id: 'createEvent.bankName' })}
-                </Typography>
-                <Typography>{payload.payoutInfo.bankName}</Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {intl.formatMessage({ id: 'createEvent.accountNumber' })}
-                </Typography>
-                <Typography>{payload.payoutInfo.accountNumber}</Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {intl.formatMessage({ id: 'createEvent.accountHolder' })}
-                </Typography>
-                <Typography>{payload.payoutInfo.accountHolder}</Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {intl.formatMessage({ id: 'createEvent.branch' })}
-                </Typography>
-                <Typography>{payload.payoutInfo.branch}</Typography>
-              </Grid>
-            </>
-          )}
+          </Grid>
         </Grid>
+        {request.rejectionReason && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {request.rejectionReason}
+          </Alert>
+        )}
       </AdminCard>
 
-      {isPending && (
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="outlined" color="error" disabled={processing} onClick={() => setRejectDialogOpen(true)}>
-            {intl.formatMessage({ id: 'admin.eventUpdateRequest.reject' })}
-          </Button>
-          <Button variant="contained" color="primary" disabled={processing} onClick={handleApprove}>
-            {intl.formatMessage({ id: 'admin.eventUpdateRequest.approve' })}
-          </Button>
-        </Stack>
-      )}
+      <Grid container spacing={3}>
+        {/* Basic info */}
+        {(payload.description !== undefined || payload.categoryId !== undefined) && (
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <AdminCard sx={{ height: '100%' }}>
+              <SectionTitle title={intl.formatMessage({ id: 'admin.eventUpdateRequest.section.basicInfo' })} />
+              <Stack spacing={2}>
+                {payload.description !== undefined && (
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.description' })}>
+                    <Typography whiteSpace="pre-wrap">{payload.description}</Typography>
+                  </InfoItem>
+                )}
+                {payload.categoryId !== undefined && (
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.category' })}>
+                    <Typography>{categoryName}</Typography>
+                  </InfoItem>
+                )}
+              </Stack>
+            </AdminCard>
+          </Grid>
+        )}
+
+        {/* Images */}
+        {(payload.thumbnailFileId !== undefined || payload.bannerFileId !== undefined) && (
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <AdminCard sx={{ height: '100%' }}>
+              <SectionTitle title={intl.formatMessage({ id: 'admin.eventUpdateRequest.section.images' })} />
+              <Grid container spacing={2}>
+                {payload.thumbnailFileId !== undefined && (
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <InfoItem label={intl.formatMessage({ id: 'createEvent.thumbnailImage' })}>
+                      {request.thumbnailUrl ? (
+                        <Box
+                          component="img"
+                          src={request.thumbnailUrl}
+                          alt="thumbnail"
+                          sx={{ width: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover', mt: 1 }}
+                        />
+                      ) : (
+                        <Chip label={`File ID: ${payload.thumbnailFileId}`} size="small" sx={{ mt: 1 }} />
+                      )}
+                    </InfoItem>
+                  </Grid>
+                )}
+                {payload.bannerFileId !== undefined && (
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <InfoItem label={intl.formatMessage({ id: 'createEvent.bannerImage' })}>
+                      {request.bannerUrl ? (
+                        <Box
+                          component="img"
+                          src={request.bannerUrl}
+                          alt="banner"
+                          sx={{ width: '100%', maxHeight: 160, borderRadius: 2, objectFit: 'cover', mt: 1 }}
+                        />
+                      ) : (
+                        <Chip label={`File ID: ${payload.bannerFileId}`} size="small" sx={{ mt: 1 }} />
+                      )}
+                    </InfoItem>
+                  </Grid>
+                )}
+              </Grid>
+            </AdminCard>
+          </Grid>
+        )}
+
+        {/* Settings */}
+        {payload.settings && (
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <AdminCard sx={{ height: '100%' }}>
+              <SectionTitle title={intl.formatMessage({ id: 'createEvent.steps.settings' })} />
+              <Stack spacing={2}>
+                {payload.settings.refundPolicy !== undefined && (
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.refundPolicy' })}>
+                    <Typography whiteSpace="pre-wrap">{payload.settings.refundPolicy}</Typography>
+                  </InfoItem>
+                )}
+                <Grid container spacing={2}>
+                  {payload.settings.ageRestriction !== undefined && (
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <InfoItem label={intl.formatMessage({ id: 'createEvent.ageRestriction' })}>
+                        <Typography>{payload.settings.ageRestriction}</Typography>
+                      </InfoItem>
+                    </Grid>
+                  )}
+                  {payload.settings.tags !== undefined && (
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <InfoItem label={intl.formatMessage({ id: 'createEvent.tags' })}>
+                        <Typography>{payload.settings.tags.join(', ')}</Typography>
+                      </InfoItem>
+                    </Grid>
+                  )}
+                </Grid>
+                {payload.settings.isPublic !== undefined && (
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.publicEvent' })}>
+                    <Chip
+                      label={payload.settings.isPublic ? intl.formatMessage({ id: 'admin.common.yes' }) : intl.formatMessage({ id: 'admin.common.no' })}
+                      color={payload.settings.isPublic ? 'success' : 'default'}
+                      size="small"
+                    />
+                  </InfoItem>
+                )}
+              </Stack>
+            </AdminCard>
+          </Grid>
+        )}
+
+        {/* Payout */}
+        {payload.payoutInfo && (
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <AdminCard sx={{ height: '100%' }}>
+              <SectionTitle title={intl.formatMessage({ id: 'createEvent.steps.payout' })} />
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.bankName' })}>
+                    <Typography>{payload.payoutInfo.bankName}</Typography>
+                  </InfoItem>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.accountNumber' })}>
+                    <Typography>{payload.payoutInfo.accountNumber}</Typography>
+                  </InfoItem>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.accountHolder' })}>
+                    <Typography>{payload.payoutInfo.accountHolder}</Typography>
+                  </InfoItem>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <InfoItem label={intl.formatMessage({ id: 'createEvent.branch' })}>
+                    <Typography>{payload.payoutInfo.branch}</Typography>
+                  </InfoItem>
+                </Grid>
+              </Grid>
+            </AdminCard>
+          </Grid>
+        )}
+
+        {/* Actions */}
+        {isPending && (
+          <Grid size={12}>
+            <AdminCard>
+              <SectionTitle title={intl.formatMessage({ id: 'admin.eventUpdateRequest.section.actions' })} />
+              <Stack spacing={2}>
+                <Button variant="contained" color="primary" disabled={processing} onClick={handleApprove} fullWidth size="large">
+                  {intl.formatMessage({ id: 'admin.eventUpdateRequest.approve' })}
+                </Button>
+                <Button variant="outlined" color="error" disabled={processing} onClick={() => setRejectDialogOpen(true)} fullWidth size="large">
+                  {intl.formatMessage({ id: 'admin.eventUpdateRequest.reject' })}
+                </Button>
+              </Stack>
+            </AdminCard>
+          </Grid>
+        )}
+      </Grid>
 
       <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>{intl.formatMessage({ id: 'admin.eventUpdateRequest.rejectTitle' })}</DialogTitle>
