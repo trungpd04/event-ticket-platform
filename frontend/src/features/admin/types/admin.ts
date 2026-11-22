@@ -1,5 +1,8 @@
 // ==============================|| ADMIN - TYPES ||============================== //
 
+// types
+import { BankAccount, EventSettings } from 'types/organizer';
+
 export interface AdminEvent {
   id: number;
   title: string;
@@ -100,4 +103,30 @@ export interface CreateCheckerPayload {
   password: string;
   fullName: string;
   phone?: string;
+}
+
+export type EventUpdateRequestStatus = 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
+
+export interface EventUpdateRequestPayload {
+  description?: string;
+  thumbnailFileId?: number | null;
+  bannerFileId?: number | null;
+  categoryId?: number | null;
+  settings?: EventSettings;
+  payoutInfo?: BankAccount;
+}
+
+export interface EventUpdateRequest {
+  id: number;
+  eventId: number;
+  eventTitle?: string;
+  organizerId: number;
+  organizerEmail?: string;
+  payload: EventUpdateRequestPayload;
+  status: EventUpdateRequestStatus;
+  rejectionReason?: string;
+  reviewedBy?: number;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }

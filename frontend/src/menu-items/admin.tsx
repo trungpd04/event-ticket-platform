@@ -1,5 +1,5 @@
 // assets
-import { CalendarTick, Category2, Element3, Profile2User, ReceiptItem } from 'iconsax-reactjs';
+import { CalendarEdit, CalendarTick, Category2, Element3, Profile2User, ReceiptItem } from 'iconsax-reactjs';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -25,6 +25,13 @@ const admin: NavItemType = {
       type: 'item',
       url: '/admin/events/approval',
       icon: CalendarTick
+    },
+    {
+      id: 'admin-event-update-requests',
+      title: 'admin.eventUpdateRequest.title',
+      type: 'item',
+      url: '/admin/event-update-requests',
+      icon: CalendarEdit
     },
     {
       id: 'admin-categories',
