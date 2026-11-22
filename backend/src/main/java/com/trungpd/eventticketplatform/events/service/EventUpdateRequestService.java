@@ -4,6 +4,7 @@ import com.trungpd.eventticketplatform.common.exception.BusinessException;
 import com.trungpd.eventticketplatform.common.exception.NotFoundException;
 import com.trungpd.eventticketplatform.common.mapper.PaginationMapper;
 import com.trungpd.eventticketplatform.common.response.PagedResponse;
+import com.trungpd.eventticketplatform.common.storage.service.IFileUploadService;
 import com.trungpd.eventticketplatform.events.dto.request.PublishedEventUpdateRequest;
 import com.trungpd.eventticketplatform.events.dto.request.RejectEventUpdateRequest;
 import com.trungpd.eventticketplatform.events.dto.response.EventUpdateRequestResponse;
@@ -13,6 +14,7 @@ import com.trungpd.eventticketplatform.events.entity.EventUpdateRequest;
 import com.trungpd.eventticketplatform.events.entity.EventUpdateRequestStatus;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
 import com.trungpd.eventticketplatform.events.repository.EventUpdateRequestRepository;
+import com.trungpd.eventticketplatform.events.service.ICategoryService;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class EventUpdateRequestService implements IEventUpdateRequestService {
     private final IUserService userService;
     private final IEventService eventService;
     private final PaginationMapper paginationMapper;
+    private final ICategoryService categoryService;
+    private final IFileUploadService fileUploadService;
 
     @Override
     @Transactional
@@ -132,13 +136,28 @@ public class EventUpdateRequestService implements IEventUpdateRequestService {
             log.warn("Could not load organizer for update request {}", request.getId());
         }
 
+        PublishedEventUpdateRequest payload = request.getPayload();
+        String categoryName = null;
+        if (payload != null && payload.getCategoryId() != null) {
+            try {
+                categoryName = categoryService.findById(payload.getCategoryId()).getName();
+            } catch (Exception e) {
+                log.warn("Could not load category {} for update request {}", payload.getCategoryId(), request.getId());
+            }
+        }
+        String thumbnailUrl = resolveFileUrl(payload != null ? payload.getThumbnailFileId() : null);
+        String bannerUrl = resolveFileUrl(payload != null ? payload.getBannerFileId() : null);
+
         return EventUpdateRequestResponse.builder()
                 .id(request.getId())
                 .eventId(request.getEventId())
                 .eventTitle(event != null ? event.getTitle() : null)
                 .organizerId(request.getOrganizerId())
                 .organizerEmail(organizer != null ? organizer.getEmail() : null)
-                .payload(request.getPayload())
+                .categoryName(categoryName)
+                .thumbnailUrl(thumbnailUrl)
+                .bannerUrl(bannerUrl)
+                .payload(payload)
                 .status(request.getStatus())
                 .rejectionReason(request.getRejectionReason())
                 .reviewedBy(request.getReviewedBy())
@@ -146,6 +165,18 @@ public class EventUpdateRequestService implements IEventUpdateRequestService {
                 .createdAt(request.getCreatedAt())
                 .updatedAt(request.getUpdatedAt())
                 .build();
+    }
+
+    private String resolveFileUrl(Long fileId) {
+        if (fileId == null) {
+            return null;
+        }
+        try {
+            return fileUploadService.getFileUrl(fileId);
+        } catch (Exception e) {
+            log.warn("Could not resolve file url for {}", fileId);
+            return null;
+        }
     }
 
 }
