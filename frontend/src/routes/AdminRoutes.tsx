@@ -9,6 +9,8 @@ import RoleGuard from 'utils/route-guard/RoleGuard';
 import AdminDashboardPage from 'features/admin/pages/AdminDashboardPage';
 import EventApprovalPage from 'features/admin/pages/EventApprovalPage';
 import EventApprovalDetailPage from 'features/admin/pages/EventApprovalDetailPage';
+import EventUpdateRequestApprovalPage from 'features/admin/pages/EventUpdateRequestApprovalPage';
+import EventUpdateRequestApprovalDetailPage from 'features/admin/pages/EventUpdateRequestApprovalDetailPage';
 import CategoryManagementPage from 'features/admin/pages/CategoryManagementPage';
 import FeePolicyManagementPage from 'features/admin/pages/FeePolicyManagementPage';
 import CheckerManagementPage from 'features/admin/pages/CheckerManagementPage';
@@ -40,6 +42,14 @@ const AdminRoutes = {
     {
       path: 'events/approval/:id',
       element: <EventApprovalDetailPage />
+    },
+    {
+      path: 'event-update-requests',
+      element: <EventUpdateRequestApprovalPage />
+    },
+    {
+      path: 'event-update-requests/:id',
+      element: <EventUpdateRequestApprovalDetailPage />
     },
     {
       path: 'categories',

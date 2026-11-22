@@ -6,6 +6,7 @@ import {
   AdminEvent,
   AdminEventDetail,
   Category,
+  EventUpdateRequest,
   FeePolicy,
   PagedResponse,
   SearchAdminEventsParams,
@@ -81,4 +82,24 @@ export const createChecker = async (payload: CreateCheckerPayload): Promise<Chec
 export const updateCheckerStatus = async (id: number, status: UserStatus): Promise<Checker> => {
   const response = await axios.put(`/api/v1/admin/checkers/${id}/status`, { status });
   return response.data as Checker;
+};
+
+export const getEventUpdateRequests = async (params: { status?: string; page?: number; size?: number } = {}): Promise<PagedResponse<EventUpdateRequest>> => {
+  const response = await axios.get('/api/v1/admin/event-update-requests', { params });
+  return response.data as PagedResponse<EventUpdateRequest>;
+};
+
+export const getEventUpdateRequestDetail = async (id: number): Promise<EventUpdateRequest> => {
+  const response = await axios.get(`/api/v1/admin/event-update-requests/${id}`);
+  return response.data as EventUpdateRequest;
+};
+
+export const approveEventUpdateRequest = async (id: number): Promise<EventUpdateRequest> => {
+  const response = await axios.post(`/api/v1/admin/event-update-requests/${id}/approve`);
+  return response.data as EventUpdateRequest;
+};
+
+export const rejectEventUpdateRequest = async (id: number, reason: string): Promise<EventUpdateRequest> => {
+  const response = await axios.post(`/api/v1/admin/event-update-requests/${id}/reject`, { rejectionReason: reason });
+  return response.data as EventUpdateRequest;
 };
