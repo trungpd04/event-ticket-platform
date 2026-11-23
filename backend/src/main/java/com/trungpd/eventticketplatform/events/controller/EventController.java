@@ -11,6 +11,8 @@ import com.trungpd.eventticketplatform.events.dto.response.EventResponse;
 import com.trungpd.eventticketplatform.events.dto.response.EventUpdateRequestResponse;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.enums.TimeFilter;
+import com.trungpd.eventticketplatform.events.dto.response.FeePolicyResponse;
+import com.trungpd.eventticketplatform.events.service.IFeePolicyService;
 import com.trungpd.eventticketplatform.events.service.IEventService;
 import com.trungpd.eventticketplatform.events.service.IEventUpdateRequestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,6 +38,7 @@ import java.time.LocalDateTime;
 public class EventController {
 
     private final IEventService eventService;
+    private final IFeePolicyService feePolicyService;
     private final IEventUpdateRequestService eventUpdateRequestService;
 
     @PostMapping
@@ -46,6 +49,14 @@ public class EventController {
             @Valid @RequestBody CreateEventRequest request) {
         EventResponse response = eventService.createEvent(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+    }
+
+    @GetMapping("/fee-policy/default")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ApiResponse<FeePolicyResponse>> getDefaultFeePolicy() {
+        FeePolicyResponse response = feePolicyService.getDefaultActiveFeePolicy();
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping

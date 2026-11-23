@@ -16,6 +16,8 @@ public interface IFeePolicyService {
 
     FeePolicy findDefaultActivePolicy();
 
+    FeePolicyResponse getDefaultActiveFeePolicy();
+
     FeePolicyResponse createFeePolicy(FeePolicyRequest request);
 
     FeePolicyResponse updateFeePolicy(Long id, FeePolicyRequest request);

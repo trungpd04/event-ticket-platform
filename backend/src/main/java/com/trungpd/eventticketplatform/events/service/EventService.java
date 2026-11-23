@@ -419,7 +419,7 @@ public class EventService implements IEventService {
     public EventResponse updateEventFeePolicy(Long id, UpdateEventFeePolicyRequest request) {
         Event event = findEventById(id);
 
-        if (event.getStatus() != EventStatus.PENDING) {
+        if (event.getStatus() != EventStatus.PENDING_REVIEW) {
             throw new BusinessException("error.event.not-editable");
         }
 
@@ -442,7 +442,12 @@ public class EventService implements IEventService {
         validateHasTicketTypes(id);
         ticketService.materializeWarmBatch(id);
 
-        FeePolicy feePolicy = feePolicyService.findActiveById(event.getFeePolicyId());
+        FeePolicy feePolicy;
+        try {
+            feePolicy = feePolicyService.findActiveById(event.getFeePolicyId());
+        } catch (NotFoundException ex) {
+            throw new BusinessException("error.event.fee-policy-inactive");
+        }
         event.setOrganizerCommissionRateSnapshot(feePolicy.getOrganizerCommissionRate());
         event.setCustomerFeeRateSnapshot(feePolicy.getCustomerFeeRate());
         event.setCustomerFlatFeeSnapshot(feePolicy.getCustomerFlatFee());
@@ -618,8 +623,13 @@ public class EventService implements IEventService {
     }
 
     private void validateEventEditable(Event event) {
-        if (event.getStatus() != EventStatus.PENDING && event.getStatus() != EventStatus.PENDING_REVIEW) {
+        if (event.getStatus() != EventStatus.PENDING_REVIEW && event.getStatus() != EventStatus.PENDING) {
             throw new BusinessException("error.event.not-editable");
+        }
+
+        if (event.getTicketSaleStartTime() != null
+                && !LocalDateTime.now().isBefore(event.getTicketSaleStartTime())) {
+            throw new BusinessException("error.event.sale-already-started");
         }
     }
 
