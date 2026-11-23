@@ -49,6 +49,12 @@ public class FeePolicyService implements IFeePolicyService {
                 .orElseThrow(() -> new BusinessException("error.fee-policy.no-default"));
     }
 
+    @Transactional(readOnly = true)
+    public FeePolicyResponse getDefaultActiveFeePolicy() {
+        FeePolicy feePolicy = findDefaultActivePolicy();
+        return feePolicyMapper.toResponse(feePolicy);
+    }
+
     @CacheEvict(value = "feePolicies", key = "'active'")
     @Transactional
     public FeePolicyResponse createFeePolicy(FeePolicyRequest request) {
