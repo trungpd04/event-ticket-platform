@@ -63,18 +63,20 @@ public class EventController {
     @JsonView(ResponseViews.Public.class)
     public ResponseEntity<ApiResponse<PagedResponse<EventResponse>>> searchEvents(
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
             @RequestParam(defaultValue = "PUBLISHED") EventStatus status,
             @RequestParam(required = false) TimeFilter timeFilter,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Long provinceId,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         PagedResponse<EventResponse> response = eventService.searchEvents(
-                title, location, fromDate, toDate, status, timeFilter, categoryId, provinceId, pageable);
+                title, fromDate, toDate, status, timeFilter,
+                categoryId, provinceId, minPrice, maxPrice, pageable);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

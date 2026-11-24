@@ -73,7 +73,6 @@ export const getOrganizerTicketTypes = async (eventId: number) => {
 
 interface SearchEventsParams {
   title?: string;
-  location?: string;
   when?: string;
   fromDate?: string;
   toDate?: string;
@@ -81,6 +80,8 @@ interface SearchEventsParams {
   timeFilter?: string;
   categoryId?: number;
   provinceId?: number;
+  minPrice?: number;
+  maxPrice?: number;
   page?: number;
   size?: number;
 }
@@ -88,7 +89,6 @@ interface SearchEventsParams {
 export const searchEvents = async (params: SearchEventsParams = {}): Promise<PagedResponse<Event>> => {
   const searchParams = new URLSearchParams();
   if (params.title) searchParams.set('title', params.title);
-  if (params.location) searchParams.set('location', params.location);
   if (params.fromDate) searchParams.set('fromDate', `${params.fromDate}T00:00:00`);
   else if (params.when) searchParams.set('fromDate', `${params.when}T00:00:00`);
   if (params.toDate) searchParams.set('toDate', `${params.toDate}T23:59:59`);
@@ -96,6 +96,8 @@ export const searchEvents = async (params: SearchEventsParams = {}): Promise<Pag
   if (params.timeFilter) searchParams.set('timeFilter', params.timeFilter);
   if (params.categoryId) searchParams.set('categoryId', String(params.categoryId));
   if (params.provinceId) searchParams.set('provinceId', String(params.provinceId));
+  if (params.minPrice !== undefined) searchParams.set('minPrice', String(params.minPrice));
+  if (params.maxPrice !== undefined) searchParams.set('maxPrice', String(params.maxPrice));
   if (params.page !== undefined) searchParams.set('page', String(params.page));
   if (params.size !== undefined) searchParams.set('size', String(params.size));
 
