@@ -167,6 +167,14 @@ export default function OrganizerEventsPage() {
                   </Stack>
                 </Stack>
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
+                  <Button
+                    variant="text"
+                    color="primary"
+                    endIcon={<ArrowRight2 size={18} />}
+                    onClick={() => navigate(`/organizer/events/${event.id}`)}
+                  >
+                    {intl.formatMessage({ id: 'organizer.events.detail' })}
+                  </Button>
                   {event.status !== 'CLOSED' && (
                     <Button
                       variant="text"
@@ -180,16 +188,6 @@ export default function OrganizerEventsPage() {
                   {['PENDING', 'PENDING_REVIEW'].includes(String(event.status)) && (
                     <Button variant="outlined" color="primary" onClick={() => handleRequestPublish(event.id)}>
                       {intl.formatMessage({ id: 'organizer.events.requestPublish' })}
-                    </Button>
-                  )}
-                  {['PUBLISHED', 'ONGOING'].includes(String(event.status)) && (
-                    <Button
-                      variant="text"
-                      color="primary"
-                      endIcon={<ArrowRight2 size={18} />}
-                      onClick={() => navigate(`/events/${event.id}`)}
-                    >
-                      {intl.formatMessage({ id: 'organizer.events.detail' })}
                     </Button>
                   )}
                 </Stack>
