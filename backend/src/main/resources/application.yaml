@@ -22,3 +22,6 @@ payment:
 app:
   scheduler:
     time-zone: ${APP_SCHEDULER_TIME_ZONE:Asia/Ho_Chi_Minh}
+  payout:
+    hold-days: ${APP_PAYOUT_HOLD_DAYS:7}
+    min-amount: ${APP_PAYOUT_MIN_AMOUNT:100000}

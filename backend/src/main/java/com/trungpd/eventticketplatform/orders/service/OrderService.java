@@ -228,25 +228,27 @@ public class OrderService implements IOrderService {
     }
 
     private void ensureFeesSnapshot(Order order) {
-        if (order.getPlatformFee() != null && order.getPlatformFee() > 0
-                && order.getCommissionFee() != null && order.getCommissionFee() > 0) {
+        if (order.getPlatformServiceFee() != null
+                && order.getPlatformProcessingFee() != null
+                && order.getCommissionFee() != null) {
             return;
         }
         Event event = eventRepository.findById(order.getEventId())
                 .orElseThrow(() -> new NotFoundException("error.event.not-found"));
 
         long total = order.getTotalTicketAmount() == null ? 0L : order.getTotalTicketAmount();
-        long platformFee = 0L;
+        long platformServiceFee = 0L;
+        long platformProcessingFee = 0L;
         long commissionFee = 0L;
 
-        if (event.getCustomerFlatFeeSnapshot() != null) {
-            platformFee += event.getCustomerFlatFeeSnapshot();
-        }
         if (event.getCustomerFeeRateSnapshot() != null) {
-            platformFee += BigDecimal.valueOf(total)
+            platformServiceFee = BigDecimal.valueOf(total)
                     .multiply(event.getCustomerFeeRateSnapshot())
                     .setScale(0, RoundingMode.DOWN)
                     .longValue();
+        }
+        if (event.getCustomerFlatFeeSnapshot() != null) {
+            platformProcessingFee = event.getCustomerFlatFeeSnapshot();
         }
         if (event.getOrganizerCommissionRateSnapshot() != null) {
             commissionFee = BigDecimal.valueOf(total)
@@ -255,6 +257,10 @@ public class OrderService implements IOrderService {
                     .longValue();
         }
 
+        long platformFee = platformServiceFee + platformProcessingFee;
+
+        order.setPlatformServiceFee(platformServiceFee);
+        order.setPlatformProcessingFee(platformProcessingFee);
         order.setPlatformFee(platformFee);
         order.setCommissionFee(commissionFee);
         long currentDiscount = order.getDiscountAmount() == null ? 0L : order.getDiscountAmount();
@@ -378,6 +384,8 @@ public class OrderService implements IOrderService {
                 .totalTicketAmount(order.getTotalTicketAmount())
                 .discountAmount(order.getDiscountAmount())
                 .platformFee(order.getPlatformFee())
+                .platformServiceFee(order.getPlatformServiceFee())
+                .platformProcessingFee(order.getPlatformProcessingFee())
                 .commissionFee(order.getCommissionFee())
                 .finalAmount(order.getFinalAmount())
                 .paidAt(order.getPaidAt())

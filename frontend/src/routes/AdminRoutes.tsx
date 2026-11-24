@@ -14,6 +14,7 @@ import EventUpdateRequestApprovalDetailPage from 'features/admin/pages/EventUpda
 import CategoryManagementPage from 'features/admin/pages/CategoryManagementPage';
 import FeePolicyManagementPage from 'features/admin/pages/FeePolicyManagementPage';
 import CheckerManagementPage from 'features/admin/pages/CheckerManagementPage';
+import AdminPayoutPage from 'features/admin/pages/AdminPayoutPage';
 
 // ==============================|| ADMIN ROUTES ||============================== //
 
@@ -62,6 +63,10 @@ const AdminRoutes = {
     {
       path: 'checkers',
       element: <CheckerManagementPage />
+    },
+    {
+      path: 'payouts',
+      element: <AdminPayoutPage />
     }
   ]
 };

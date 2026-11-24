@@ -1,5 +1,6 @@
 // assets
 import { CalendarEdit, CalendarTick, Category2, Element3, Profile2User, ReceiptItem } from 'iconsax-reactjs';
+import { CalendarTick, Category2, Element3, MoneySend, Profile2User, ReceiptItem } from 'iconsax-reactjs';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -53,6 +54,13 @@ const admin: NavItemType = {
       type: 'item',
       url: '/admin/checkers',
       icon: Profile2User
+    },
+    {
+      id: 'admin-payouts',
+      title: 'admin.payouts',
+      type: 'item',
+      url: '/admin/payouts',
+      icon: MoneySend
     }
   ]
 };

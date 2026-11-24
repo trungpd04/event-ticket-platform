@@ -40,6 +40,20 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("orderId") Long orderId,
             @Param("now") LocalDateTime now);
 
+    @Query("""
+            SELECT COALESCE(SUM(o.totalTicketAmount), 0),
+                   COALESCE(SUM(o.discountAmount), 0),
+                   COALESCE(SUM(o.platformFee), 0),
+                   COALESCE(SUM(o.commissionFee), 0),
+                   COUNT(o.id)
+            FROM Order o
+            WHERE o.eventId = :eventId
+              AND o.status = :status
+            """)
+    Object[] sumRevenueByEventIdAndStatus(
+            @Param("eventId") Long eventId,
+            @Param("status") OrderStatus status);
+
     @Modifying
     @Query("""
             UPDATE Order o

@@ -469,12 +469,16 @@ export default function OrderDetailPage() {
                     value={formatCurrency(order.totalTicketAmount, intl.locale)}
                   />
                   <SummaryRow
-                    label={intl.formatMessage({ id: 'checkout.discount', defaultMessage: 'Discount' })}
-                    value={`-${formatCurrency(order.discountAmount, intl.locale)}`}
+                    label={intl.formatMessage({ id: 'checkout.serviceFee', defaultMessage: 'Service fee' })}
+                    value={formatCurrency(order.platformServiceFee ?? 0, intl.locale)}
                   />
                   <SummaryRow
-                    label={intl.formatMessage({ id: 'checkout.platformFee', defaultMessage: 'Platform fee' })}
-                    value={formatCurrency(order.platformFee, intl.locale)}
+                    label={intl.formatMessage({ id: 'checkout.processingFee', defaultMessage: 'Processing fee' })}
+                    value={formatCurrency(order.platformProcessingFee ?? 0, intl.locale)}
+                  />
+                  <SummaryRow
+                    label={intl.formatMessage({ id: 'checkout.discount', defaultMessage: 'Discount' })}
+                    value={`-${formatCurrency(order.discountAmount, intl.locale)}`}
                   />
 
                   <Divider />

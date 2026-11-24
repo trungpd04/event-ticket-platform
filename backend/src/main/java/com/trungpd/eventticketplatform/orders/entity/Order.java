@@ -48,6 +48,12 @@ public class Order extends BaseEntity {
     @Column(name = "platform_fee", nullable = false)
     private Long platformFee = 0L;
 
+    @Column(name = "platform_service_fee", nullable = false)
+    private Long platformServiceFee = 0L;
+
+    @Column(name = "platform_processing_fee", nullable = false)
+    private Long platformProcessingFee = 0L;
+
     @Column(name = "commission_fee", nullable = false)
     private Long commissionFee = 0L;
 
