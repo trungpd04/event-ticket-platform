@@ -18,7 +18,7 @@ public interface IEventService {
 
     EventResponse createEvent(Long userId, CreateEventRequest request);
 
-    PagedResponse<EventResponse> searchEvents(String title, String location,
+    PagedResponse<EventResponse> searchEvents(String title,
                                               LocalDateTime fromDate, LocalDateTime toDate,
                                               EventStatus status, TimeFilter timeFilter,
                                               Long categoryId, Long provinceId,

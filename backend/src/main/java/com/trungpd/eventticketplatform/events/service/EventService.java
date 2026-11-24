@@ -137,25 +137,20 @@ public class EventService implements IEventService {
     }
 
     @Transactional(readOnly = true)
-    public PagedResponse<EventResponse> searchEvents(String title, String location,
+    public PagedResponse<EventResponse> searchEvents(String title,
                                                       LocalDateTime fromDate, LocalDateTime toDate,
                                                       EventStatus status, TimeFilter timeFilter,
                                                       Long categoryId, Long provinceId,
                                                       Long minPrice, Long maxPrice,
                                                       Pageable pageable) {
-        // Public pages may display events while they are published or already ongoing.
-        // Keep an explicit ONGOING request precise, but treat the public default
-        // PUBLISHED filter as "publicly visible" rather than hiding live events.
-        Specification<Event> spec = Specification.where(
-                status == EventStatus.PUBLISHED
-                        ? EventSpecification.hasStatusIn(List.of(EventStatus.PUBLISHED, EventStatus.ONGOING))
-                        : EventSpecification.hasStatus(status));
+        // Public listings only show published events that have not started yet and
+        // whose ticket sale period is still open. Ongoing events are excluded
+        // because they are no longer valuable for ticket purchasing.
+        Specification<Event> spec = Specification.where(EventSpecification.hasStatus(EventStatus.PUBLISHED))
+                .and(EventSpecification.startTimeGreaterThan(LocalDateTime.now()));
 
         if (title != null && !title.isBlank()) {
             spec = spec.and(EventSpecification.hasTitle(title));
-        }
-        if (location != null && !location.isBlank()) {
-            spec = spec.and(EventSpecification.hasLocation(location));
         }
         if (fromDate != null) {
             spec = spec.and(EventSpecification.startTimeGreaterThanOrEqual(fromDate));
@@ -180,6 +175,8 @@ public class EventService implements IEventService {
         }
 
         LocalDateTime now = LocalDateTime.now();
+        // Only show events whose ticket sale period is still open.
+        spec = spec.and(EventSpecification.ticketSaleEndTimeGreaterThan(now));
         spec = spec.and(EventSpecification.endedWithinDays(now, 7));
         spec = spec.and(EventSpecification.prioritizePublicEvents(now));
 

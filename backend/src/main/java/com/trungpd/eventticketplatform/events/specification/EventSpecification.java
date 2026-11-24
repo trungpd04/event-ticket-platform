@@ -81,11 +81,12 @@ public class EventSpecification {
         };
     }
 
-    public static Specification<Event> hasLocation(String location) {
-        return (root, query, cb) -> {
-            String pattern = "%" + location.toLowerCase() + "%";
-            return cb.like(cb.lower(root.get("location")), pattern);
-        };
+    public static Specification<Event> startTimeGreaterThan(LocalDateTime now) {
+        return (root, query, cb) -> cb.greaterThan(root.get("startTime"), now);
+    }
+
+    public static Specification<Event> ticketSaleEndTimeGreaterThan(LocalDateTime now) {
+        return (root, query, cb) -> cb.greaterThan(root.get("ticketSaleEndTime"), now);
     }
 
     public static Specification<Event> startTimeGreaterThanOrEqual(LocalDateTime fromDate) {

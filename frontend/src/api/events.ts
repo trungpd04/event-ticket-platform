@@ -60,7 +60,6 @@ export const getOrganizerTicketTypes = async (eventId: number) => {
 
 interface SearchEventsParams {
   title?: string;
-  location?: string;
   when?: string;
   fromDate?: string;
   toDate?: string;
@@ -77,7 +76,6 @@ interface SearchEventsParams {
 export const searchEvents = async (params: SearchEventsParams = {}): Promise<PagedResponse<Event>> => {
   const searchParams = new URLSearchParams();
   if (params.title) searchParams.set('title', params.title);
-  if (params.location) searchParams.set('location', params.location);
   if (params.fromDate) searchParams.set('fromDate', `${params.fromDate}T00:00:00`);
   else if (params.when) searchParams.set('fromDate', `${params.when}T00:00:00`);
   if (params.toDate) searchParams.set('toDate', `${params.toDate}T23:59:59`);
