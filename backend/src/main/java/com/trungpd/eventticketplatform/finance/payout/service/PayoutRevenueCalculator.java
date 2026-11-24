@@ -12,19 +12,27 @@ public class PayoutRevenueCalculator {
     private final OrderRepository orderRepository;
 
     public PayoutRevenue calculate(Long eventId) {
-        Object[] result = orderRepository.sumRevenueByEventIdAndStatus(eventId, OrderStatus.PAID);
+        Object[] result = orderRepository.sumRevenueByEventIdAndStatus(eventId, OrderStatus.PAID)
+                .orElse(new Object[]{0L, 0L, 0L, 0L, 0L});
 
-        long grossTicketAmount = toLong(result[0]);
-        long discountAmount = toLong(result[1]);
-        long platformFee = toLong(result[2]);
-        long commissionFee = toLong(result[3]);
-        int orderCount = toInt(result[4]);
+        long grossTicketAmount = toLong(unwrap(result[0]));
+        long discountAmount = toLong(unwrap(result[1]));
+        long platformFee = toLong(unwrap(result[2]));
+        long commissionFee = toLong(unwrap(result[3]));
+        int orderCount = toInt(unwrap(result[4]));
 
         long grossRevenue = grossTicketAmount - discountAmount;
         long netRevenue = grossRevenue - commissionFee;
 
         return new PayoutRevenue(orderCount, grossTicketAmount, discountAmount, grossRevenue,
                 platformFee, commissionFee, netRevenue);
+    }
+
+    private Object unwrap(Object value) {
+        if (value instanceof Object[] array && array.length == 1) {
+            return array[0];
+        }
+        return value;
     }
 
     private long toLong(Object value) {

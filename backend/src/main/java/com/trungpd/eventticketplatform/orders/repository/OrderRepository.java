@@ -50,7 +50,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             WHERE o.eventId = :eventId
               AND o.status = :status
             """)
-    Object[] sumRevenueByEventIdAndStatus(
+    Optional<Object[]> sumRevenueByEventIdAndStatus(
             @Param("eventId") Long eventId,
             @Param("status") OrderStatus status);
 
