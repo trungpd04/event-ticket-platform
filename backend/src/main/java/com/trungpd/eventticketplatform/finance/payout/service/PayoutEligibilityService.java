@@ -19,9 +19,7 @@ public class PayoutEligibilityService {
 
     private static final String OPTION_SET_CODE = "PAYOUT_CONFIG";
     private static final String HOLD_DAYS_VALUE_CODE = "HOLD_DAYS";
-    private static final String MIN_AMOUNT_VALUE_CODE = "MIN_AMOUNT";
-    private static final int DEFAULT_HOLD_DAYS = 7;
-    private static final long DEFAULT_MIN_AMOUNT = 100_000L;
+    private static final int DEFAULT_HOLD_DAYS = 14;
 
     private final EventPayoutInfoRepository eventPayoutInfoRepository;
     private final PayoutRequestRepository payoutRequestRepository;
@@ -29,13 +27,12 @@ public class PayoutEligibilityService {
 
     public PayoutEligibilityResult check(Event event, PayoutRevenue revenue) {
         int holdDays = platformConfigService.getInt(OPTION_SET_CODE, HOLD_DAYS_VALUE_CODE, DEFAULT_HOLD_DAYS);
-        long minAmount = platformConfigService.getLong(OPTION_SET_CODE, MIN_AMOUNT_VALUE_CODE, DEFAULT_MIN_AMOUNT);
 
         if (event.getStatus() != EventStatus.CLOSED) {
             return new PayoutEligibilityResult(false, "error.payout.event-not-closed");
         }
 
-        LocalDateTime holdUntil = event.getEndTime().plusDays(holdDays);
+        LocalDateTime holdUntil = LocalDateTime.now().plusDays(holdDays);
         if (LocalDateTime.now().isBefore(holdUntil)) {
             return new PayoutEligibilityResult(false, "error.payout.hold-period");
         }
@@ -46,10 +43,6 @@ public class PayoutEligibilityService {
                 || isBlank(bank.getAccountNumber())
                 || isBlank(bank.getAccountHolder())) {
             return new PayoutEligibilityResult(false, "error.payout.bank-info-required");
-        }
-
-        if (revenue.netRevenue() < minAmount) {
-            return new PayoutEligibilityResult(false, "error.payout.amount-too-low");
         }
 
         boolean exists = payoutRequestRepository.existsByEventIdAndStatusIn(

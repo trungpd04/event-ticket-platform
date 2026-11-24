@@ -44,7 +44,7 @@ public class PayoutService implements IPayoutService {
     private final PayoutEligibilityService eligibilityService;
     private static final String OPTION_SET_CODE = "PAYOUT_CONFIG";
     private static final String HOLD_DAYS_VALUE_CODE = "HOLD_DAYS";
-    private static final int DEFAULT_HOLD_DAYS = 7;
+    private static final int DEFAULT_HOLD_DAYS = 14;
 
     private final PayoutRequestCodeGenerator codeGenerator;
     private final IUserService userService;
@@ -79,7 +79,7 @@ public class PayoutService implements IPayoutService {
                 .eventStatus(event.getStatus())
                 .canRequest(eligibility.allowed())
                 .reason(eligibility.reasonCode())
-                .holdUntil(event.getEndTime().plusDays(
+                .holdUntil(LocalDateTime.now().plusDays(
                         platformConfigService.getInt(OPTION_SET_CODE, HOLD_DAYS_VALUE_CODE, DEFAULT_HOLD_DAYS)))
                 .orderCount(revenue.orderCount())
                 .grossTicketAmount(revenue.grossTicketAmount())
@@ -135,7 +135,7 @@ public class PayoutService implements IPayoutService {
         payout.setNetRevenue(revenue.netRevenue());
         payout.setApprovedNetAmount(revenue.netRevenue());
         payout.setEventEndTimeSnapshot(event.getEndTime());
-        payout.setHoldUntil(event.getEndTime().plusDays(holdDays));
+        payout.setHoldUntil(event.getEndTime().plusDays(platformConfigService.getInt(OPTION_SET_CODE, HOLD_DAYS_VALUE_CODE, DEFAULT_HOLD_DAYS)));
         payout.setBankName(bank.getBankName());
         payout.setAccountNumber(bank.getAccountNumber());
         payout.setAccountHolder(bank.getAccountHolder());
