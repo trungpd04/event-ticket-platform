@@ -1,5 +1,6 @@
 package com.trungpd.eventticketplatform.finance.payout.service;
 
+import com.trungpd.eventticketplatform.finance.payout.dto.PayoutRevenueProjection;
 import com.trungpd.eventticketplatform.orders.enums.OrderStatus;
 import com.trungpd.eventticketplatform.orders.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +13,14 @@ public class PayoutRevenueCalculator {
     private final OrderRepository orderRepository;
 
     public PayoutRevenue calculate(Long eventId) {
-        Object[] result = orderRepository.sumRevenueByEventIdAndStatus(eventId, OrderStatus.PAID)
-                .orElse(new Object[]{0L, 0L, 0L, 0L, 0L});
+        PayoutRevenueProjection projection = orderRepository.sumRevenueByEventIdAndStatus(eventId, OrderStatus.PAID)
+                .orElse(new PayoutRevenueProjection(0L, 0L, 0L, 0L, 0L));
 
-        long grossTicketAmount = toLong(unwrap(result[0]));
-        long discountAmount = toLong(unwrap(result[1]));
-        long platformFee = toLong(unwrap(result[2]));
-        long commissionFee = toLong(unwrap(result[3]));
-        int orderCount = toInt(unwrap(result[4]));
+        long grossTicketAmount = toLong(projection.grossTicketAmount());
+        long discountAmount = toLong(projection.discountAmount());
+        long platformFee = toLong(projection.platformFee());
+        long commissionFee = toLong(projection.commissionFee());
+        int orderCount = toInt(projection.orderCount());
 
         long grossRevenue = grossTicketAmount - discountAmount;
         long netRevenue = grossRevenue - commissionFee;
@@ -28,22 +29,11 @@ public class PayoutRevenueCalculator {
                 platformFee, commissionFee, netRevenue);
     }
 
-    private Object unwrap(Object value) {
-        if (value instanceof Object[] array && array.length == 1) {
-            return array[0];
-        }
-        return value;
+    private long toLong(Number value) {
+        return value == null ? 0L : value.longValue();
     }
 
-    private long toLong(Object value) {
-        if (value == null) return 0L;
-        if (value instanceof Number number) return number.longValue();
-        return Long.parseLong(value.toString());
-    }
-
-    private int toInt(Object value) {
-        if (value == null) return 0;
-        if (value instanceof Number number) return number.intValue();
-        return Integer.parseInt(value.toString());
+    private int toInt(Number value) {
+        return value == null ? 0 : value.intValue();
     }
 }
