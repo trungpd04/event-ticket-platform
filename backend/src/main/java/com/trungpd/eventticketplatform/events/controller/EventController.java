@@ -66,11 +66,14 @@ public class EventController {
             @RequestParam(required = false) TimeFilter timeFilter,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Long provinceId,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         PagedResponse<EventResponse> response = eventService.searchEvents(
-                title, location, fromDate, toDate, status, timeFilter, categoryId, provinceId, pageable);
+                title, location, fromDate, toDate, status, timeFilter,
+                categoryId, provinceId, minPrice, maxPrice, pageable);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

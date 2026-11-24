@@ -56,6 +56,13 @@ function getPriceLabel(price: string, intl: ReturnType<typeof useIntl>) {
   return undefined;
 }
 
+function getPriceRange(price: string): { minPrice?: number; maxPrice?: number } {
+  if (price === 'low') return { maxPrice: 500000 };
+  if (price === 'mid') return { minPrice: 500000, maxPrice: 1000000 };
+  if (price === 'high') return { minPrice: 1000000 };
+  return {};
+}
+
 // ==============================|| EVENTS PAGE ||============================== //
 
 export default function EventsPage() {
@@ -114,6 +121,8 @@ export default function EventsPage() {
   useEffect(() => {
     let cancelled = false;
 
+    const priceRange = getPriceRange(price);
+
     setLoading(true);
     searchEvents({
       title: title || undefined,
@@ -122,6 +131,8 @@ export default function EventsPage() {
       categoryId,
       provinceId,
       status: 'PUBLISHED',
+      timeFilter: 'UPCOMING',
+      ...priceRange,
       page: 0,
       size: 20
     })
@@ -155,7 +166,7 @@ export default function EventsPage() {
     return () => {
       cancelled = true;
     };
-  }, [title, provinceId, fromDate, toDate, categoryId]);
+  }, [title, provinceId, fromDate, toDate, categoryId, price]);
 
   const activeFilters = useMemo(
     () =>

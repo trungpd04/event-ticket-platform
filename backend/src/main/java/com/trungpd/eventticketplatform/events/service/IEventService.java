@@ -22,6 +22,7 @@ public interface IEventService {
                                               LocalDateTime fromDate, LocalDateTime toDate,
                                               EventStatus status, TimeFilter timeFilter,
                                               Long categoryId, Long provinceId,
+                                              Long minPrice, Long maxPrice,
                                               Pageable pageable);
 
     PagedResponse<EventResponse> searchAdminEvents(String title, Long categoryId, Long provinceId,

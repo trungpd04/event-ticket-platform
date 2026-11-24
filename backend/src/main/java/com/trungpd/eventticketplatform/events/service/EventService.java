@@ -141,6 +141,7 @@ public class EventService implements IEventService {
                                                       LocalDateTime fromDate, LocalDateTime toDate,
                                                       EventStatus status, TimeFilter timeFilter,
                                                       Long categoryId, Long provinceId,
+                                                      Long minPrice, Long maxPrice,
                                                       Pageable pageable) {
         // Public pages may display events while they are published or already ongoing.
         // Keep an explicit ONGOING request precise, but treat the public default
@@ -171,7 +172,16 @@ public class EventService implements IEventService {
         if (provinceId != null) {
             spec = spec.and(EventSpecification.hasProvince(provinceId));
         }
-        spec = spec.and(EventSpecification.prioritizeTicketSales(LocalDateTime.now()));
+        if (minPrice != null) {
+            spec = spec.and(EventSpecification.hasMinPrice(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(EventSpecification.hasMaxPrice(maxPrice));
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        spec = spec.and(EventSpecification.endedWithinDays(now, 7));
+        spec = spec.and(EventSpecification.prioritizePublicEvents(now));
 
         Page<Event> page = eventRepository.findAll(spec, pageable);
         Page<EventResponse> responsePage = page.map(eventMapper::toResponse).map(this::enrichEventResponse);
