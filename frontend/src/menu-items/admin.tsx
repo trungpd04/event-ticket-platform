@@ -1,6 +1,5 @@
 // assets
-import { CalendarEdit, CalendarTick, Category2, Element3, Profile2User, ReceiptItem } from 'iconsax-reactjs';
-import { CalendarTick, Category2, Element3, MoneySend, Profile2User, ReceiptItem } from 'iconsax-reactjs';
+import { CalendarEdit, CalendarTick, Category2, Element3, MoneySend, Profile2User, ReceiptItem } from 'iconsax-reactjs';
 
 // type
 import { NavItemType } from 'types/menu';

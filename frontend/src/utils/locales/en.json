@@ -580,7 +580,7 @@
   "common.processing": "Processing...",
   "common.all": "All",
   "common.view": "View",
-  "admin.payouts": "Payout approval"
+  "admin.payouts": "Payout approval",
   "orderStatus.expired": "Expired",
   "createEvent.defaultFeePolicyTitle": "Default platform fee policy",
   "createEvent.defaultFeePolicyDescription": "These fees apply when you create the event. This policy is fixed and cannot be changed at this step.",
