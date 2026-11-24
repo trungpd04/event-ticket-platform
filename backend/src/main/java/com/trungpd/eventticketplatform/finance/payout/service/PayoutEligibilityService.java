@@ -4,10 +4,10 @@ import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventPayoutInfo;
 import com.trungpd.eventticketplatform.events.entity.EventStatus;
 import com.trungpd.eventticketplatform.events.repository.EventPayoutInfoRepository;
+import com.trungpd.eventticketplatform.events.service.PlatformConfigService;
 import com.trungpd.eventticketplatform.finance.payout.PayoutStatus;
 import com.trungpd.eventticketplatform.finance.payout.repository.PayoutRequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,16 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PayoutEligibilityService {
 
+    private static final String OPTION_SET_CODE = "PAYOUT_CONFIG";
+    private static final String HOLD_DAYS_VALUE_CODE = "HOLD_DAYS";
+    private static final String MIN_AMOUNT_VALUE_CODE = "MIN_AMOUNT";
+    private static final int DEFAULT_HOLD_DAYS = 7;
+    private static final long DEFAULT_MIN_AMOUNT = 100_000L;
+
     private final EventPayoutInfoRepository eventPayoutInfoRepository;
     private final PayoutRequestRepository payoutRequestRepository;
-
-    @Value("${app.payout.hold-days:7}")
-    private int holdDays;
-
-    @Value("${app.payout.min-amount:100000}")
-    private long minAmount;
+    private final PlatformConfigService platformConfigService;
 
     public PayoutEligibilityResult check(Event event, PayoutRevenue revenue) {
+        int holdDays = platformConfigService.getInt(OPTION_SET_CODE, HOLD_DAYS_VALUE_CODE, DEFAULT_HOLD_DAYS);
+        long minAmount = platformConfigService.getLong(OPTION_SET_CODE, MIN_AMOUNT_VALUE_CODE, DEFAULT_MIN_AMOUNT);
+
         if (event.getStatus() != EventStatus.CLOSED) {
             return new PayoutEligibilityResult(false, "error.payout.event-not-closed");
         }

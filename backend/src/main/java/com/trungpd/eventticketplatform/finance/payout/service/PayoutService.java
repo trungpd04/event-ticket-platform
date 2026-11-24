@@ -8,6 +8,7 @@ import com.trungpd.eventticketplatform.events.entity.Event;
 import com.trungpd.eventticketplatform.events.entity.EventPayoutInfo;
 import com.trungpd.eventticketplatform.events.repository.EventPayoutInfoRepository;
 import com.trungpd.eventticketplatform.events.repository.EventRepository;
+import com.trungpd.eventticketplatform.events.service.PlatformConfigService;
 import com.trungpd.eventticketplatform.finance.payout.PayoutStatus;
 import com.trungpd.eventticketplatform.finance.payout.dto.request.ApprovePayoutRequest;
 import com.trungpd.eventticketplatform.finance.payout.dto.request.CreatePayoutRequest;
@@ -21,7 +22,6 @@ import com.trungpd.eventticketplatform.identity.entity.User;
 import com.trungpd.eventticketplatform.identity.service.IEmailService;
 import com.trungpd.eventticketplatform.identity.service.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,13 +42,15 @@ public class PayoutService implements IPayoutService {
     private final PayoutRequestRepository payoutRequestRepository;
     private final PayoutRevenueCalculator revenueCalculator;
     private final PayoutEligibilityService eligibilityService;
+    private static final String OPTION_SET_CODE = "PAYOUT_CONFIG";
+    private static final String HOLD_DAYS_VALUE_CODE = "HOLD_DAYS";
+    private static final int DEFAULT_HOLD_DAYS = 7;
+
     private final PayoutRequestCodeGenerator codeGenerator;
     private final IUserService userService;
     private final IEmailService emailService;
     private final PaginationMapper paginationMapper;
-
-    @Value("${app.payout.hold-days:7}")
-    private int holdDays;
+    private final PlatformConfigService platformConfigService;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -77,7 +79,8 @@ public class PayoutService implements IPayoutService {
                 .eventStatus(event.getStatus())
                 .canRequest(eligibility.allowed())
                 .reason(eligibility.reasonCode())
-                .holdUntil(event.getEndTime().plusDays(holdDays))
+                .holdUntil(event.getEndTime().plusDays(
+                        platformConfigService.getInt(OPTION_SET_CODE, HOLD_DAYS_VALUE_CODE, DEFAULT_HOLD_DAYS)))
                 .orderCount(revenue.orderCount())
                 .grossTicketAmount(revenue.grossTicketAmount())
                 .discountAmount(revenue.discountAmount())
