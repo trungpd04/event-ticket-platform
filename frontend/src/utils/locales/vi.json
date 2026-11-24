@@ -525,5 +525,8 @@
   "createEvent.customerServiceHint": "Tính theo tỷ lệ trên tổng tiền vé của khách.",
   "createEvent.customerProcessingFee": "Phí xử lý đơn hàng",
   "createEvent.customerProcessingHint": "Phí cố định tính trên mỗi đơn hàng.",
-  "createEvent.feePolicyHotline": "Nếu mỗi trao đổi thêm về phí của nền tảng hãy liên hệ với hotline"
+  "createEvent.feePolicyHotline": "Nếu mỗi trao đổi thêm về phí của nền tảng hãy liên hệ với hotline",
+  "admin.feePolicies.inactive": "Không hoạt động",
+  "admin.feePolicies.details": "Chi tiết chính sách phí",
+  "admin.feePolicies.selectedDetails": "Chi tiết gói đang chọn"
 }

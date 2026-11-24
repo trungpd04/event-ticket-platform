@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 // material-ui
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
@@ -23,7 +26,7 @@ import { getEventDetail, getFeePolicies, updateEventFeePolicy, updateEventStatus
 
 // types
 import { AdminEventDetail, EventStatus, FeePolicy } from 'features/admin/types/admin';
-import { formatDateTime } from 'utils/format';
+import { formatCurrency, formatDateTime } from 'utils/format';
 
 // ==============================|| EVENT APPROVAL DETAIL PAGE ||============================== //
 
@@ -222,7 +225,7 @@ export default function EventApprovalDetailPage() {
               >
                 {feePolicies.map((policy) => (
                   <MenuItem key={policy.id} value={policy.id}>
-                    {policy.name}
+                    {policy.name} — {intl.formatMessage({ id: 'admin.feePolicies.commissionRate' })}: {(Number(policy.organizerCommissionRate) * 100).toLocaleString(intl.locale, { maximumFractionDigits: 2 })}% — {intl.formatMessage({ id: 'admin.feePolicies.customerFeeRate' })}: {(Number(policy.customerFeeRate) * 100).toLocaleString(intl.locale, { maximumFractionDigits: 2 })}% — {intl.formatMessage({ id: 'admin.feePolicies.customerFlatFee' })}: {formatCurrency(policy.customerFlatFee, intl.locale)}
                   </MenuItem>
                 ))}
               </Select>
@@ -231,6 +234,59 @@ export default function EventApprovalDetailPage() {
               {intl.formatMessage({ id: 'admin.events.save' })}
             </Button>
           </Stack>
+
+          {selectedFeePolicyId && (() => {
+            const policy = feePolicies.find((item) => item.id === Number(selectedFeePolicyId));
+            if (!policy) return null;
+
+            return (
+              <Card variant="outlined" sx={{ mt: 2, bgcolor: 'background.default' }}>
+                <CardContent>
+                  <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+                      <Typography variant="h6" fontWeight={700}>{policy.name}</Typography>
+                      {policy.isDefault && (
+                        <Chip size="small" color="primary" label={intl.formatMessage({ id: 'admin.feePolicies.isDefault' })} />
+                      )}
+                      <Chip
+                        size="small"
+                        color={policy.isActive ? 'success' : 'default'}
+                        label={policy.isActive
+                          ? intl.formatMessage({ id: 'admin.feePolicies.isActive' })
+                          : intl.formatMessage({ id: 'admin.feePolicies.inactive', defaultMessage: 'Inactive' })}
+                      />
+                    </Stack>
+                    <Grid container spacing={2}>
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          {intl.formatMessage({ id: 'admin.feePolicies.commissionRate' })}
+                        </Typography>
+                        <Typography variant="h6" fontWeight={800}>
+                          {(Number(policy.organizerCommissionRate) * 100).toLocaleString(intl.locale, { maximumFractionDigits: 2 })}%
+                        </Typography>
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          {intl.formatMessage({ id: 'admin.feePolicies.customerFeeRate' })}
+                        </Typography>
+                        <Typography variant="h6" fontWeight={800}>
+                          {(Number(policy.customerFeeRate) * 100).toLocaleString(intl.locale, { maximumFractionDigits: 2 })}%
+                        </Typography>
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          {intl.formatMessage({ id: 'admin.feePolicies.customerFlatFee' })}
+                        </Typography>
+                        <Typography variant="h6" fontWeight={800}>
+                          {formatCurrency(policy.customerFlatFee, intl.locale)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Stack>
+                </CardContent>
+              </Card>
+            );
+          })()}
         </AdminCard>
       </Stack>
     </Box>

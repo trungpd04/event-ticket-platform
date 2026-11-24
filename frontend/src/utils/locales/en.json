@@ -516,5 +516,8 @@
   "createEvent.customerServiceHint": "Calculated as a percentage of the customer ticket subtotal.",
   "createEvent.customerProcessingFee": "Order processing fee",
   "createEvent.customerProcessingHint": "A flat fee charged per order.",
-  "createEvent.feePolicyHotline": "For any further questions about platform fees, please contact the hotline."
+  "createEvent.feePolicyHotline": "For any further questions about platform fees, please contact the hotline.",
+  "admin.feePolicies.inactive": "Inactive",
+  "admin.feePolicies.details": "Fee policy details",
+  "admin.feePolicies.selectedDetails": "Selected policy details"
 }
