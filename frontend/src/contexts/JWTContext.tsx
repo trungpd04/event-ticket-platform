@@ -19,21 +19,14 @@ const initialState: AuthProps = {
 };
 
 const ACCESS_TOKEN_KEY = 'serviceToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
 
-const setSession = (accessToken?: string | null, refreshToken?: string | null) => {
+const setSession = (accessToken?: string | null) => {
   if (accessToken) {
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     delete axios.defaults.headers.common.Authorization;
-  }
-
-  if (refreshToken) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-  } else if (accessToken === null) {
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
   }
 };
 
@@ -48,9 +41,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const init = async () => {
       try {
         const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
-        const refreshToken = window.localStorage.getItem(REFRESH_TOKEN_KEY);
+        window.localStorage.removeItem('refreshToken');
 
-        if (accessToken || refreshToken) {
+        if (accessToken) {
           setSession(accessToken);
           const response = await axios.get('/api/v1/users/me');
           const user = response.data;
@@ -75,8 +68,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
   const login = async (email: string, password: string) => {
     const response = await axios.post('/api/v1/auth/login', { email, password });
-    const { accessToken, refreshToken } = response.data;
-    setSession(accessToken, refreshToken);
+    const { accessToken } = response.data;
+    setSession(accessToken);
 
     const userResponse = await axios.get('/api/v1/users/me');
     const user = userResponse.data;
@@ -94,6 +87,16 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     } else {
       redirectWithBasePath('/');
     }
+  };
+
+  const googleLogin = async (idToken: string) => {
+    const response = await axios.post('/api/v1/auth/google', { idToken });
+    setSession(response.data.accessToken);
+
+    const userResponse = await axios.get('/api/v1/users/me');
+    const user = userResponse.data;
+    dispatch({ type: LOGIN, payload: { isLoggedIn: true, user } });
+    redirectWithBasePath(user.roles?.includes('ADMIN') ? '/admin' : '/');
   };
 
   const register = async (email: string, password: string, fullName: string, phone?: string) => {
@@ -117,10 +120,14 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     await axios.post('/api/v1/auth/reset-password', { email, code, newPassword });
   };
 
-  const logout = () => {
-    setSession(null, null);
-    dispatch({ type: LOGOUT });
-    redirectWithBasePath('/');
+  const logout = async () => {
+    try {
+      await axios.post('/api/v1/auth/logout');
+    } finally {
+      setSession(null);
+      dispatch({ type: LOGOUT });
+      redirectWithBasePath('/');
+    }
   };
 
   const hasRole = (role: string) => {
@@ -138,6 +145,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
       value={{
         ...state,
         login,
+        googleLogin,
         logout,
         register,
         forgotPassword,

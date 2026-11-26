@@ -1,7 +1,9 @@
 package com.trungpd.eventticketplatform.identity.config;
 
 import com.trungpd.eventticketplatform.identity.security.JwtFilter;
+import com.trungpd.eventticketplatform.identity.security.CsrfCookieFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +29,10 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final CustomAccessTokenEntryPoint customAccessTokenEntryPoint;
+    private final CsrfCookieFilter csrfCookieFilter;
+
+    @Value("${app.cors.allowed-origins:http://localhost:3000,https://test.letticket.live,https://letticket.live}")
+    private java.util.List<String> allowedOrigins;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,10 +42,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -62,6 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(csrfCookieFilter, JwtFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

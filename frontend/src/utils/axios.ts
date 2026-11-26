@@ -2,12 +2,23 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, In
 
 // ==============================|| AXIOS - BACKEND SERVICES ||============================== //
 
-const axiosServices: AxiosInstance = axios.create({ baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:8081' });
+const axiosServices: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:8081',
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
+});
 
-const refreshClient: AxiosInstance = axios.create({ baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:8081' });
+const refreshClient: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:8081',
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
+});
 
 const ACCESS_TOKEN_KEY = 'serviceToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
 
 const CONFIG_STORAGE_KEY = 'able-pro-material-react-ts-config';
 
@@ -89,35 +100,22 @@ axiosServices.interceptors.response.use(
       originalRequest.headers.set('X-Retry', 'true');
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-
-      if (!refreshToken) {
-        isRefreshing = false;
-        redirectWithBasePath('/login');
-        return Promise.reject(error);
-      }
-
       try {
-        const response = await refreshClient.post('/api/v1/auth/refresh', { refreshToken });
+        const response = await refreshClient.post('/api/v1/auth/refresh');
         const data = response.data?.data ?? response.data;
         const accessToken = data?.accessToken;
-        const nextRefreshToken = data?.refreshToken;
 
         if (!accessToken) {
           throw new Error('Refresh token response did not contain accessToken');
         }
 
         localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-        if (nextRefreshToken) {
-          localStorage.setItem(REFRESH_TOKEN_KEY, nextRefreshToken);
-        }
         originalRequest.headers.set('Authorization', `Bearer ${accessToken}`);
         processQueue(null, accessToken);
         return axiosServices(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError as AxiosError, null);
         localStorage.removeItem(ACCESS_TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
         redirectWithBasePath('/login');
         return Promise.reject(refreshError);
       } finally {

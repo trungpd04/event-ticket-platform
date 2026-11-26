@@ -12,6 +12,9 @@ fi
 if [ -f /run/secrets/jwt_secret ]; then
   export JWT_SECRET="$(cat /run/secrets/jwt_secret)"
 fi
+if [ -f /run/secrets/google_client_id ]; then
+  export GOOGLE_CLIENT_ID="$(cat /run/secrets/google_client_id)"
+fi
 if [ -f /run/secrets/mail_username ]; then
   export MAIL_USERNAME="$(cat /run/secrets/mail_username)"
 fi

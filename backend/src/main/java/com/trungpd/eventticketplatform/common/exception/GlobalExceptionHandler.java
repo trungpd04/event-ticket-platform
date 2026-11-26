@@ -30,6 +30,13 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(message));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(UnauthorizedException ex) {
+        String message = messageUtil.getMessage(ex.getMessageKey(), ex.getArgs());
+        log.warn("Authentication failed: {}", message);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(message));
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFoundException(NotFoundException ex) {
         String message = messageUtil.getMessage(ex.getMessageKey(), ex.getArgs());

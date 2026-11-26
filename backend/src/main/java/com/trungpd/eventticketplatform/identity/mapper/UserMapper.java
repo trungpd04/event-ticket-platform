@@ -17,6 +17,8 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
+    @Mapping(target = "googleSubject", ignore = true)
+    @Mapping(target = "avatarUrl", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "roles", ignore = true)
     User toEntity(RegisterRequest request);
@@ -28,6 +30,8 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
+    @Mapping(target = "googleSubject", ignore = true)
+    @Mapping(target = "avatarUrl", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -42,8 +42,8 @@ server:
 
 jwt:
   secret: ${JWT_SECRET:mSZzfEFQlQu5uqQrQFE6GRT9xzPzfJa3/rv5/prak1I=}
-  access-token-expiration: 900000
-  refresh-token-expiration: 604800000
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:900000}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}
 
 async:
   core-pool-size: 5
@@ -85,6 +85,9 @@ payment:
     payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}
 
 app:
+  auth:
+    cookie:
+      secure: ${AUTH_COOKIE_SECURE:false}
   payout:
     hold-days: ${APP_PAYOUT_HOLD_DAYS:0}
     min-amount: ${APP_PAYOUT_MIN_AMOUNT:100000}

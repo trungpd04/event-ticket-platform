@@ -13,14 +13,17 @@ COPY . .
 
 # Accept API URL at build time
 ARG VITE_APP_API_URL=http://localhost:8081
+ARG VITE_APP_GOOGLE_CLIENT_ID=
 ENV VITE_APP_API_URL=${VITE_APP_API_URL}
+ENV VITE_APP_GOOGLE_CLIENT_ID=${VITE_APP_GOOGLE_CLIENT_ID}
 
 # Serve app at root path instead of /react
 # Override .env because build script uses `env-cmd -f .env`
-RUN grep -v -e '^VITE_APP_BASE_NAME' -e '^VITE_APP_API_URL' .env > .env.tmp && \
+RUN grep -v -e '^VITE_APP_BASE_NAME' -e '^VITE_APP_API_URL' -e '^VITE_APP_GOOGLE_CLIENT_ID' .env > .env.tmp && \
     mv .env.tmp .env && \
     echo 'VITE_APP_BASE_NAME=/' >> .env && \
-    echo "VITE_APP_API_URL=${VITE_APP_API_URL}" >> .env
+    echo "VITE_APP_API_URL=${VITE_APP_API_URL}" >> .env && \
+    echo "VITE_APP_GOOGLE_CLIENT_ID=${VITE_APP_GOOGLE_CLIENT_ID}" >> .env
 
 RUN npm run build
 
