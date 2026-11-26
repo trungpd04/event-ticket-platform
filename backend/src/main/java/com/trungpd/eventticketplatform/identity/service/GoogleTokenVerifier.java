@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,7 @@ public class GoogleTokenVerifier implements IGoogleTokenVerifier {
     private final GoogleProperties properties;
     private final JwtDecoder decoder;
 
+    @Autowired
     public GoogleTokenVerifier(GoogleProperties properties) {
         this(properties, createDecoder(properties));
     }
