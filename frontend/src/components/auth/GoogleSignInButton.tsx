@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import CardMedia from '@mui/material/CardMedia';
+import Box from '@mui/material/Box';
 
 import { openSnackbar } from 'api/snackbar';
-import AuthSocialButton from 'components/auth/AuthSocialButton';
 import useAuth from 'hooks/useAuth';
-import imgGoogle from 'assets/images/auth/google.svg';
 import { SnackbarProps } from 'types/snackbar';
 
 type GoogleCredentialResponse = { credential?: string };
@@ -18,11 +16,16 @@ declare global {
           initialize: (config: {
             client_id: string;
             callback: (response: GoogleCredentialResponse) => void;
-            auto_select?: boolean;
-            cancel_on_tap_outside?: boolean;
-            use_fedcm_for_prompt?: boolean;
           }) => void;
-          prompt: () => void;
+          renderButton: (
+            parent: HTMLElement,
+            options: {
+              type: 'standard' | 'icon';
+              theme?: 'outline' | 'filled_blue' | 'filled_black';
+              size?: 'large' | 'medium' | 'small';
+              shape?: 'rectangular' | 'pill' | 'circle' | 'square';
+            }
+          ) => void;
         };
       };
     };
@@ -67,22 +70,22 @@ function getErrorMessage(error: unknown) {
 
 export default function GoogleSignInButton() {
   const { googleLogin } = useAuth();
-  const [ready, setReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
-    if (!clientId) return;
+    if (!clientId) {
+      showError('Google Sign-In chưa được cấu hình');
+      return;
+    }
     let active = true;
 
     loadGoogleScript()
       .then(() => {
-        if (!active || !window.google) return;
+        if (!active || !window.google || !buttonContainerRef.current) return;
         window.google.accounts.id.initialize({
           client_id: clientId,
-          auto_select: false,
-          cancel_on_tap_outside: true,
-          use_fedcm_for_prompt: true,
           callback: async ({ credential }) => {
             if (!credential) return;
             setSubmitting(true);
@@ -94,7 +97,13 @@ export default function GoogleSignInButton() {
             }
           }
         });
-        setReady(true);
+        buttonContainerRef.current.replaceChildren();
+        window.google.accounts.id.renderButton(buttonContainerRef.current, {
+          type: 'icon',
+          theme: 'outline',
+          size: 'large',
+          shape: 'square'
+        });
       })
       .catch((error: Error) => active && showError(error.message));
 
@@ -103,25 +112,23 @@ export default function GoogleSignInButton() {
     };
   }, [clientId, googleLogin]);
 
-  const handleClick = () => {
-    if (!clientId) {
-      showError('Google Sign-In chưa được cấu hình');
-      return;
-    }
-    if (!ready || !window.google) {
-      showError('Dịch vụ đăng nhập Google đang được tải, vui lòng thử lại');
-      return;
-    }
-    window.google.accounts.id.prompt();
-  };
-
   return (
-    <AuthSocialButton
-      type="button"
-      disabled={submitting}
-      onClick={handleClick}
+    <Box
       aria-label="Đăng nhập bằng Google"
-      icon={<CardMedia component="img" src={imgGoogle} alt="Google" sx={{ width: 24, height: 24 }} />}
-    />
+      sx={{
+        flex: 1,
+        height: 60,
+        bgcolor: '#1F1F1F',
+        border: '1px solid #303030',
+        borderRadius: 2,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: submitting ? 'none' : 'auto',
+        opacity: submitting ? 0.6 : 1
+      }}
+    >
+      <Box ref={buttonContainerRef} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+    </Box>
   );
 }
