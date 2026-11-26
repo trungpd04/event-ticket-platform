@@ -17,6 +17,7 @@ public class JwtUtil {
     private final SecretKey secretKey;
     @Getter
     private final long accessTokenExpiration;
+    @Getter
     private final long refreshTokenExpiration;
 
     public JwtUtil(
@@ -29,14 +30,14 @@ public class JwtUtil {
     }
 
     public String generateAccessToken(Long userId, Collection<String> roles) {
-        return buildToken(userId, roles, accessTokenExpiration);
+        return buildToken(userId, roles, "access", null, accessTokenExpiration);
     }
 
-    public String generateRefreshToken(Long userId) {
-        return buildToken(userId, Collections.emptyList(), refreshTokenExpiration);
+    public String generateRefreshToken(Long userId, UUID familyId) {
+        return buildToken(userId, Collections.emptyList(), "refresh", familyId, refreshTokenExpiration);
     }
 
-    private String buildToken(Long userId, Collection<String> roles, long expiration) {
+    private String buildToken(Long userId, Collection<String> roles, String type, UUID familyId, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
@@ -46,6 +47,8 @@ public class JwtUtil {
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .claim("roles", roles)
+                .claim("typ", type)
+                .claim("familyId", familyId == null ? null : familyId.toString())
                 .signWith(secretKey);
 
         return builder.compact();
@@ -66,6 +69,36 @@ public class JwtUtil {
     @SuppressWarnings("unchecked")
     public List<String> extractRoles(String token) {
         return extractClaims(token).get("roles", List.class);
+    }
+
+    public String extractTokenType(String token) {
+        return extractClaims(token).get("typ", String.class);
+    }
+
+    public String extractJti(String token) {
+        return extractClaims(token).getId();
+    }
+
+    public UUID extractFamilyId(String token) {
+        String familyId = extractClaims(token).get("familyId", String.class);
+        return familyId == null ? null : UUID.fromString(familyId);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaims(token).getExpiration();
+    }
+
+    public boolean isAccessToken(String token) {
+        String type = extractTokenType(token);
+        if ("access".equals(type)) {
+            return true;
+        }
+        List<String> roles = extractRoles(token);
+        return type == null && roles != null && !roles.isEmpty();
+    }
+
+    public boolean isRefreshToken(String token) {
+        return "refresh".equals(extractTokenType(token));
     }
 
     public boolean isTokenValid(String token) {

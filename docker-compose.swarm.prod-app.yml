@@ -64,6 +64,7 @@ services:
     secrets:
       - db_password
       - jwt_secret
+      - google_client_id
       - mail_username
       - mail_password
       - admin_email
@@ -106,6 +107,8 @@ secrets:
     file: /home/event-ticket/secrets/prod/db_password
   jwt_secret:
     file: /home/event-ticket/secrets/prod/jwt_secret
+  google_client_id:
+    file: /home/event-ticket/secrets/prod/google_client_id
   mail_username:
     file: /home/event-ticket/secrets/prod/mail_username
   mail_password:

@@ -11,15 +11,14 @@ import com.trungpd.eventticketplatform.identity.entity.Role;
 import com.trungpd.eventticketplatform.identity.entity.UserStatus;
 import com.trungpd.eventticketplatform.identity.mapper.UserMapper;
 import com.trungpd.eventticketplatform.identity.repository.UserRepository;
-import com.trungpd.eventticketplatform.identity.security.JwtUtil;
 import com.trungpd.eventticketplatform.identity.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +27,15 @@ public class AuthService implements IAuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final IRefreshTokenService refreshTokenService;
+    private final IGoogleTokenVerifier googleTokenVerifier;
+    private final GoogleAccountProvisioner googleAccountProvisioner;
     private final IOtpService otpService;
     private final IEmailService emailService;
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
             throw new BusinessException("error.user.email-exists");
         }
 
@@ -47,41 +48,62 @@ public class AuthService implements IAuthService {
         return userMapper.toResponse(savedUser);
     }
 
-    @Transactional(readOnly = true)
-    public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+    @Transactional
+    public AuthResponse login(LoginRequest request, String userAgent, String ipAddress) {
+        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
                 .orElseThrow(() -> new BusinessException("error.auth.invalid-credentials"));
 
         if (user.getStatus() == UserStatus.BANNED) {
             throw new BusinessException("error.user.banned");
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+        if (user.getPasswordHash() == null || !passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new BusinessException("error.auth.invalid-credentials");
         }
 
-        return buildAuthResponse(user);
+        return buildAuthResponse(user, userAgent, ipAddress);
     }
 
-    @Transactional(readOnly = true)
-    public TokenResponse refreshToken(RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
-
-        if (!jwtUtil.isTokenValid(refreshToken)) {
-            throw new BusinessException("error.auth.invalid-token");
-        }
-
-        Long userId = jwtUtil.extractSubject(refreshToken);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.auth.invalid-token"));
-
-        String accessToken = jwtUtil.generateAccessToken(user.getId(), extractRoleNames(user));
-
+    @Transactional
+    public TokenResponse refreshToken(String refreshToken, String userAgent, String ipAddress) {
+        IRefreshTokenService.TokenPair pair = refreshTokenService.rotate(refreshToken, userAgent, ipAddress);
         return TokenResponse.builder()
-                .accessToken(accessToken)
+                .accessToken(pair.accessToken())
+                .refreshToken(pair.refreshToken())
                 .tokenType("Bearer")
-                .expiresIn(jwtUtil.getAccessTokenExpiration())
+                .expiresIn(pair.accessExpiresIn())
+                .refreshExpiresIn(pair.refreshExpiresIn())
                 .build();
+    }
+
+    public AuthResponse googleLogin(GoogleLoginRequest request, String userAgent, String ipAddress) {
+        var info = googleTokenVerifier.verify(request.getIdToken());
+        User user = userRepository.findByGoogleSubject(info.sub()).orElse(null);
+        if (user == null) {
+            if (userRepository.findByEmailIgnoreCase(info.email()).isPresent()) {
+                throw new BusinessException("error.auth.google-email-exists");
+            }
+            try {
+                user = googleAccountProvisioner.create(info);
+            } catch (DataIntegrityViolationException ex) {
+                user = userRepository.findByGoogleSubject(info.sub()).orElseGet(() ->
+                        userRepository.findByEmailIgnoreCase(info.email())
+                                .filter(existing -> info.sub().equals(existing.getGoogleSubject()))
+                                .orElseThrow(() -> new BusinessException("error.auth.google-email-exists")));
+            }
+        }
+        if (user.getStatus() == UserStatus.BANNED) {
+            throw new BusinessException("error.user.banned");
+        }
+        return buildAuthResponse(user, userAgent, ipAddress);
+    }
+
+    public void logout(String refreshToken) {
+        refreshTokenService.revoke(refreshToken, "LOGOUT");
+    }
+
+    public void logoutAll(Long userId) {
+        refreshTokenService.revokeAll(userId, "LOGOUT_ALL");
     }
 
     @Transactional
@@ -110,22 +132,15 @@ public class AuthService implements IAuthService {
         otpService.markOtpAsUsed(otp);
     }
 
-    private AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtUtil.generateAccessToken(user.getId(), extractRoleNames(user));
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
-
+    private AuthResponse buildAuthResponse(User user, String userAgent, String ipAddress) {
+        IRefreshTokenService.TokenPair pair = refreshTokenService.issue(user, userAgent, ipAddress);
         return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(pair.accessToken())
+                .refreshToken(pair.refreshToken())
                 .tokenType("Bearer")
-                .expiresIn(jwtUtil.getAccessTokenExpiration())
+                .expiresIn(pair.accessExpiresIn())
+                .refreshExpiresIn(pair.refreshExpiresIn())
                 .build();
-    }
-
-    private Set<String> extractRoleNames(User user) {
-        return user.getRoles().stream()
-                .map(Role::name)
-                .collect(Collectors.toSet());
     }
 
 }

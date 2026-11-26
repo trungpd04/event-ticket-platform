@@ -104,6 +104,7 @@ jobs:
             ghcr.io/${{ github.actor }}/event-ticket-fe:prod-${{ github.sha }}
           build-args: |
             VITE_APP_API_URL=https://letticket.live
+            VITE_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -170,6 +171,7 @@ jobs:
             # Write secrets
             echo '${{ secrets.DB_PASSWORD_PROD }}' > /home/event-ticket/secrets/prod/db_password
             echo '${{ secrets.JWT_SECRET_PROD }}' > /home/event-ticket/secrets/prod/jwt_secret
+            echo '${{ secrets.GOOGLE_CLIENT_ID }}' > /home/event-ticket/secrets/prod/google_client_id
             echo '${{ secrets.MAIL_USERNAME }}' > /home/event-ticket/secrets/prod/mail_username
             echo '${{ secrets.MAIL_PASSWORD }}' > /home/event-ticket/secrets/prod/mail_password
             echo '${{ secrets.ADMIN_EMAIL }}' > /home/event-ticket/secrets/prod/admin_email

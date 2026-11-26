@@ -20,5 +20,18 @@ payment:
     payment-prefix: ${SEPAY_PAYMENT_PREFIX:DH}
 
 app:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}
+    issuer: ${GOOGLE_ISSUER:https://accounts.google.com}
+    jwk-set-uri: ${GOOGLE_JWK_SET_URI:https://www.googleapis.com/oauth2/v3/certs}
+  auth:
+    cookie:
+      name: refresh_token
+      secure: ${AUTH_COOKIE_SECURE:true}
+      same-site: ${AUTH_COOKIE_SAME_SITE:Strict}
+      domain: ${AUTH_COOKIE_DOMAIN:}
+      path: /api/v1/auth
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000,https://test.letticket.live,https://letticket.live}
   scheduler:
     time-zone: ${APP_SCHEDULER_TIME_ZONE:Asia/Ho_Chi_Minh}

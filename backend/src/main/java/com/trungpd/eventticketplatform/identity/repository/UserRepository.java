@@ -16,7 +16,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByEmailIgnoreCase(String email);
+
+    Optional<User> findByGoogleSubject(String googleSubject);
+
     boolean existsByEmail(String email);
+
+    boolean existsByEmailIgnoreCase(String email);
 
     @Query("SELECT DISTINCT u FROM User u WHERE :role MEMBER OF u.roles AND u.status = :status")
     List<User> findByRoleAndStatus(@Param("role") Role role, @Param("status") UserStatus status);

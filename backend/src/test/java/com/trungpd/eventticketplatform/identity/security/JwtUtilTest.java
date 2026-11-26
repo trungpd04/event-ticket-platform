@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,16 +26,25 @@ class JwtUtilTest {
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
         assertThat(jwtUtil.extractSubject(token)).isEqualTo(1L);
         assertThat(jwtUtil.extractRoles(token)).containsExactlyInAnyOrder("CUSTOMER", "ORGANIZER");
+        assertThat(jwtUtil.extractTokenType(token)).isEqualTo("access");
+        assertThat(jwtUtil.isAccessToken(token)).isTrue();
+        assertThat(jwtUtil.isRefreshToken(token)).isFalse();
     }
 
     @Test
     void shouldGenerateAndValidateRefreshToken() {
-        String token = jwtUtil.generateRefreshToken(1L);
+        UUID familyId = UUID.randomUUID();
+        String token = jwtUtil.generateRefreshToken(1L, familyId);
 
         assertThat(token).isNotBlank();
         assertThat(jwtUtil.isTokenValid(token)).isTrue();
         assertThat(jwtUtil.extractSubject(token)).isEqualTo(1L);
         assertThat(jwtUtil.extractRoles(token)).isEmpty();
+        assertThat(jwtUtil.extractTokenType(token)).isEqualTo("refresh");
+        assertThat(jwtUtil.extractFamilyId(token)).isEqualTo(familyId);
+        assertThat(jwtUtil.extractJti(token)).isNotBlank();
+        assertThat(jwtUtil.isRefreshToken(token)).isTrue();
+        assertThat(jwtUtil.isAccessToken(token)).isFalse();
     }
 
     @Test
