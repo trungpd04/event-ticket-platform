@@ -24,6 +24,7 @@ import AuthDivider from 'components/auth/AuthDivider';
 import AuthInput from 'components/auth/AuthInput';
 import AuthSocialButton from 'components/auth/AuthSocialButton';
 import AuthToggle from 'components/auth/AuthToggle';
+import GoogleSignInButton from 'components/auth/GoogleSignInButton';
 import EventButton from 'components/event/EventButton';
 import IconButton from 'components/@extended/IconButton';
 import useAuth from 'hooks/useAuth';
@@ -33,7 +34,6 @@ import useScriptRef from 'hooks/useScriptRef';
 import { Eye, EyeSlash, Lock, Sms } from 'iconsax-reactjs';
 import imgApple from 'assets/images/auth/apple.svg';
 import imgFacebook from 'assets/images/auth/facebook.svg';
-import imgGoogle from 'assets/images/auth/google.svg';
 
 // ============================|| AUTH - LOGIN ||============================ //
 
@@ -201,7 +201,7 @@ export default function AuthLogin() {
         <AuthDivider />
         <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
           <AuthSocialButton icon={<CardMedia component="img" src={imgApple} alt="Apple" sx={{ width: 24, height: 24 }} />} />
-          <AuthSocialButton icon={<CardMedia component="img" src={imgGoogle} alt="Google" sx={{ width: 24, height: 24 }} />} />
+          <GoogleSignInButton />
           <AuthSocialButton icon={<CardMedia component="img" src={imgFacebook} alt="Facebook" sx={{ width: 24, height: 24 }} />} />
         </Stack>
       </Box>
