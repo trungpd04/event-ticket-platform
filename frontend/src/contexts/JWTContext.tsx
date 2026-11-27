@@ -82,11 +82,6 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
       }
     });
 
-    if (user.roles?.includes('ADMIN')) {
-      redirectWithBasePath('/admin');
-    } else {
-      redirectWithBasePath('/');
-    }
   };
 
   const googleLogin = async (idToken: string) => {
@@ -96,7 +91,6 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const userResponse = await axios.get('/api/v1/users/me');
     const user = userResponse.data;
     dispatch({ type: LOGIN, payload: { isLoggedIn: true, user } });
-    redirectWithBasePath(user.roles?.includes('ADMIN') ? '/admin' : '/');
   };
 
   const register = async (email: string, password: string, fullName: string, phone?: string) => {
