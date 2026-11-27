@@ -100,8 +100,8 @@ export default function GoogleSignInButton() {
         buttonContainerRef.current.replaceChildren();
         window.google.accounts.id.renderButton(buttonContainerRef.current, {
           type: 'icon',
-          theme: 'outline',
-          size: 'large',
+          theme: 'filled_black',
+          size: 'medium',
           shape: 'square'
         });
       })
@@ -125,7 +125,8 @@ export default function GoogleSignInButton() {
         alignItems: 'center',
         justifyContent: 'center',
         pointerEvents: submitting ? 'none' : 'auto',
-        opacity: submitting ? 0.6 : 1
+        opacity: submitting ? 0.6 : 1,
+        '&:hover': { bgcolor: '#242424', borderColor: '#303030' }
       }}
     >
       <Box ref={buttonContainerRef} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
