@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
 import Box from '@mui/material/Box';
+import CardMedia from '@mui/material/CardMedia';
 
 import { openSnackbar } from 'api/snackbar';
+import AuthSocialButton from 'components/auth/AuthSocialButton';
 import useAuth from 'hooks/useAuth';
+import imgGoogle from 'assets/images/auth/google.svg';
 import { SnackbarProps } from 'types/snackbar';
 
 type GoogleCredentialResponse = { credential?: string };
@@ -100,7 +103,7 @@ export default function GoogleSignInButton() {
         buttonContainerRef.current.replaceChildren();
         window.google.accounts.id.renderButton(buttonContainerRef.current, {
           type: 'icon',
-          theme: 'filled_black',
+          theme: 'outline',
           size: 'medium',
           shape: 'square'
         });
@@ -113,23 +116,29 @@ export default function GoogleSignInButton() {
   }, [clientId, googleLogin]);
 
   return (
-    <Box
-      aria-label="Đăng nhập bằng Google"
-      sx={{
-        flex: 1,
-        height: 60,
-        bgcolor: '#1F1F1F',
-        border: '1px solid #303030',
-        borderRadius: 2,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        pointerEvents: submitting ? 'none' : 'auto',
-        opacity: submitting ? 0.6 : 1,
-        '&:hover': { bgcolor: '#242424', borderColor: '#303030' }
-      }}
-    >
-      <Box ref={buttonContainerRef} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+    <Box sx={{ flex: 1, height: 60, position: 'relative', overflow: 'hidden', borderRadius: 2 }}>
+      <AuthSocialButton
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        disabled={submitting}
+        sx={{ width: '100%', height: '100%', pointerEvents: 'none' }}
+        icon={<CardMedia component="img" src={imgGoogle} alt="" sx={{ width: 24, height: 24 }} />}
+      />
+      <Box
+        ref={buttonContainerRef}
+        aria-label="Đăng nhập bằng Google"
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          zIndex: 1,
+          opacity: 0.01,
+          transform: 'translate(-50%, -50%) scale(4, 1.875)',
+          transformOrigin: 'center',
+          pointerEvents: submitting ? 'none' : 'auto'
+        }}
+      />
     </Box>
   );
 }
